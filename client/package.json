@@ -2,6 +2,7 @@
   "name": "erc_dashboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://zackariahshone.github.io/ERC_dashboard",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
