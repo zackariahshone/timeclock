@@ -37,13 +37,13 @@ export default (props) => {
 
                 <Card body>
                     <Row>
-                        <Col>
+                        <Col xs={2}>
                             <text>{employee.name}</text>
                         </Col>
-                        <Col>
+                        <Col xs={2}>
                             <text>{employee.status}</text>
                         </Col>
-                        <Col>
+                        <Col xs ={4}>
                             <InputGroup className="mb-3">
                                 <Form.Control value={employee.timeIn?employee.timeIn:''} aria-label="First name" />
                                 <Form.Control value={employee.timeOut?employee.timeOut:''} aria-label="Last name" />
