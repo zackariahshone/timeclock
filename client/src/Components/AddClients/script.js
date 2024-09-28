@@ -46,7 +46,6 @@ export default (props) => {
                 <Row>
                     {emps.map((employee) => (
                         <Col>
-
                             <Card body>
                                 <p>{employee.name}</p>
                                 <p>{employee.dateStarted}</p>
