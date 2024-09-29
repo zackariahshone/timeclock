@@ -3,6 +3,10 @@
     background-color: gray;
     width: 20%;
     height: 100vh;
+    font-size: x-large;
+   }
+   .menuItem{
+      cursor: pointer;
    }
    #main{
     background-color: aliceblue;
@@ -12,5 +16,5 @@
     overflow-x: hidden;
    }
    #mainConatiner{
-      width:99%;
+      max-width:99vw;
    }

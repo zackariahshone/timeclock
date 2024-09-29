@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { addEmployee } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -6,29 +7,16 @@ import {
     Row,
     Button
 } from "react-bootstrap";
+import { useSelector, useDispatch } from 'react-redux';
 import './style.css'
-const emps = [
-    {
-        name: 'one',
-        dateStarted: '10/10/24',
-    },
-    {
-        name: 'two',
-        dateStarted: '10/10/24',
-    },
-    {
-        name: 'three',
-        dateStarted: '10/10/24',
-    },
-    {
-        name: 'four',
-        dateStarted: '10/10/24',
-    },
-]
+
 
 export default (props) => {
     const [empName, setEmpName] = useState();
     const [building, setBuilding] = useState();
+    const employeeList = useSelector((state) => state.employeeList.employees)
+    const dispatch = useDispatch();  
+    
     return (
         <Container>
             <Col>
@@ -62,13 +50,13 @@ export default (props) => {
                             <Button
                                 onClick={() => {
                                     if (empName && building) {
-                                        emps.push({
+                                        dispatch(addEmployee({
                                             name: empName,
                                             dateStarted: new Date().toDateString(),
-                                            buildingName: building
-                                        })
+                                            buildingName: building,
+                                            status:'out'
+                                        }))
                                         setEmpName('');
-                                        setBuilding('');
                                     }
                                 }}
                             > Create </Button>
@@ -79,7 +67,7 @@ export default (props) => {
             </Col>
             <Col>
                 <Row>
-                    {emps.map((employee) => (
+                    {employeeList.map((employee) => (
                         <Col id="empCard" xs = {12} md={3}>
                             <Card body>
                                 <p>{employee.name}</p>
