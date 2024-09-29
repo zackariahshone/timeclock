@@ -23,7 +23,7 @@ export default (props) => {
     const [pageId, setPageId] = useState();
     return (
         <Fragment>
-            <Container>
+            <div id='mainConatiner'>
                 <Row>
                     <div id="sideNav">
                         <h1>side nav</h1>
@@ -44,7 +44,7 @@ export default (props) => {
                         {DisplayMenuOptions(pageId)}
                     </div>
                 </Row>
-            </Container>
+            </div>
         </Fragment>
     )
 }

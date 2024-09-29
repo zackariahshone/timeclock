@@ -11,4 +11,6 @@
     overflow-y: auto;
     overflow-x: hidden;
    }
-
+   #mainConatiner{
+      width:99%;
+   }
