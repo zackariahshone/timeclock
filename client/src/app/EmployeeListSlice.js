@@ -7,22 +7,26 @@ export const employeeListSlice = createSlice({
       {
         name: 'Bob',
         dateStarted: '10/10/24',
-        status: "out"
+        status: "out",
+        buildingName: "house1"
       },
       {
         name: 'Sally',
         dateStarted: '10/10/24',
-        status: "out"
+        status: "out",
+        buildingName: "house2"
       },
       {
         name: 'Jeff',
         dateStarted: '10/10/24',
-        status: "out"
+        status: "out",
+        buildingName: "house1"
       },
       {
         name: 'Theo',
         dateStarted: '10/10/24',
-        status: "out"
+        status: "out",
+        buildingName: "house2"
       },
     ]
   },

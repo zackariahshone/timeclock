@@ -17,7 +17,7 @@ export default (props) => {
 
                             {menuConfig[menuKey].map((menuItem) => (
                                 <p
-                                    className="menuItem"
+                                    className= {`menuItem ${menuItem == pageId ? 'selected': ''} `}
                                     onClick={() => { setPageId(menuItem) }}
                                 >{menuItem}</p>
                             ))}

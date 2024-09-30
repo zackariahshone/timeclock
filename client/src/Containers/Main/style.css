@@ -18,3 +18,7 @@
    #mainConatiner{
       max-width:99vw;
    }
+   .selected{
+      font-weight:bold;
+      color:rgb(0, 255, 247);
+   }
