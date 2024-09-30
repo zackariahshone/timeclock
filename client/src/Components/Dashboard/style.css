@@ -1,0 +1,18 @@
+body{
+    font-size: x-large;
+}
+
+.marginBottom{
+    margin-bottom:2%;
+}
+
+#clockedIn{
+    /* width: 40%; */
+    border-radius: 2px;
+    background-color: rgb(114, 202, 108);
+}
+#clockedOut{
+    /* width: 60%; */
+    border-radius: 2px;
+    background-color: rgb(235, 150, 167);
+}
