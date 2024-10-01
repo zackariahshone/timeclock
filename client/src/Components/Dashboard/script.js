@@ -69,7 +69,7 @@ export default (props) => {
                     {selectedEmployee && selectedEmployee.history.length > 0 ?
                         <>
                             <h3>{selectedEmployee.name}</h3>
-                            {selectedEmployee.history.map(date => {
+                            {selectedEmployee.history.map((date,i) => {
                                 return (
                                     <Row className="marginBottom">
                                         <Col>
@@ -79,6 +79,7 @@ export default (props) => {
                                             <Card>
                                                 <p>Clocked In: {getTimeFromMillisecond(date[Object.keys(date)[0]].in)}</p>
                                                 <p> Clocked Out: {getTimeFromMillisecond(date[Object.keys(date)[0]].out)}</p>
+                                                <p>Total : {getHoursWorked(selectedEmployee.history[i])} </p>
                                             </Card>
                                         </Col>
                                     </Row>
@@ -115,4 +116,15 @@ function getTimeFromMillisecond(milliseconds) {
         return `${hours}:${minutes}`;
     }
     return "On Clock";
+}
+
+function getHoursWorked(timeStamps){
+    console.log(timeStamps);
+    
+    const dateKey = Object.keys(timeStamps)[0];
+
+    const clockedIn = timeStamps[dateKey].in
+    const clockedOut = timeStamps[dateKey].out  
+      
+    return (Number(clockedOut) - Number(clockedIn)) / (1000);
 }

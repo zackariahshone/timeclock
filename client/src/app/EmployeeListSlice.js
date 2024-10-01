@@ -47,28 +47,37 @@ export const employeeListSlice = createSlice({
     timeClock: (state,action) => {
       switch(action.payload.employee.status){
         case 'out':
+          let outstamp = new Date().getTime();
+          console.log('save clockin data clock in: ' ,new Date().getTime())
           state.employees.forEach(employee => {
             if(employee.name == action.payload.employee.name){
+              console.log(employee.history);
+              
                employee.status = 'in';
                employee.timeIn = action.payload.time
                employee.timeOut = '';
                employee.history.push(
-               { [new Date().toDateString()]:{"in":action.payload.timeMilli}}
+               { [new Date().toDateString()]:{"in":outstamp}}
               )
                
             }
           });
+          outstamp = null
           break
         case 'in':
+          console.log('save clockin data clock out: ' ,new Date().getTime())
+
+          let instamp = new Date().getTime() 
           state.employees.forEach(employee => {
             if(employee.name == action.payload.employee.name){
               employee.status = 'out' 
               employee.timeOut = action.payload.time 
               const lastTimeHistory = employee.history.length - 1
-              employee.history[lastTimeHistory][new Date().toDateString()].in =! undefined ?  employee.history[lastTimeHistory][new Date().toDateString()].out = action.payload.timeMilli:'';
+              employee.history[lastTimeHistory][new Date().toDateString()].out = instamp;
             } 
           } 
         )
+        instamp = null;
           break
         default:
           break

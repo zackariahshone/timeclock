@@ -49,6 +49,15 @@ export default (props) => {
                                     <Form.Control value={employee.timeOut ? employee.timeOut : ''} aria-label="Last name" />
                                 </InputGroup>
                             </Col>
+                            {
+                                employee.status == 'out' && (employee.timeIn && employee.timeOut) ? 
+                                <Col>
+                                    {console.log(employee.history[employee.history.length - 1])}
+                                   <p> {getHoursWorked(employee.history[employee.history.length - 1])}</p>
+                                </Col>
+                                :<Col></Col>
+                                
+                            }
                             <Col>
                                 <Button
                                     onClick={() => {
@@ -70,4 +79,15 @@ export default (props) => {
             })}
         </Fragment>
     )
+}
+
+function getHoursWorked(timeStamps){
+    const dateKey = Object.keys(timeStamps)[0];
+
+    const clockedIn = timeStamps[dateKey].in
+    const clockedOut = timeStamps[dateKey].out
+
+    console.log(clockedOut, clockedIn);
+    
+    return (Number(clockedOut) - Number(clockedIn)) / (1000);
 }
