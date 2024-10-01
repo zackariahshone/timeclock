@@ -51,7 +51,6 @@ export const employeeListSlice = createSlice({
           console.log('save clockin data clock in: ' ,new Date().getTime())
           state.employees.forEach(employee => {
             if(employee.name == action.payload.employee.name){
-              console.log(employee.history);
               
                employee.status = 'in';
                employee.timeIn = action.payload.time

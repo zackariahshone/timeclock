@@ -56,7 +56,8 @@ export default (props) => {
                                             name: empName,
                                             dateStarted: new Date().toDateString(),
                                             buildingName: building,
-                                            status: 'out'
+                                            status: 'out',
+                                            history:[]
                                         }))
                                         setEmpName('');
                                     }

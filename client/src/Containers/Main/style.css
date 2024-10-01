@@ -14,7 +14,7 @@
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-    font-size: 100%;
+    font-size: 150%;
    }
    #mainConatiner{
       max-width:99vw;
