@@ -16,3 +16,13 @@ body{
     border-radius: 2px;
     background-color: rgb(235, 150, 167);
 }
+
+.employeeList{
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.selected{
+    color:rgb(20, 62, 61);
+    font-weight: bold;
+}

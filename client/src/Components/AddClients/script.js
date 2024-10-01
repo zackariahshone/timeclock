@@ -15,8 +15,8 @@ export default (props) => {
     const [empName, setEmpName] = useState();
     const [building, setBuilding] = useState();
     const employeeList = useSelector((state) => state.employeeList.employees)
-    const dispatch = useDispatch();  
-    
+    const dispatch = useDispatch();
+
     return (
         <Container>
             <Col>
@@ -25,6 +25,8 @@ export default (props) => {
                         <Col>
                             Enter New Employee
                         </Col>
+                    </Row>
+                    <Row>
                         <Col>
                             <input
                                 placeholder="enter name"
@@ -54,7 +56,7 @@ export default (props) => {
                                             name: empName,
                                             dateStarted: new Date().toDateString(),
                                             buildingName: building,
-                                            status:'out'
+                                            status: 'out'
                                         }))
                                         setEmpName('');
                                     }
@@ -68,7 +70,7 @@ export default (props) => {
             <Col>
                 <Row>
                     {employeeList.map((employee) => (
-                        <Col id="empCard" xs = {12} md={3}>
+                        <Col id="empCard" xs={12} md={3}>
                             <Card body>
                                 <p>{employee.name}</p>
                                 <p>{employee.dateStarted}</p>

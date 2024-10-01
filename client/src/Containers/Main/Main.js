@@ -4,13 +4,13 @@ import { DisplayMenuOptions,menuConfig } from "./helpers.js";
 import './style.css'
 
 export default (props) => {
-    const [pageId, setPageId] = useState();
+    const [pageId, setPageId] = useState('DashBoard');
     return (
         <Fragment>
             <div id='mainConatiner'>
                 <Row>
                     <div id="sideNav">
-                        <h1>side nav</h1>
+                        <h1>ERC</h1>
                         {/* list of components */}
                         {Object.keys(menuConfig).map(menuKey => (
                             <Fragment>

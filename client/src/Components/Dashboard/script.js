@@ -1,17 +1,17 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Col, Container, Row, Card } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
 import './style.css';
 export default (props) => {
+    const [selectedEmployee, setSelectedEmployee] = useState();
     const employeeList = useSelector((state) => state.employeeList.employees)
-    console.log(employeeList.length);
     let empCount = 0;
     return (
         <Fragment>
 
             <h1>Insight</h1>
 
-            <Container>
+            <Container className="marginBottom">
                 <Row className="marginBottom">
                     <Col >
                         <Card>
@@ -40,17 +40,55 @@ export default (props) => {
                     </Col>
                 </Row>
                 <Card>
-                <Row className="marginBottom">
-                    <Col>
-                        <h3 id = 'clockedIn'>Clocked In</h3>
-                        { getEmployeeStatus('in',employeeList)?.map(emp=>(<li>{emp.name}</li>))}
-                    </Col>
-                    <Col>
-                        <h3 id = 'clockedOut'>Clocked Out</h3>
-                        { getEmployeeStatus('out',employeeList)?.map(emp=>(<li>{emp.name}</li>))}
-                    </Col>
-                </Row>
+                    <Row className="marginBottom">
+                        <Col>
+                            <h3 id='clockedIn'>Clocked In</h3>
+                            {getEmployeeStatus('in', employeeList)?.map(emp => (
+                                <p  
+                                    onClick={() => { setSelectedEmployee(emp) }}
+                                    className = {`employeeList ${selectedEmployee?.name == emp.name ? 'selected' :''}` }
+                                >{emp.name}</p>
+                            ))
+                            }
+                        </Col>
+                        <Col>
+                            <h3 id='clockedOut'>Clocked Out</h3>
+                            {getEmployeeStatus('out', employeeList)?.map(emp => (
+                                <p  className = {`employeeList ${selectedEmployee?.name == emp.name ? 'selected' :''}` }
+                                    onClick={() => { setSelectedEmployee(emp) }}
+                                >{emp.name}</p>
+                            ))
+                            }
+                        </Col>
+                    </Row>
                 </Card>
+            </Container>
+            <Container>
+
+                <Card >
+                    {selectedEmployee && selectedEmployee.history.length > 0 ?
+                        <>
+                            <h3>{selectedEmployee.name}</h3>
+                            {selectedEmployee.history.map(date => {
+                                return (
+                                    <Row className="marginBottom">
+                                        <Col>
+                                            <p>{Object.keys(date)[0]}</p>
+                                        </Col>
+                                        <Col>
+                                            <Card>
+                                                <p>Clocked In: {getTimeFromMillisecond(date[Object.keys(date)[0]].in)}</p>
+                                                <p> Clocked Out: {getTimeFromMillisecond(date[Object.keys(date)[0]].out)}</p>
+                                            </Card>
+                                        </Col>
+                                    </Row>
+                                )
+                            })
+                            }
+                        </>
+                        : "No History To Display"}
+                </Card>
+
             </Container>
         </Fragment>
     )
@@ -59,12 +97,22 @@ export default (props) => {
 function getEmployeeStatus(status, employees) {
     switch (status) {
         case 'in':
-          
-            return  employees.filter((employee)=>(employee.status == 'in'));
+
+            return employees.filter((employee) => (employee.status == 'in'));
         case 'out':
-          
-            return  employees.filter((employee)=>(employee.status == 'out'));
+
+            return employees.filter((employee) => (employee.status == 'out'));
         default:
             return;
     }
+}
+
+function getTimeFromMillisecond(milliseconds) {
+    if (milliseconds) {
+        const date = new Date(Number(milliseconds))
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${hours}:${minutes}`;
+    }
+    return "On Clock";
 }

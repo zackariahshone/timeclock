@@ -53,7 +53,13 @@ export default (props) => {
                                 <Button
                                     onClick={() => {
                                         //todo create method to get time in correct format
-                                        dispatch(timeClock({ employee, time: `${new Date().getHours()}:${new Date().getMinutes()}` }));
+                                        dispatch(timeClock(
+                                            {
+                                                employee,
+                                                time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                                                timeMilli: `${new Date().getTime()}`
+                                            }
+                                        ));
                                         setStatusChange(true);
                                     }}
                                     variant={employee.status == "out" ? 'info' : 'danger'}>  {employee.status == "out" ? 'Check In' : 'Check Out'} </Button>
