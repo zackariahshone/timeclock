@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addEmployee, clients, contractors} from "../../app/EmployeeListSlice";
+import { addEmployee, clients, contractors } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -13,11 +13,33 @@ import { useSelector, useDispatch } from 'react-redux';
 import './style.css'
 
 
+const ContractorDummynames = [
+    'Elin Mays',
+    'Bronwyn Powell',
+    'Zaynah Vaughn',
+    'Caleb Guzman',
+    'Sinead OMoore',
+    'Louise Pierce',
+    'Conor Bullock',
+    'Tomasz Shepard',
+    'Cian Shah',
+    'Clara Martinez']
+const clientDummyNames = ['Aysha Whitehead',
+    'Tobias Sandoval',
+    'Lloyd Tate',
+    'Solomon Jordan',
+    'Donna Hanna',
+    'Mila Moses',
+    'Aled Ballard',
+    'Zuzanna Pittman',
+    'Eva Gaines',
+    'Arun Newman']
+
 export default (props) => {
     const { type } = props;
     const contractorList = useSelector(contractors);
     const clientList = useSelector(clients)
-    let filteredList = type == 'clients'?clientList:contractorList;
+    let filteredList = type == 'clients' ? clientList : contractorList;
     // const originalEmployeeList =  useSelector((state) => state.employeeList.employees).filter(emp => emp.type.toLowerCase() == type.toLowerCase());
     const dispatch = useDispatch();
     const [empName, setEmpName] = useState();
@@ -25,27 +47,27 @@ export default (props) => {
     const [searchText, setSearchText] = useState();
     // const [employeeList, setEmployeeList] = useState(type == 'clients'?clientList:contractorList); 
     const [change, setChange] = useState(false);
-    useEffect(()=>{
-       if(change == true){
-        setChange(false);
-       }
-    },[change])
+    useEffect(() => {
+        if (change == true) {
+            setChange(false);
+        }
+    }, [change])
     return (
         <Container>
             <h1>{type.toUpperCase()}</h1>
             <Row>
                 <Col xs={4}>
-                    <InputGroup 
-                    onChange={(e)=>{
-                        setSearchText(e.target.value);
-                    }}
-                    className="mb-3">
+                    <InputGroup
+                        onChange={(e) => {
+                            setSearchText(e.target.value);
+                        }}
+                        className="mb-3">
                         <Form.Control
                             placeholder={`Search ${type}`}
                             aria-label={`Search ${type}`}
                             aria-describedby="basic-addon2"
                         />
-                       🔎
+                        🔎
                     </InputGroup>
                 </Col>
 
@@ -95,6 +117,22 @@ export default (props) => {
                                     }
                                 }}
                             > Create </Button>
+                            <button
+                                onClick={() => {
+                                    {
+                                        (type == 'clients' ? clientDummyNames:ContractorDummynames).forEach((name, i) => {
+                                            dispatch(addEmployee({
+                                                name: name,
+                                                dateStarted: new Date().toDateString(),
+                                                buildingName: i % 2 == 0 ? 'house1' : 'house2',
+                                                status: 'out',
+                                                history: [],
+                                                type
+                                            }))
+                                        })
+                                    }
+                                }}
+                            >dummy dump {type}</button>
                         </Col>
                     </Row>
                 </Card>
@@ -102,17 +140,17 @@ export default (props) => {
             </Col>
             <Col>
                 <Row>
-                    {EmployeeListDisplay(searchText,filteredList)}
+                    {EmployeeListDisplay(searchText, filteredList)}
                 </Row>
             </Col>
         </Container>
     )
 }
 
-function EmployeeListDisplay(index, empList){
-    const filtered = empList.filter(emp => emp.name.includes(index));    
-    return(
-        (index ? filtered:empList).map((employee) => (
+function EmployeeListDisplay(index, empList) {
+    const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
+    return (
+        (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={3}>
                 <Card>
                     <Card.Body>
