@@ -9,28 +9,36 @@ export const employeeListSlice = createSlice({
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "house1",
-        history:[]
+        history:[],
+        type:'Contractors',
+        id:'1'
       },
       {
         name: 'Sally',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "house2",
-        history:[]
+        history:[],
+        type:'Contractors',
+        id:'2'
       },
       {
         name: 'Jeff',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "house1",
-        history:[]
+        history:[],
+        type:'clients',
+        id:'3'
       },
       {
         name: 'Theo',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "house2",
-        history:[]
+        history:[],
+        type:'clients',
+        id:'4'
       },
     ]
   },
@@ -98,5 +106,6 @@ export const employeeListSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { addEmployee, timeClock, incrementByAmount } = employeeListSlice.actions
-
+export const contractors =  (state) => state.employeeList.employees.filter(emp=>emp.type.toLowerCase() == 'contractors');
+export const clients = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'clients');
 export default employeeListSlice.reducer

@@ -27,7 +27,6 @@ export default (props) => {
                         ))}
                     </div>
                     <div id="main">
-                        <h1>Main</h1>
                         {DisplayMenuOptions(pageId)}
                     </div>
                 </Row>

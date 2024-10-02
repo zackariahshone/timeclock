@@ -16,6 +16,7 @@ export default (props) => {
     return (
 
         <Fragment>
+            <h1>Time Clock</h1>
             <ButtonGroup aria-label="Basic example">
                 <Button
                     variant={building == 'house1' ? 'info' : 'secondary'}
@@ -83,11 +84,7 @@ export default (props) => {
 
 function getHoursWorked(timeStamps){
     const dateKey = Object.keys(timeStamps)[0];
-
     const clockedIn = timeStamps[dateKey].in
     const clockedOut = timeStamps[dateKey].out
-
-    console.log(clockedOut, clockedIn);
-    
-    return (Number(clockedOut) - Number(clockedIn)) / (1000);
+    return ((Number(clockedOut) - Number(clockedIn)) / (1000 * 60 * 60)).toFixed(2);
 }

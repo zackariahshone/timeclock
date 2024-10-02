@@ -4,10 +4,12 @@
     width: 20%;
     height: 100vh;
    }
+
    .menuItem{
       cursor: pointer;
       font-size: 200%;
    }
+
    #main{
     background-color: aliceblue;
     width:80%;
@@ -16,9 +18,11 @@
     overflow-x: hidden;
     font-size: 150%;
    }
+
    #mainConatiner{
       max-width:99vw;
    }
+   
    .selected{
       font-weight:bold;
       color:rgb(15, 66, 64);
