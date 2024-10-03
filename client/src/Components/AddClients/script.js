@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addEmployee, clients, contractors } from "../../app/EmployeeListSlice";
+import { addEmployee, contractors, employees } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -38,11 +38,12 @@ const clientDummyNames = ['Aysha Whitehead',
 export default (props) => {
     const { type } = props;
     const contractorList = useSelector(contractors);
-    const clientList = useSelector(clients)
-    let filteredList = type == 'clients' ? clientList : contractorList;
+    const employeeList = useSelector(employees)
+    let filteredList = type == 'employee' ? employeeList : contractorList;
     // const originalEmployeeList =  useSelector((state) => state.employeeList.employees).filter(emp => emp.type.toLowerCase() == type.toLowerCase());
     const dispatch = useDispatch();
     const [empName, setEmpName] = useState();
+    const [program, setProgramName] = useState();
     const [building, setBuilding] = useState();
     const [searchText, setSearchText] = useState();
     // const [employeeList, setEmployeeList] = useState(type == 'clients'?clientList:contractorList); 
@@ -76,7 +77,7 @@ export default (props) => {
                 <Card className="addClientCard">
                     <Row>
                         <Col>
-                            Enter New Employee
+                            Enter New {toCapitalize(type)}
                         </Col>
                     </Row>
                     <Row>
@@ -94,21 +95,23 @@ export default (props) => {
                         <Col className="radioButtons">
                             <div
                                 onChange={(e) => {
-                                    setBuilding(e.target.value)
+                                    setProgramName(e.target.value)
                                 }}>
-                                <input type="radio" value="house1" name="gender" /> house 1
+                                <input type="radio" value= {`Richardson Industries`} name="program" /> Richardson Industries
                                 <br />
-                                <input type="radio" value="house2" name="gender" /> house 2
+                                <input type="radio" value={`Aspire`} name="program" /> Aspire
                             </div>
                         </Col>
                         <Col>
                             <Button
                                 onClick={() => {
-                                    if (empName && building) {
+                                    if (empName && program) {
                                         dispatch(addEmployee({
                                             name: empName,
                                             dateStarted: new Date().toDateString(),
-                                            buildingName: building,
+                                            buildingName: program,
+                                            group:`${program} ${type}}`,
+                                            program,
                                             status: 'out',
                                             history: [],
                                             type
@@ -120,11 +123,13 @@ export default (props) => {
                             <button
                                 onClick={() => {
                                     {
-                                        (type == 'clients' ? clientDummyNames:ContractorDummynames).forEach((name, i) => {
+                                        (type.toLowerCase() == 'employee' ? clientDummyNames:ContractorDummynames).forEach((name, i) => {
                                             dispatch(addEmployee({
                                                 name: name,
                                                 dateStarted: new Date().toDateString(),
-                                                buildingName: i % 2 == 0 ? 'house1' : 'house2',
+                                                buildingName: i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
+                                                program:  i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
+                                                group:i % 2 == 0 ? `Aspire ${toCapitalize(type)}` : `Richardson Industries ${toCapitalize(type)}`,
                                                 status: 'out',
                                                 history: [],
                                                 type
@@ -162,4 +167,9 @@ function EmployeeListDisplay(index, empList) {
             </Col>
         ))
     );
+}
+
+
+function toCapitalize(str){
+    return  `${str.charAt(0).toUpperCase()}${str.slice(1)}`
 }

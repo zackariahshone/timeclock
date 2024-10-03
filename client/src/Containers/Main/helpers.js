@@ -6,10 +6,10 @@ export const DisplayMenuOptions = (menuOption) => {
     switch (menuOption) {
         case "DashBoard":
             return <DashBoard />
-        case "Clients":
-            return <AddClients type="clients" />
+        case "Employees":
+            return <AddClients type="employee" />
         case "Contractors":
-            return <AddClients type="contractors"/>
+            return <AddClients type="contractor"/>
         case "Time Clock":
             return <TimeClock />
         default:
@@ -23,7 +23,7 @@ export const menuConfig = {
         'Fees And Invoicing'
     ],
     "optionsSet2": [
-        'Clients',
+        'Employees',
         'Contractors',
         'Time Clock'
     ]
