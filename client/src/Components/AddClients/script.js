@@ -10,6 +10,7 @@ import {
     Form
 } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
+import { CreateStaffModal } from "./helpers";
 import './style.css'
 
 
@@ -38,15 +39,10 @@ const clientDummyNames = ['Aysha Whitehead',
 export default (props) => {
     const { type } = props;
     const contractorList = useSelector(contractors);
-    const employeeList = useSelector(employees)
+    const employeeList = useSelector(employees);
     let filteredList = type == 'employee' ? employeeList : contractorList;
-    // const originalEmployeeList =  useSelector((state) => state.employeeList.employees).filter(emp => emp.type.toLowerCase() == type.toLowerCase());
-    const dispatch = useDispatch();
-    const [empName, setEmpName] = useState();
-    const [program, setProgramName] = useState();
-    const [building, setBuilding] = useState();
+    const [show, setShow] = useState(false);
     const [searchText, setSearchText] = useState();
-    // const [employeeList, setEmployeeList] = useState(type == 'clients'?clientList:contractorList); 
     const [change, setChange] = useState(false);
     useEffect(() => {
         if (change == true) {
@@ -74,80 +70,20 @@ export default (props) => {
 
             </Row>
             <Col>
-                <Card className="addClientCard">
-                    <Row>
-                        <Col>
-                            Enter New {toCapitalize(type)}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <input
-                                placeholder="enter name"
-                                onBlur={(e) => {
-                                    setEmpName(e.target.value)
-                                }}
-                            />
-                        </Col>
-                        <Col>
-                            <input placeholder={new Date().toDateString()} />
-                        </Col>
-                        <Col className="radioButtons">
-                            <div
-                                onChange={(e) => {
-                                    setProgramName(e.target.value)
-                                }}>
-                                <input type="radio" value= {`Richardson Industries`} name="program" /> Richardson Industries
-                                <br />
-                                <input type="radio" value={`Aspire`} name="program" /> Aspire
-                            </div>
-                        </Col>
-                        <Col>
-                            <Button
-                                onClick={() => {
-                                    if (empName && program) {
-                                        dispatch(addEmployee({
-                                            name: empName,
-                                            dateStarted: new Date().toDateString(),
-                                            buildingName: program,
-                                            group:`${program} ${type}}`,
-                                            program,
-                                            status: 'out',
-                                            history: [],
-                                            type
-                                        }))
-                                        setEmpName('');
-                                    }
-                                }}
-                            > Create </Button>
-                            <button
-                                onClick={() => {
-                                    {
-                                        (type.toLowerCase() == 'employee' ? clientDummyNames:ContractorDummynames).forEach((name, i) => {
-                                            dispatch(addEmployee({
-                                                name: name,
-                                                dateStarted: new Date().toDateString(),
-                                                buildingName: i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
-                                                program:  i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
-                                                group:i % 2 == 0 ? `Aspire ${toCapitalize(type)}` : `Richardson Industries ${toCapitalize(type)}`,
-                                                status: 'out',
-                                                history: [],
-                                                type
-                                            }))
-                                        })
-                                    }
-                                }}
-                            >dummy dump {type}</button>
-                        </Col>
-                    </Row>
-                </Card>
-
-            </Col>
-            <Col>
                 <Row>
+                    <Col  xs={12} md={3} >
+                        <Card 
+                        onClick={()=>{
+                            setShow(true);
+                        }}
+                        className="createNewCard">
+                            <div className="textInCreateCard">Creat new {type}</div>
+                        </Card>
+                    </Col>
                     {EmployeeListDisplay(searchText, filteredList)}
                 </Row>
             </Col>
+            {show ? <CreateStaffModal type={type} show = {show} setShow ={setShow}/>:''}
         </Container>
     )
 }
@@ -161,15 +97,10 @@ function EmployeeListDisplay(index, empList) {
                     <Card.Body>
                         <Card.Title> Name: {employee.name}</Card.Title>
                         <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
-                        <Card.Text>Building Name: {employee.buildingName ? <p>{employee.buildingName}</p> : ''}</Card.Text>
                     </Card.Body>
+                    <Card.Footer> {employee.buildingName ? <p>{employee.buildingName}</p> : ''}</Card.Footer>
                 </Card>
             </Col>
         ))
     );
-}
-
-
-function toCapitalize(str){
-    return  `${str.charAt(0).toUpperCase()}${str.slice(1)}`
 }

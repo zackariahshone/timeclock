@@ -5,7 +5,9 @@ body{
 .marginBottom{
     margin-bottom:2%;
 }
-
+.marginRight{
+    margin-right: 3%;
+}
 #clockedIn{
     /* width: 40%; */
     border-radius: 2px;
@@ -18,11 +20,15 @@ body{
 }
 
 .employeeList{
-    font-size: 70%;
+    /* font-size: 70%; */
     cursor: pointer;
 }
 
 .selected{
     color:rgb(20, 62, 61);
     font-weight: bold;
+}
+.alignRight{
+    text-align: right;
+    padding-right:3%;
 }

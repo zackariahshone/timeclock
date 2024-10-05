@@ -1,41 +1,41 @@
 import React, { Fragment, useState } from "react";
 import { Col, Container, Row, Card } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    displayStaffCount,
+    filterByType,
+    toCapitalize,
+    getEmployeeStatus,
+    getTimeFromMillisecond,
+    getHoursWorked
+} from './helpers.js'
 import './style.css';
 export default (props) => {
     const [selectedEmployee, setSelectedEmployee] = useState();
     const employeeList = useSelector((state) => state.employeeList.employees)
     let empCount = 0;
+    let contCount = 0;
     return (
         <Fragment>
 
             <h1>Insight</h1>
 
             <Container className="marginBottom">
+            {employeeList ? displayStaffCount("contractor",filterByType("contractor",employeeList)):''}
                 <Row className="marginBottom">
-                    <Col >
+                    <Col md={{ span: 6, offset: 3 }}>
                         <Card>
-                            <h3>Number of Clients</h3>
-                            <p>{employeeList.length}</p>
-                        </Card>
-                    </Col>
-                    <Col >
-                        <Card>
-                            <h3>Clients Clocked In</h3>
-                            {employeeList.forEach(emp => {
-                                if (emp.status == 'in') {
-                                    empCount += 1;
-                                }
-                            })}
-                            <p>{empCount}</p>
+                            <h3>Percentage Of Contractors Clocked In</h3>
+                            <b>{Number(getEmployeeStatus('in',filterByType('contractor',employeeList)).length / filterByType('contractor',employeeList).length * 100).toFixed(2)}%</b>
                         </Card>
                     </Col>
                 </Row>
+            {employeeList ? displayStaffCount("employee",filterByType("employee",employeeList)):''}
                 <Row className="marginBottom">
                     <Col md={{ span: 6, offset: 3 }}>
                         <Card>
                             <h3>Percentage Of Employees Clocked In</h3>
-                            <b>{Number(empCount / employeeList.length * 100).toFixed(2)}%</b>
+                            <b>{Number(getEmployeeStatus('in',filterByType('employee',employeeList)).length / filterByType('employee',employeeList).length * 100).toFixed(2)}%</b>
                         </Card>
                     </Col>
                 </Row>
@@ -65,10 +65,10 @@ export default (props) => {
             </Container>
             <Container>
 
-                <Card >
                     {selectedEmployee && selectedEmployee.history.length > 0 ?
+                <Card >
                         <>
-                            <h3>{selectedEmployee.name}</h3>
+                            <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {selectedEmployee.history.map((date,i) => {
                                 return (
                                     <Row className="marginBottom">
@@ -76,10 +76,10 @@ export default (props) => {
                                             <p>{Object.keys(date)[0]}</p>
                                         </Col>
                                         <Col>
-                                            <Card>
+                                            <Card className="alignRight marginRight">
                                                 <p>Clocked In: {getTimeFromMillisecond(date[Object.keys(date)[0]].in)}</p>
                                                 <p> Clocked Out: {getTimeFromMillisecond(date[Object.keys(date)[0]].out)}</p>
-                                                <p>Total : {getHoursWorked(selectedEmployee.history[i])} </p>
+                                                <p>Total : {getHoursWorked(selectedEmployee.history[i]) } </p>
                                             </Card>
                                         </Col>
                                     </Row>
@@ -87,44 +87,10 @@ export default (props) => {
                             })
                             }
                         </>
-                        : "No History To Display"}
                 </Card>
+                        : '' }
 
             </Container>
         </Fragment>
     )
-}
-
-function getEmployeeStatus(status, employees) {
-    switch (status) {
-        case 'in':
-
-            return employees.filter((employee) => (employee.status == 'in'));
-        case 'out':
-
-            return employees.filter((employee) => (employee.status == 'out'));
-        default:
-            return;
-    }
-}
-
-function getTimeFromMillisecond(milliseconds) {
-    if (milliseconds) {
-        const date = new Date(Number(milliseconds))
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        return `${hours}:${minutes}`;
-    }
-    return "On Clock";
-}
-
-function getHoursWorked(timeStamps){
-    console.log(timeStamps);
-    
-    const dateKey = Object.keys(timeStamps)[0];
-
-    const clockedIn = timeStamps[dateKey].in
-    const clockedOut = timeStamps[dateKey].out  
-      
-    return (Number(clockedOut) - Number(clockedIn)) / (1000);
 }

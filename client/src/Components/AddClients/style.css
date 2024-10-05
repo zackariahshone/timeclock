@@ -8,3 +8,16 @@
 #empCard{
     margin-bottom:.5%;
 }
+
+.createNewCard{
+    height: 100% !important;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.textInCreateCard{
+    margin-left: 3%;
+    display:grid;
+    align-items: center;
+}
