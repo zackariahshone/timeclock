@@ -8,19 +8,19 @@ export const displayStaffCount = (staffType,staffList) => {
     return (<Row className="marginBottom">
         <Col >
             <Card>
-                <h3>Number of {staffType}</h3>
+                <Card.Title>Number of {toCapitalize(staffType)}s</Card.Title>
                 <p>{filterByType(staffType, staffList).length}</p>
             </Card>
         </Col>
         <Col >
             <Card>
-                <h3> Clocked In</h3>
-                {filterByType(staffType, staffList).forEach(emp => {
+                <Card.Title> Clocked In</Card.Title>
+                {/* {filterByType(staffType, staffList).forEach(emp => {
                     if (emp.status == 'in') {
                         staffCount += 1;
                     }
-                })}
-                <p>{staffCount}</p>
+                })} */}
+                <p>{staffTotal(filterByType(staffType,staffList))}</p>
             </Card>
         </Col>
     </Row>
@@ -63,3 +63,14 @@ export const getHoursWorked = (timeStamps) => {
     return clockedOut != undefined ? (Number(clockedOut) - Number(clockedIn)) / (1000) : 0 ;
 }
 
+export const staffTotal = (list)=>{
+    let count = 0
+    console.log(list);
+    
+    list.forEach(emp => {
+        if (emp.status == 'in') {
+            count += 1;
+        }
+    })
+    return count; 
+}
