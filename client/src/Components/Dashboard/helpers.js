@@ -3,25 +3,25 @@ import { Col, Row, Card } from "react-bootstrap";
 
 
 
-export const displayStaffInsights = (staffType, staffList) => {
+export const displaySchoolInsights = (program, staffList) => {
     return (<Row className="marginBottom">
-        <h3 className = "insightsStaffType">{toCapitalize(staffType)}s:</h3>
+        <h3 className = "insightsStaffType">{toCapitalize(program)}:</h3>
         <Col >
             <Card>
-                <Card.Title>Number of {toCapitalize(staffType)}s</Card.Title>
-                <p>{filterByType(staffType, staffList).length}</p>
+                <Card.Title>Number of {toCapitalize(program)} Students</Card.Title>
+                <p>{filterByPrograms(program, staffList).length}</p>
             </Card>
         </Col>
         <Col >
             <Card>
                 <Card.Title> Clocked In</Card.Title>
-                <p>{staffTotal(filterByType(staffType, staffList))}</p>
+                <p>{staffTotal(filterByPrograms(program, staffList))}</p>
             </Card>
         </Col>
         <Col>
             <Card>
-                <Card.Title>Percentage Of {toCapitalize(staffType)}s Clocked In</Card.Title>
-                <b>{Number(getEmployeeStatus('in', filterByType(staffType, staffList)).length / filterByType(staffType, staffList).length * 100).toFixed(2)}%</b>
+                <Card.Title>Percentage Of {toCapitalize(program)}s Clocked In</Card.Title>
+                <b>{Number(getStudentStatus('in', filterByPrograms(program, staffList)).length / filterByPrograms(program, staffList).length * 100).toFixed(2)}%</b>
             </Card>
         </Col>
     </Row>
@@ -32,16 +32,21 @@ export const filterByType = (type, staffList) => {
     return staffList?.filter(staff => staff.type.toLowerCase() == type.toLowerCase())
 }
 
+export const filterByPrograms = (program, studentList) =>{
+    
+    return studentList.filter(student => student.program.toLowerCase() == program.toLowerCase())
+}
+
 export const toCapitalize = (str) => {
     return `${str.charAt(0).toUpperCase()}${str.slice(1)}`
 }
 
-export const getEmployeeStatus = (status, employees) => {
+export const getStudentStatus = (status, students) => {
     switch (status) {
         case 'in':
-            return employees.filter((employee) => (employee.status == 'in'));
+            return students.filter((student) => (student.status == 'in'));
         case 'out':
-            return employees.filter((employee) => (employee.status == 'out'));
+            return students.filter((student) => (student.status == 'out'));
         default:
             return;
     }

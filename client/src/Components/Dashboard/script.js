@@ -2,18 +2,20 @@ import React, { Fragment, useState } from "react";
 import { Col, Container, Row, Card, CardTitle, Form } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    displayStaffInsights,
+    displaySchoolInsights,
     filterByType,
     toCapitalize,
-    getEmployeeStatus,
+    getStudentStatus,
     getTimeFromMillisecond,
-    getHoursWorked
+    getHoursWorked,
+    filterByPrograms
 } from './helpers.js'
 import './style.css';
+import { students } from "../../app/EmployeeListSlice.js";
 export default (props) => {
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
-    const employeeList = useSelector((state) => state.employeeList.employees)
+    const employeeList = useSelector(students)
 
     return (
         <Fragment>
@@ -22,14 +24,16 @@ export default (props) => {
 
             <Container className="marginBottom">
 
-                {employeeList ? displayStaffInsights("contractor", filterByType("contractor", employeeList)) : ''}
+                {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
+                {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
 
-                {employeeList ? displayStaffInsights("employee", filterByType("employee", employeeList)) : ''}
+
+                {/* {employeeList ? displayStaffInsights("employee", filterByType("employee", employeeList)) : ''} */}
                 <Card className={showStatus ? 'showStatus' : 'hideStatus'}>
                     <Row className="marginBottom">
                         <Col>
                             <h3 id='clockedIn'>Clocked In</h3>
-                            {getEmployeeStatus('in', employeeList)?.map(emp => (
+                            {getStudentStatus('in', employeeList)?.map(emp => (
                                 <p
                                     onClick={() => { setSelectedEmployee(emp) }}
                                     className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
@@ -39,7 +43,7 @@ export default (props) => {
                         </Col>
                         <Col>
                             <h3 id='clockedOut'>Clocked Out</h3>
-                            {getEmployeeStatus('out', employeeList)?.map(emp => (
+                            {getStudentStatus('out', employeeList)?.map(emp => (
                                 <p className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
                                     onClick={() => { setSelectedEmployee(emp) }}
                                 >{emp.name}</p>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addEmployee, contractors, employees } from "../../app/EmployeeListSlice";
+import {  teachers, students } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -38,9 +38,9 @@ const clientDummyNames = ['Aysha Whitehead',
 
 export default (props) => {
     const { type } = props;
-    const contractorList = useSelector(contractors);
-    const employeeList = useSelector(employees);
-    let filteredList = type == 'employee' ? employeeList : contractorList;
+    const studentList = useSelector(students);
+    const teacherList = useSelector(teachers);
+    let filteredList = type == 'teacher' ? teacherList : studentList;
     const [show, setShow] = useState(false);
     const [searchText, setSearchText] = useState();
     const [change, setChange] = useState(false);
@@ -67,7 +67,6 @@ export default (props) => {
                         🔎
                     </InputGroup>
                 </Col>
-
             </Row>
             <Col>
                 <Row>
@@ -80,7 +79,7 @@ export default (props) => {
                             <div className="textInCreateCard">Creat new {type}</div>
                         </Card>
                     </Col>
-                    {EmployeeListDisplay(searchText, filteredList)}
+                    {SchoolListDisplay(searchText, filteredList)}
                 </Row>
             </Col>
             {show ? <CreateStaffModal type={type} show = {show} setShow ={setShow}/>:''}
@@ -88,7 +87,7 @@ export default (props) => {
     )
 }
 
-function EmployeeListDisplay(index, empList) {
+function SchoolListDisplay(index, empList) {
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
     return (
         (index ? filtered : empList).map((employee) => (

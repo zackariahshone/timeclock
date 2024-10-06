@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { addEmployee, contractors, employees } from "../../app/EmployeeListSlice";
+import { addEmployee} from "../../app/EmployeeListSlice";
 import {
     Col,
     Row,

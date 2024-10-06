@@ -11,7 +11,7 @@ export const employeeListSlice = createSlice({
         buildingName: "Aspire",
         program:"Aspire",
         history:[],
-        type:'employee',
+        type:'student',
         id:'1'
       },
       {
@@ -21,7 +21,7 @@ export const employeeListSlice = createSlice({
         buildingName: "Aspire",
         program:"Aspire",
         history:[],
-        type:'contractor',
+        type:'teacher',
         id:'2'
       },
       {
@@ -31,7 +31,7 @@ export const employeeListSlice = createSlice({
         buildingName: "richardson industries",
         program:"Richardson Industries",
         history:[],
-        type:'employee',
+        type:'teacher',
         id:'3'
       },
       {
@@ -41,7 +41,7 @@ export const employeeListSlice = createSlice({
         buildingName: "richardson industries",
         program:"Richardson Industries",
         history:[],
-        type:'contractor',
+        type:'student',
         id:'4'
       },
     ]
@@ -57,27 +57,29 @@ export const employeeListSlice = createSlice({
       }
     },
     timeClock: (state,action) => {
-      switch(action.payload.employee.status){
+      console.log(action);
+      switch(action.payload.student.status){
         case 'out':
           let outstamp = new Date().getTime();
-          state.employees.forEach(employee => {
-            if(employee.name == action.payload.employee.name){
-               employee.status = 'in';
-               employee.timeIn = action.payload.time
-               employee.timeOut = '';
-               employee.history.push({[new Date().toDateString()]:{"in":outstamp}})
+          state.employees.forEach(student => {
+            
+            if(student.name == action.payload.student.name){
+              student.status = 'in';
+              student.timeIn = action.payload.time
+              student.timeOut = '';
+              student.history.push({[new Date().toDateString()]:{"in":outstamp}})
             }
           });
           outstamp = null
           break
         case 'in':
           let instamp = new Date().getTime() 
-          state.employees.forEach(employee => {
-            if(employee.name == action.payload.employee.name){
-              employee.status = 'out' 
-              employee.timeOut = action.payload.time 
-              const lastTimeHistory = employee.history.length - 1
-              employee.history[lastTimeHistory][new Date().toDateString()].out = instamp;
+          state.employees.forEach(student => {
+            if(student.name == action.payload.student.name){
+              student.status = 'out' 
+              student.timeOut = action.payload.time 
+              const lastTimeHistory = student.history.length - 1
+              student.history[lastTimeHistory][new Date().toDateString()].out = instamp;
             } 
           } 
         )
@@ -95,6 +97,6 @@ export const employeeListSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { addEmployee, timeClock, incrementByAmount } = employeeListSlice.actions
-export const contractors =  (state) => state.employeeList.employees.filter(emp=>emp.type.toLowerCase() == 'contractor');
-export const employees = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'employee');
+export const teachers =  (state) => state.employeeList.employees.filter(emp=>emp.type.toLowerCase() == 'teacher');
+export const students = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'student');
 export default employeeListSlice.reducer

@@ -1,14 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Col, Row, Button, Card, InputGroup, Form, ButtonGroup } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
-import { timeClock } from "../../app/EmployeeListSlice";
+import { timeClock,students } from "../../app/EmployeeListSlice";
 import './style.css'
 
 
 export default (props) => {
     const [statusChange, setStatusChange] = useState();
     const [program, setProgram] = useState('');
-    const employeeList = program ? useSelector((state) => state.employeeList.employees).filter((emp) => emp.program == program) : useSelector((state) => state.employeeList.employees)
+    const studentList = program ? useSelector(students).filter((emp) => emp.program == program) : useSelector(students)
     const dispatch = useDispatch();
     useEffect(() => {
         setStatusChange(false);
@@ -38,29 +38,28 @@ export default (props) => {
                 >All</Button>
             </ButtonGroup>
 
-                <h3 className="titleMarginBottom">Employees:</h3>
-            {employeeList.map((employee) => {        
-                if(employee.type == 'employee'){
+                <h3 className="titleMarginBottom">Students:</h3>
+            {studentList.map((student) => {        
                 return (
                     <Card body>
                         <Row>
                             <Col xs={2}>
-                                <text>{employee.name}</text>
+                                <text>{student.name}</text>
                             </Col>
                             <Col xs={2}>
-                                <text>{employee.status}</text>
+                                <text>{student.status}</text>
                             </Col>
                             <Col xs={4}>
                                 <InputGroup className="mb-3">
-                                    <Form.Control value={employee.timeIn ? employee.timeIn : ''} aria-label="First name" />
-                                    <Form.Control value={employee.timeOut ? employee.timeOut : ''} aria-label="Last name" />
+                                    <Form.Control value={student.timeIn ? student.timeIn : ''} aria-label="First name" />
+                                    <Form.Control value={student.timeOut ? student.timeOut : ''} aria-label="Last name" />
                                 </InputGroup>
                             </Col>
                             {
-                                employee.status == 'out' && (employee.timeIn && employee.timeOut) ? 
+                                student.status == 'out' && (student.timeIn && student.timeOut) ? 
                                 <Col>
-                                    {console.log(employee.history[employee.history.length - 1])}
-                                   <p> {getHoursWorked(employee.history[employee.history.length - 1])}</p>
+                                    {console.log(student.history[student.history.length - 1])}
+                                   <p> {getHoursWorked(student.history[student.history.length - 1])}</p>
                                 </Col>
                                 :<Col></Col>
                                 
@@ -71,66 +70,18 @@ export default (props) => {
                                         //todo create method to get time in correct format
                                         dispatch(timeClock(
                                             {
-                                                employee,
+                                                student,
                                                 time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                                                timeMilli: `${new Date().getTime()}`
+                                                timeMilli: `${new Date().getTime()}`,
                                             }
                                         ));
                                         setStatusChange(true);
                                     }}
-                                    variant={employee.status == "out" ? 'info' : 'danger'}>  {employee.status == "out" ? 'Check In' : 'Check Out'} </Button>
+                                    variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>
                             </Col>
                         </Row>
                     </Card>
                 )
-                }
-            })}
-            <h3 className="titleMarginBottom">Contractors:</h3>
-            {employeeList.map((employee) => {        
-                if(employee.type == 'contractor'){
-                return (
-                    <Card body>
-                        <Row>
-                            <Col xs={2}>
-                                <text>{employee.name}</text>
-                            </Col>
-                            <Col xs={2}>
-                                <text>{employee.status}</text>
-                            </Col>
-                            <Col xs={4}>
-                                <InputGroup className="mb-3">
-                                    <Form.Control value={employee.timeIn ? employee.timeIn : ''} aria-label="First name" />
-                                    <Form.Control value={employee.timeOut ? employee.timeOut : ''} aria-label="Last name" />
-                                </InputGroup>
-                            </Col>
-                            {
-                                employee.status == 'out' && (employee.timeIn && employee.timeOut) ? 
-                                <Col>
-                                    {console.log(employee.history[employee.history.length - 1])}
-                                   <p> {getHoursWorked(employee.history[employee.history.length - 1])}</p>
-                                </Col>
-                                :<Col></Col>
-                                
-                            }
-                            <Col>
-                                <Button
-                                    onClick={() => {
-                                        //todo create method to get time in correct format
-                                        dispatch(timeClock(
-                                            {
-                                                employee,
-                                                time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                                                timeMilli: `${new Date().getTime()}`
-                                            }
-                                        ));
-                                        setStatusChange(true);
-                                    }}
-                                    variant={employee.status == "out" ? 'info' : 'danger'}>  {employee.status == "out" ? 'Check In' : 'Check Out'} </Button>
-                            </Col>
-                        </Row>
-                    </Card>
-                )
-                }
             })}
         </Fragment>
     )
