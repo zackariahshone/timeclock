@@ -3,6 +3,7 @@ import TimeClock from "../../Components/TimeClock/script.js";
 import DashBoard from "../../Components/Dashboard/script.js";
 
 export const DisplayMenuOptions = (menuOption) => {
+    
     switch (menuOption) {
         case "DashBoard":
             return <DashBoard />
@@ -28,7 +29,7 @@ export const menuConfig = {
         'Time Clock'
     ],
     "optionSet3":[
-        'log in',
+        'log in/log out',
         'signup'
     ]
 
