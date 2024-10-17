@@ -26,3 +26,9 @@
       font-weight:bold;
       color:rgb(15, 66, 64);
    }
+
+   .signinName{
+      text-align: right;
+      margin-right: 10%;
+      font-size: medium;
+   }

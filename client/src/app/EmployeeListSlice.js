@@ -48,11 +48,12 @@ export const employeeListSlice = createSlice({
   },
   reducers: {
     addEmployee: (state,action) => {
+      console.log(action);
       return {
         ...state,
         employees: [
           ...state.employees,
-          action.payload,
+          action.payload.data,
         ]
       }
     },

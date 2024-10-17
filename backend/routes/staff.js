@@ -1,17 +1,31 @@
 const router = require('express').Router();
-const Staff = require('../dbconnection/models/Staff')
+const Teacher = require('../dbconnection/models/Staff')
 
 /**
  * Handle Sign up
  */
-router.get('/createstaff', async (req, res) => {
-    res.json({status:200})
-//  const createdUser = await Staff.create(req.body)
-//   req.session.signinSuccess = true;
-//   res.json({ 
-//     ...createdUser,
-//     status: 200 });
+router.post('/createteacher', async (req, res) => {
+  console.log(req.body);
+  try {
+    await Teacher.create(req.body)
+  } catch (e) {
+    console.error(e);
+  }
+  res.json(req.body)
 });
+
+router.get('/getAllTeachers', async (req,res)=>{
+  try{
+    const allTeachers = await Teacher.find({})
+    console.log(allTeachers);
+    
+    // res.json = {allTeachers}
+
+    // res.json = JSON.stringify(await Teacher.find({}));
+  }catch(e){
+    console.error(e);
+  }
+})
 /**
  * Handle log in 
  */

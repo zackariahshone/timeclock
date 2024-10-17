@@ -1,20 +1,16 @@
 const { Schema, model } = require('mongoose');
 
- const StaffSchema = new Schema({
- email:{
-  type:String
- },
-  name: {
-    type: String,
-  },
-  dateStarted:{
-    type:Date,
-  },
+ const teacherSchema = new Schema({
+ email: String,
+  name: String,
+  dateStarted:String,
+  buildingName:String,
   group:String,
   program:String,
   status:String,
+  history:Array,
+  id:String
 });
-
-module.exports =  model('Staff', StaffSchema);
+module.exports = model('Teacher', teacherSchema);
 
 // module.exports = User;

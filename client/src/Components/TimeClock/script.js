@@ -3,6 +3,7 @@ import { Col, Row, Button, Card, InputGroup, Form, ButtonGroup } from "react-boo
 import { useSelector, useDispatch } from 'react-redux';
 import { timeClock,students } from "../../app/EmployeeListSlice";
 import './style.css'
+import { convertMilitaryToStandard } from "./helper";
 
 
 export default (props) => {
@@ -51,15 +52,15 @@ export default (props) => {
                             </Col>
                             <Col xs={4}>
                                 <InputGroup className="mb-3">
-                                    <Form.Control value={student.timeIn ? student.timeIn : ''} aria-label="First name" />
-                                    <Form.Control value={student.timeOut ? student.timeOut : ''} aria-label="Last name" />
+                                    <Form.Control defaultValue={ student.timeIn ? convertMilitaryToStandard(student.timeIn) : ''} aria-label="First name" />
+                                    <Form.Control defaultValue={student.timeOut ? convertMilitaryToStandard(student.timeOut) : ''} aria-label="Last name" />
                                 </InputGroup>
                             </Col>
                             {
                                 student.status == 'out' && (student.timeIn && student.timeOut) ? 
                                 <Col>
                                     {console.log(student.history[student.history.length - 1])}
-                                   <p> {getHoursWorked(student.history[student.history.length - 1])}</p>
+                                   <p> {getHoursWorked(student.history[student.history.length - 1])} hrs</p>
                                 </Col>
                                 :<Col></Col>
                                 
