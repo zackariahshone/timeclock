@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
- const teacherSchema = new Schema({
+ const studentSChema = new Schema({
  email: String,
   name: String,
   dateStarted:String,
@@ -12,6 +12,6 @@ const { Schema, model } = require('mongoose');
   type:String,
   id:String
 });
-module.exports = model('Teacher', teacherSchema);
+module.exports = model('Student', studentSChema);
 
 // module.exports = User;

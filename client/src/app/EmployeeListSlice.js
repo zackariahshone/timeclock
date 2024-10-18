@@ -47,6 +47,16 @@ export const employeeListSlice = createSlice({
     ]
   },
   reducers: {
+    addEmployeeBulk: (state,action) => {
+      console.log(action);
+      return {
+        ...state,
+        employees: [
+          ...state.employees,
+          ...action.payload.data,
+        ]
+      }
+    },
     addEmployee: (state,action) => {
       console.log(action);
       return {
@@ -97,7 +107,7 @@ export const employeeListSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addEmployee, timeClock, incrementByAmount } = employeeListSlice.actions
-export const teachers =  (state) => state.employeeList.employees.filter(emp=>emp.type.toLowerCase() == 'teacher');
+export const { addEmployee, timeClock, incrementByAmount, addEmployeeBulk } = employeeListSlice.actions
+export const teachers =  (state) => state.employeeList.employees.filter(emp=>emp.type?.toLowerCase() == 'teacher');
 export const students = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'student');
 export default employeeListSlice.reducer

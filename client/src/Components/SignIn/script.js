@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { teachers } from '../../app/EmployeeListSlice';
+import React, { useState, useEffect } from 'react';
+import { teachers, addEmployeeBulk } from '../../app/EmployeeListSlice';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 import { useSelector,useDispatch } from 'react-redux';
-
+import { getData } from '../../globalUtils/requests';
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (

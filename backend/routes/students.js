@@ -1,32 +1,29 @@
 const router = require('express').Router();
-const Teacher = require('../dbconnection/models/Staff')
+const Student = require('../dbconnection/models/Students')
 
-/**
- * Handle Sign up
- */
-router.post('/createteacher', async (req, res) => {
+
+router.post('/createstudent', async (req, res) => {
   console.log(req.body);
   try {
-    const createdTeacher = await Teacher.create(req.body)
+    const createdTeacher = await Student.create(req.body)
     res.json(createdTeacher)
   } catch (e) {
     console.error(e);
   }
 });
 
-router.get('/getallteachers', async (req,res)=>{
+router.get('/getallstudents', async (req,res)=>{
   try{
-    const allTeachers = await Teacher.find({})
+    const allTeachers = await Student.find({})
     res.json(allTeachers)
   }catch(e){
     res.send(e)
   }
 })
 
-router.delete('/deleteteacher',async (req, res)=>{
-  const targetProperty = req.body.targetProperty
+router.delete('/deletestudent',async (req, res)=>{
   const targetValue = req.body.targetValue;
-  const result = await Teacher.findOneAndDelete({name:`${targetValue}`})
+  const result = await Student.findOneAndDelete({name:`${targetValue}`})
   res.json(result)
 })
 /**

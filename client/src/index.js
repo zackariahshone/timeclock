@@ -6,7 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import store from './app/store'
 import { Provider } from 'react-redux'
+import { getData } from './globalUtils/requests';
+import { addEmployeeBulk } from './app/EmployeeListSlice';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+getData('/getallteachers','GET',addEmployeeBulk,{});
 root.render(
   <Provider store={store}>
     <React.StrictMode>
