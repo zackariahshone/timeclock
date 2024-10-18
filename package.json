@@ -4,6 +4,7 @@
   "description": "dash board for staff time keeping ",
   "main": "na",
   "scripts": {
+    "start": "node backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "concurrently \"cd backend && npm run watch\" \"cd client && npm start\"",
     "install": "cd backend && npm i && cd ../client && npm i",
