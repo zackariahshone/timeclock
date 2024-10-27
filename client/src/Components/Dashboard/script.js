@@ -72,6 +72,7 @@ export default (props) => {
                                                 <p>Clocked In: {getTimeFromMillisecond(date[Object.keys(date)[0]].in)}</p>
                                                 <p> Clocked Out: {getTimeFromMillisecond(date[Object.keys(date)[0]].out)}</p>
                                                 <p>Total : {getHoursWorked(selectedEmployee.history[i])} </p>
+                                                <p>Set By: {date[Object.keys(date)[0]].setBy}</p>
                                             </Card>
                                         </Col>
                                     </Row>

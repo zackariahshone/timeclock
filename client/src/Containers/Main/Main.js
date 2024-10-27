@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useDispatch, useSelector } from "react";
 import { Card, Row, Modal, Button } from 'react-bootstrap'
 import { DisplayMenuOptions, menuConfig } from "./helpers.js";
-import { signin, signOut } from "../../app/pageDataSlice.js";
+import { signin, signOut } from "../../app/CurrentUserSlice.js";
 import { TeacherSignIn } from "../../Components/SignIn/script.js";
 import './style.css'
 

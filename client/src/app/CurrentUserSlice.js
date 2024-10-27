@@ -1,25 +1,21 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 
-export const employeeListSlice = createSlice({
-  name: 'pageData',
+export const currentUserSlice = createSlice({
+  name: 'currentUser',
   initialState: {
-    signedIn:false,
-    userSignedIn: ''
   },
   reducers: {
     signin: (state,action) => {
       return {
         ...state,
-       pageData:{
         signedIn:action.payload.signedIn,
         userSignedIn:action.payload.teacherName
-       }
       }
     },
     signOut: (state,action) => {
       return {
         ...state,
-       pageData:{
+       currentUser:{
         signedIn:false,
         userSignedIn:''
        }
@@ -29,7 +25,7 @@ export const employeeListSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { signin, signOut} = employeeListSlice.actions
-export const teachers =  (state) => state.employeeList.employees.filter(emp=>emp.type.toLowerCase() == 'teacher');
+export const { signin, signOut} = currentUserSlice.actions
+export const userSignedIn =  (state) => state.currentUser.userSignedIn;
 export const students = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'student');
-export default employeeListSlice.reducer
+export default currentUserSlice.reducer

@@ -3,6 +3,7 @@ import { teachers, addEmployeeBulk } from '../../app/EmployeeListSlice';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 import { useSelector,useDispatch } from 'react-redux';
+import { signin } from '../../app/CurrentUserSlice';
 import { getData } from '../../globalUtils/requests';
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
@@ -53,6 +54,7 @@ const CustomMenu = React.forwardRef(
 
 export const TeacherSignIn = ({signedIn, setSignedIn,teacherList,setSignInName}) => {
     const teachersList = useSelector(teachers);
+    const dispatch = useDispatch() 
     return (
         <Dropdown>
             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
@@ -65,6 +67,10 @@ export const TeacherSignIn = ({signedIn, setSignedIn,teacherList,setSignInName})
                 onClick={()=>{
                     setSignedIn(true);
                     setSignInName(teacher.name);
+                    dispatch(signin({
+                        signedIn:true,
+                        teacherName:teacher.name
+                    }))
                 }}
                 eventKey={key}>{teacher.name}</Dropdown.Item>
                     

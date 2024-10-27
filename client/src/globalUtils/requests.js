@@ -17,6 +17,23 @@ export const createItem = (route, body, action, type) => {
     })
 }
 
+export const updateItem = (route, body, action, type) => {
+    fetch(route, {
+        method: 'UPDATE',
+        mode: "cors",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify(body) || '',
+    }).then(response => response.json()).then(data => {
+        console.log(data);
+        if(action){
+            directReducer(action, data, type)
+        }
+    })
+}
+
 export const getData = (route, method, action, type) => {
     fetch(route, {
         method: method,
@@ -29,17 +46,3 @@ export const getData = (route, method, action, type) => {
         directReducer(action, data, type)
     })
 }
-
-// export const deleteItem = ()=>{
-//     fetch(route, {
-//         method: 'DELETE',
-//         mode: "cors",
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json',
-//         },
-//     }).then(response => response.json()).then(data => {
-//         directReducer(action, data, type)
-//     })
-// }
-

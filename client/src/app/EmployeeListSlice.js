@@ -73,12 +73,13 @@ export const employeeListSlice = createSlice({
         case 'out':
           let outstamp = new Date().getTime();
           state.employees.forEach(student => {
-            
             if(student.name == action.payload.student.name){
               student.status = 'in';
               student.timeIn = action.payload.time
               student.timeOut = '';
-              student.history.push({[new Date().toDateString()]:{"in":outstamp}})
+              student.history.push({
+                [new Date().toDateString()]:{"in":outstamp,setBy:action.payload.setBy}
+              })
             }
           });
           outstamp = null

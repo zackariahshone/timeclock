@@ -1,8 +1,9 @@
 
 const StaffRoutes = require('./staff');
-const StaffHistory = require('./staffHistory.js');
+const StudentHistory = require('./studentHistory.js');
 const StudentRoutes = require('./students.js');
 module.exports = [
     StaffRoutes,
-    StudentRoutes
+    StudentRoutes,
+    StudentHistory
 ];
