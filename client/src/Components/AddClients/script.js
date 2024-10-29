@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  teachers, students } from "../../app/EmployeeListSlice";
+import {  teachers, students, addEmployee, removeEmployee } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -12,6 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { CreateStaffModal } from "./helpers";
 import './style.css'
+import { deleteItem } from "../../globalUtils/requests";
 
 
 const ContractorDummynames = [
@@ -93,6 +94,11 @@ function SchoolListDisplay(index, empList) {
         (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={3}>
                 <Card>
+                <Card.Header className="textRight"><text 
+                    onClick = {()=>{
+                        deleteItem(`/delete${employee.type}`,{id:employee.id},removeEmployee)
+                    }}
+                    className="deleteButton">x</text></Card.Header>
                     <Card.Body>
                         <Card.Title> Name: {employee.name}</Card.Title>
                         <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
@@ -102,4 +108,9 @@ function SchoolListDisplay(index, empList) {
             </Col>
         ))
     );
+}
+
+function deleteEmployee(employee){
+    console.log(employee);
+
 }

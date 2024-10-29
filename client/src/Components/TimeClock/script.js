@@ -5,7 +5,7 @@ import { timeClock, students } from "../../app/EmployeeListSlice";
 import { userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
 import { convertMilitaryToStandard } from "./helper";
-
+import {createItem} from "../../globalUtils/requests"
 
 export default (props) => {
     const [statusChange, setStatusChange] = useState();
@@ -70,15 +70,14 @@ export default (props) => {
                                 <Col>
                                     <Button
                                         onClick={() => {
-                                            //todo create method to get time in correct format
-                                            dispatch(timeClock(
-                                                {
+                                            const timeClockData = {
                                                     student,
                                                     time: `${new Date().getHours()}:${new Date().getMinutes()}`,
                                                     timeMilli: `${new Date().getTime()}`,
                                                     setBy:currentUser
                                                 }
-                                            ));
+                                            createItem('/studenttimeclock',timeClockData,timeClock);
+                                            // dispatch(timeClock(timeClockData));
                                             setStatusChange(true);
                                         }}
                                         variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>

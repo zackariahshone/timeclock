@@ -46,3 +46,19 @@ export const getData = (route, method, action, type) => {
         directReducer(action, data, type)
     })
 }
+
+export const deleteItem = (route, body, action, type) => {
+    fetch(route, {
+        method: 'DELETE',
+        mode: "cors",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify(body) || '',
+    }).then(response => response.json()).then(data => {
+        console.log(data);
+
+        directReducer(action, data, type)
+    })
+}

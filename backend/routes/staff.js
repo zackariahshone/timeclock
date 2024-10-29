@@ -23,11 +23,14 @@ router.get('/getallteachers', async (req,res)=>{
   }
 })
 
-router.delete('/deleteteacher',async (req, res)=>{
-  const targetProperty = req.body.targetProperty
-  const targetValue = req.body.targetValue;
-  const result = await Teacher.findOneAndDelete({name:`${targetValue}`})
-  res.json(result)
+router.delete('/deleteteacher',async (req, res)=>{  
+  console.log(req.body.id);
+  
+  // const result = await Student.findOneAndDelete({id:`${req.body.id}`})
+  const result = await Teacher.findOneAndDelete({id:req.body.id})
+  console.log(result);
+  
+  res.json(req.body);
 })
 /**
  * Handle log in 

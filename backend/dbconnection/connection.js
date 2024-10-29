@@ -8,7 +8,7 @@ const connection = mongoose.connect(uri);
 mongoose.set(
     {
         'debug': true,
-        autoIndex:true
+        autoIndex:true,
     }
     );
 

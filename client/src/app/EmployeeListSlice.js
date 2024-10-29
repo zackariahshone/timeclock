@@ -9,45 +9,45 @@ export const employeeListSlice = createSlice({
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "Aspire",
-        program:"Aspire",
-        history:[],
-        type:'student',
-        id:'1'
+        program: "Aspire",
+        history: [],
+        type: 'student',
+        id: '1'
       },
       {
         name: 'Sally',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "Aspire",
-        program:"Aspire",
-        history:[],
-        type:'teacher',
-        id:'2'
+        program: "Aspire",
+        history: [],
+        type: 'teacher',
+        id: '2'
       },
       {
         name: 'Jeff',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "richardson industries",
-        program:"Richardson Industries",
-        history:[],
-        type:'teacher',
-        id:'3'
+        program: "Richardson Industries",
+        history: [],
+        type: 'teacher',
+        id: '3'
       },
       {
         name: 'Theo',
         dateStarted: '10/10/24',
         status: "out",
         buildingName: "richardson industries",
-        program:"Richardson Industries",
-        history:[],
-        type:'student',
-        id:'4'
+        program: "Richardson Industries",
+        history: [],
+        type: 'student',
+        id: '4'
       },
     ]
   },
   reducers: {
-    addEmployeeBulk: (state,action) => {
+    addEmployeeBulk: (state, action) => {
       console.log(action);
       return {
         ...state,
@@ -57,7 +57,7 @@ export const employeeListSlice = createSlice({
         ]
       }
     },
-    addEmployee: (state,action) => {
+    addEmployee: (state, action) => {
       console.log(action);
       return {
         ...state,
@@ -67,48 +67,62 @@ export const employeeListSlice = createSlice({
         ]
       }
     },
-    timeClock: (state,action) => {
+    removeEmployee: (state, action) => {
       console.log(action);
-      switch(action.payload.student.status){
+      const currentState = current(state).employees.filter((employee) => employee.id !== action.payload.data.id)
+      console.log(currentState);
+
+      return {
+        ...state,
+        employees: [
+          ...currentState,
+        ]
+      }
+    },
+    timeClock: (state, action) => {
+      console.log(action);
+      switch (action.payload.data.student.status) {
         case 'out':
           let outstamp = new Date().getTime();
           state.employees.forEach(student => {
-            if(student.name == action.payload.student.name){
+            if (student.name == action.payload.data.student.name) {
               student.status = 'in';
-              student.timeIn = action.payload.time
+              student.timeIn = action.payload.data.time
               student.timeOut = '';
-              student.history.push({
-                [new Date().toDateString()]:{"in":outstamp,setBy:action.payload.setBy}
+              student.history?.push({
+                [new Date().toDateString()]: { "in": outstamp, setBy: action.payload.data.setBy }
               })
             }
           });
           outstamp = null
           break
         case 'in':
-          let instamp = new Date().getTime() 
+          let instamp = new Date().getTime()
           state.employees.forEach(student => {
-            if(student.name == action.payload.student.name){
-              student.status = 'out' 
-              student.timeOut = action.payload.time 
+            if (student.name == action.payload.data.student.name) {
+              student.status = 'out'
+              student.timeOut = action.payload.data.time
               const lastTimeHistory = student.history.length - 1
               student.history[lastTimeHistory][new Date().toDateString()].out = instamp;
-            } 
-          } 
-        )
-        instamp = null;
+            }
+          })
+          instamp = null;
           break
         default:
           break
       }
     },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload
-    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addEmployee, timeClock, incrementByAmount, addEmployeeBulk } = employeeListSlice.actions
-export const teachers =  (state) => state.employeeList.employees.filter(emp=>emp.type?.toLowerCase() == 'teacher');
-export const students = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'student');
+export const {
+  addEmployee,
+  removeEmployee,
+  timeClock,
+  incrementByAmount,
+  addEmployeeBulk
+} = employeeListSlice.actions
+export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() == 'teacher');
+export const students = (state) => state.employeeList.employees.filter(emp => emp.type == 'student');
 export default employeeListSlice.reducer

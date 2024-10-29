@@ -1,51 +1,72 @@
 const router = require('express').Router();
 const Student = require('../dbconnection/models/Students')
-
+const History = require('../dbconnection/models/History')
 
 router.post('/createstudent', async (req, res) => {
   console.log(req.body);
   try {
-    const createdTeacher = await Student.create(req.body)
-    res.json(createdTeacher)
+    const createdStudent = await Student.create(req.body)
+    res.json(createdStudent)
   } catch (e) {
     console.error(e);
   }
 });
 
-router.get('/getallstudents', async (req,res)=>{
-  try{
+router.get('/getallstudents', async (req, res) => {
+  try {
     const allTeachers = await Student.find({})
     res.json(allTeachers)
-  }catch(e){
+  } catch (e) {
     res.send(e)
   }
 })
 
-router.delete('/deletestudent',async (req, res)=>{
-  const targetValue = req.body.targetValue;
-  const result = await Student.findOneAndDelete({name:`${targetValue}`})
-  res.json(result)
+router.delete('/deletestudent', async (req, res) => {
+  console.log(req.body.id);
+  const result = await Student.findOneAndDelete({ id: req.body.id })
+  console.log(result);
+
+  res.json(req.body);
 })
-/**
- * Handle log in 
- */
-// router.post('/login', async (req, res) => {
-//   const currentUser = await User.find({ email: req.body.email, pwd: req.body.password }).lean();
-//   // send tokenized user credential to store on the front end.
-//   if (currentUser.length !== 0) {
-//     const token = jwt.sign(currentUser[0], '124', { mutatePayload: true });
-//     req.session.loginStatus = true;
-//     res.send(
-//       {
-//         ...currentUser[0],
-//         token: true,
-//         authToken: token
-//       });
-//   } else {
-//     req.session.loginStatus = false;
-//     res.send({ token: false });
-//   }
-// });
+
+router.post('/studenttimeclock', async (req, res) => {
+  try {
+
+    const studentHistoryID = req.body.student.id;
+    const historyData ={
+      status: req.body.student.status,
+      timeIn: req.body.student.timeIn,
+      timeOut: req.body.student.timeout !== '' ? req.body.student.timeIn : '',
+      timeMilli: req.body.timeMilli,
+      time: req.body.time,
+      setBy: req.body.setBy
+    }
+    
+    
+    let studentHistory = await History.findOne({ id: studentHistoryID });
+    if(!studentHistory){
+      const createdHistory = await History.create({id:studentHistoryID,clockedInOutHistory:[historyData]});
+      res.json(req.body)
+    }else{
+    
+      studentHistory.clockedInOutHistory.push(historyData);
+      console.log(studentHistory);
+      studentHistory.clockedInOutHistory = [...studentHistory.clockedInOutHistory]
+      const test = await History.findOneAndUpdate({id:studentHistoryID},{clockedInOutHistory:studentHistory.clockedInOutHistory})
+      res.json(req.body)
+
+    }
+  } catch (e) {
+    console.log(e);
+
+    res.json(e)
+  }
+})
+router.get('/getStudentHistory', async (req, res) => {
+  const allStudentHistory = await History.find({});
+  console.log(allStudentHistory)
+  res.json({ ...allStudentHistory });
+})
 /**
  * Edit User
  */
@@ -63,16 +84,8 @@ router.post('/editstaff', async (req, res) => {
     });
 });
 
-// router.post('/setFavoriteTrucks',async(req, res)=>{
-//   const userCred = jwt.decode(req.headers['x-access-token']);
-//   const updatedUser = await User.findOne({ email: userCred.email }).lean();
-
-//   if(!updatedUser.favFoodTrucks.includes(req.body.truckData)){
-//     await User.updateOne({ $push: { favFoodTrucks: req.body.truckData}})
-//   }else{
-//     const refinedList =  updatedUser.favFoodTrucks.filter((truck)=>truck != req.body.truckData);
-//     console.log(`refinedList${refinedList}`);
-//     debug = await User.findByIdAndUpdate(updatedUser._id, {favFoodTrucks: refinedList})
-//   }
-// });
+router.delete('/deleteallhistory',async(req,res)=>{
+  const result = await History.deleteMany({});
+  res.send(result);
+})
 module.exports = router;

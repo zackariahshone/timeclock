@@ -1,7 +1,8 @@
 const { Schema, model } = require('mongoose');
 
  const historySChema = new Schema({
-    name: String,
-    clockedInOutHistory: Object
+    id: String,
+    clockedInOutHistory: Array
 });
 module.exports = model('History', historySChema);
+

@@ -21,3 +21,12 @@
     display:grid;
     align-items: center;
 }
+.deleteButton{
+    text-align: right;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+}
+.textRight{
+    text-align: right;
+}

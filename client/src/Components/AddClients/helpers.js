@@ -84,7 +84,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <Button
                         onClick={() => {
                             if (empName && program) {
-                                createItem('/createteacher',{
+                                createItem(`/create${type}`,{
                                     name: empName,
                                     dateStarted: new Date().toDateString(),
                                     buildingName: program,
@@ -95,17 +95,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     id: generateUniqueId(),
                                     type
                                 },addEmployee,'');
-                                // dispatch(addEmployee({
-                                //     name: empName,
-                                //     dateStarted: new Date().toDateString(),
-                                //     buildingName: program,
-                                //     group: `${program} ${type}}`,
-                                //     program,
-                                //     status: 'out',
-                                //     history: [],
-                                //     id: generateUniqueId(),
-                                //     type
-                                // }))
                                 setEmpName('');
                             }
                             handleClose()
