@@ -77,7 +77,6 @@ export default (props) => {
                                                     setBy:currentUser
                                                 }
                                             createItem('/studenttimeclock',timeClockData,timeClock);
-                                            // dispatch(timeClock(timeClockData));
                                             setStatusChange(true);
                                         }}
                                         variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>

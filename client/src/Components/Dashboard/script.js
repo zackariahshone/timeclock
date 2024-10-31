@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { Col, Container, Row, Card, CardTitle, Form } from "react-bootstrap";
-import { useSelector, useDispatch } from 'react-redux';
+import { Col, Container, Row, Card, Button, CardTitle, Form } from "react-bootstrap";
+import { useSelector } from 'react-redux';
 import {
     displaySchoolInsights,
-    filterByType,
     toCapitalize,
     getStudentStatus,
     getTimeFromMillisecond,
@@ -12,6 +11,8 @@ import {
 } from './helpers.js'
 import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+
 export default (props) => {
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
@@ -26,9 +27,7 @@ export default (props) => {
 
                 {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
                 {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
-
-
-                {/* {employeeList ? displayStaffInsights("employee", filterByType("employee", employeeList)) : ''} */}
+               
                 <Card className={showStatus ? 'showStatus' : 'hideStatus'}>
                     <Row className="marginBottom">
                         <Col>
@@ -54,12 +53,25 @@ export default (props) => {
                 </Card>
             </Container>
 
+            
 
             <Container >
 
                 {selectedEmployee && selectedEmployee.history.length > 0 ?
+                    <>
+
                     <Card >
                         <>
+                    <Container className="marginTop">
+                        <DateRangePicker 
+                            onChange={(e)=>{
+                                console.log(e)
+                            }}
+                        />
+                        <div className="export">
+                            <Button > EXPORT </Button>
+                        </div>
+                    </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {selectedEmployee.history.map((date, i) => {
                                 return (
@@ -81,6 +93,7 @@ export default (props) => {
                             }
                         </>
                     </Card>
+                    </>
                     : ''}
 
             </Container>

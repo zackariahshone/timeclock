@@ -31,34 +31,29 @@ router.delete('/deletestudent', async (req, res) => {
 
 router.post('/studenttimeclock', async (req, res) => {
   try {
-
     const studentHistoryID = req.body.student.id;
+    console.log(req.body);
+    
     const historyData ={
-      status: req.body.student.status,
+      status: req.body.student.status == 'in' ? 'out':'in',
       timeIn: req.body.student.timeIn,
-      timeOut: req.body.student.timeout !== '' ? req.body.student.timeIn : '',
+      timeOut: req.body.student.timeIn !== '' ? req.body.student.timeOut : '',
       timeMilli: req.body.timeMilli,
       time: req.body.time,
       setBy: req.body.setBy
     }
-    
-    
+
     let studentHistory = await History.findOne({ id: studentHistoryID });
     if(!studentHistory){
-      const createdHistory = await History.create({id:studentHistoryID,clockedInOutHistory:[historyData]});
+       await History.create({id:studentHistoryID,clockedInOutHistory:[historyData]});
       res.json(req.body)
     }else{
-    
       studentHistory.clockedInOutHistory.push(historyData);
-      console.log(studentHistory);
       studentHistory.clockedInOutHistory = [...studentHistory.clockedInOutHistory]
-      const test = await History.findOneAndUpdate({id:studentHistoryID},{clockedInOutHistory:studentHistory.clockedInOutHistory})
-      res.json(req.body)
-
+      await History.findOneAndUpdate({id:studentHistoryID},{clockedInOutHistory:studentHistory.clockedInOutHistory})
+      res.json({...req.body})
     }
   } catch (e) {
-    console.log(e);
-
     res.json(e)
   }
 })

@@ -8,15 +8,21 @@ import store from './app/store'
 import { Provider } from 'react-redux'
 import { getData } from './globalUtils/requests';
 import { addEmployeeBulk } from './app/EmployeeListSlice';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-getData('/getallteachers','GET',addEmployeeBulk,{});
+getData('/getallteachers','GET',addEmployeeBulk);
+getData('/getallstudents','GET',addEmployeeBulk);
 root.render(
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
   <Provider store={store}>
     <React.StrictMode>
       <App />
     </React.StrictMode>
   </Provider>
+  </LocalizationProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

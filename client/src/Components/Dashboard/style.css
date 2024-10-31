@@ -4,6 +4,9 @@
 .marginRight{
     margin-right: 3%;
 }
+.marginTop{
+    margin-top: 2%;
+}
 #clockedIn{
     /* width: 40%; */
     border-radius: 2px;
@@ -31,4 +34,9 @@
 
 .insightsStaffType{
     text-align: left;
+}
+
+.export{
+    padding-top:2%;
+    text-align: right;
 }
