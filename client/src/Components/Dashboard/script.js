@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { Col, Container, Row, Card, Button, CardTitle, Form } from "react-bootstrap";
 import { useSelector } from 'react-redux';
-import {
+import ExportCSV, {
     displaySchoolInsights,
     toCapitalize,
     getStudentStatus,
@@ -69,7 +69,7 @@ export default (props) => {
                             }}
                         />
                         <div className="export">
-                            <Button > EXPORT </Button>
+                            <ExportCSV data={[]} fileName={'newfile'}/>
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
