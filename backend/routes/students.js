@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const Student = require('../dbconnection/models/Students')
 const History = require('../dbconnection/models/History')
-
+const StudentBackup = require('../dbconnection/models/StudentBackup');
 router.post('/createstudent', async (req, res) => {
   console.log(req.body);
   try {
     const createdStudent = await Student.create(req.body)
+    // await StudentBackup.create(req.body);
     res.json(createdStudent)
   } catch (e) {
     console.error(e);
@@ -31,13 +32,9 @@ router.delete('/deletestudent', async (req, res) => {
 
 router.post('/studenttimeclock', async (req, res) => {
   try {
-    const studentHistoryID = req.body.student.id;
-    console.log(req.body);
-    
+    const studentHistoryID = req.body.student.id;    
     const historyData ={
       status: req.body.student.status == 'in' ? 'out':'in',
-      timeIn: req.body.student.timeIn,
-      timeOut: req.body.student.timeIn !== '' ? req.body.student.timeOut : '',
       timeMilli: req.body.timeMilli,
       time: req.body.time,
       setBy: req.body.setBy
@@ -46,15 +43,17 @@ router.post('/studenttimeclock', async (req, res) => {
     let studentHistory = await History.findOne({ id: studentHistoryID });
     if(!studentHistory){
        await History.create({id:studentHistoryID,clockedInOutHistory:[historyData]});
+       await Student.findOneAndUpdate({id:studentHistoryID},{status:historyData.status});
       res.json(req.body)
     }else{
       studentHistory.clockedInOutHistory.push(historyData);
       studentHistory.clockedInOutHistory = [...studentHistory.clockedInOutHistory]
       await History.findOneAndUpdate({id:studentHistoryID},{clockedInOutHistory:studentHistory.clockedInOutHistory})
+      await Student.findOneAndUpdate({id:studentHistoryID},{status:historyData.status});
       res.json({...req.body})
-    }
+    } 
   } catch (e) {
-    res.json(e)
+    res.send({status:'err',"message":e}) 
   }
 })
 router.get('/getStudentHistory', async (req, res) => {
@@ -65,19 +64,19 @@ router.get('/getStudentHistory', async (req, res) => {
 /**
  * Edit User
  */
-router.post('/editstaff', async (req, res) => {
-  const userCred = jwt.decode(req.headers['x-access-token']);
-  let itemsToUpdate = UTILS.rmvEmpty(req.body);
-  await User.findOneAndUpdate({ email: userCred.email }, itemsToUpdate).lean();
-  const updatedUser = await User.findOne({ email: userCred.email }).lean();
-  const token = jwt.sign({ ...updatedUser }, '124');
-  res.send(
-    {
-      ...updatedUser,
-      token: true,
-      authToken: token
-    });
-});
+router.put('/updatedstudent',async(req, res)=>{
+  try{
+    const id = req.body.id
+    const status = req.body.status
+    const studentToUpdate = await Student.findOneAndUpdate({id:id},{status});
+    console.log(studentToUpdate);
+    res.json(studentToUpdate)
+  }catch(e){
+    console.log(e);
+    
+    res.json(e);
+  }
+  })
 
 router.delete('/deleteallhistory',async(req,res)=>{
   const result = await History.deleteMany({});

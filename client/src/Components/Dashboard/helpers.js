@@ -62,17 +62,28 @@ export const getTimeFromMillisecond = (milliseconds) => {
     return "On Clock";
 }
 
-export const getHoursWorked = (timeStamps) => {
-    const dateKey = Object.keys(timeStamps)[0];
-    const clockedIn = timeStamps[dateKey].in
-    const clockedOut = timeStamps[dateKey].out
-    return clockedOut != undefined ? (Number(clockedOut) - Number(clockedIn)) / (1000) : 0;
+export const getHoursWorked = (milliIn, milliOut) => {
+    return milliOut !== undefined ? (Number(milliOut) - Number(milliIn)) / (10000) : 0;
 }
 
+export const getDateFromMilli = (milli) => {
+    console.log(milli);
+    
+    const date = new Date(1730557493735);
+    console.log(date);
+    
+    const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+    const day = date.getDate();
+    const year = date.getFullYear();
+  
+    // Add leading zeros if needed
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+  
+    return `${formattedMonth}/${formattedDay}/${year}`;
+}
 export const staffTotal = (list) => {
     let count = 0
-    console.log(list);
-
     list.forEach(emp => {
         if (emp.status == 'in') {
             count += 1;
@@ -81,6 +92,7 @@ export const staffTotal = (list) => {
     return count;
 }
 
+export const getStudentHistory = (id,historyList) => historyList.filter(doc=>doc?.id == id);    
 
 const ourData = [
     {

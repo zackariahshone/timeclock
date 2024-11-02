@@ -8,7 +8,6 @@ const { Schema, model } = require('mongoose');
   group:String,
   program:String,
   status:String,
-  history:Array,
   type:String,
   id:String
 });

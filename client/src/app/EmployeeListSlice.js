@@ -4,46 +4,6 @@ export const employeeListSlice = createSlice({
   name: 'employeelist',
   initialState: {
     employees: [
-      {
-        name: 'Bob',
-        dateStarted: '10/10/24',
-        status: "out",
-        buildingName: "Aspire",
-        program: "Aspire",
-        history: [],
-        type: 'student',
-        id: '1'
-      },
-      {
-        name: 'Sally',
-        dateStarted: '10/10/24',
-        status: "out",
-        buildingName: "Aspire",
-        program: "Aspire",
-        history: [],
-        type: 'teacher',
-        id: '2'
-      },
-      {
-        name: 'Jeff',
-        dateStarted: '10/10/24',
-        status: "out",
-        buildingName: "richardson industries",
-        program: "Richardson Industries",
-        history: [],
-        type: 'teacher',
-        id: '3'
-      },
-      {
-        name: 'Theo',
-        dateStarted: '10/10/24',
-        status: "out",
-        buildingName: "richardson industries",
-        program: "Richardson Industries",
-        history: [],
-        type: 'student',
-        id: '4'
-      },
     ]
   },
   reducers: {
@@ -81,6 +41,11 @@ export const employeeListSlice = createSlice({
     },
     timeClock: (state, action) => {
       console.log(action);
+      console.log(current(state));
+      
+      const studentHistoryToUpDate = Object?.values(current(state)?.studentHistory)?.find(doc=>doc.id==action.payload.data.student.id)
+      console.log(studentHistoryToUpDate);
+      
       switch (action.payload.data.student.status) {
         case 'out':
           let outstamp = new Date().getTime();
@@ -89,9 +54,6 @@ export const employeeListSlice = createSlice({
               student.status = 'in';
               student.timeIn = action.payload.data.time
               student.timeOut = '';
-              student.history?.push({
-                [new Date().toDateString()]: { "in": outstamp, setBy: action.payload.data.setBy }
-              })
             }
           });
           outstamp = null
@@ -102,8 +64,6 @@ export const employeeListSlice = createSlice({
             if (student.name == action.payload.data.student.name) {
               student.status = 'out'
               student.timeOut = action.payload.data.time
-              const lastTimeHistory = student.history.length - 1
-              student.history[lastTimeHistory][new Date().toDateString()].out = instamp;
             }
           })
           instamp = null;

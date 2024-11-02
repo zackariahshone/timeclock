@@ -7,8 +7,11 @@ import ExportCSV, {
     getStudentStatus,
     getTimeFromMillisecond,
     getHoursWorked,
-    filterByPrograms
+    filterByPrograms,
+    getStudentHistory,
+    getDateFromMilli
 } from './helpers.js'
+import { studentHistory } from "../../app/StudentHistorySlice.js";
 import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
@@ -17,7 +20,9 @@ export default (props) => {
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
     const employeeList = useSelector(students)
-
+    const history = useSelector(studentHistory)
+    const selectedHistory = getStudentHistory(selectedEmployee?.id, Object.values(history));
+    let x,y;
     return (
         <Fragment>
 
@@ -57,7 +62,7 @@ export default (props) => {
 
             <Container >
 
-                {selectedEmployee && selectedEmployee.history.length > 0 ?
+                {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
                     <>
 
                     <Card >
@@ -73,21 +78,34 @@ export default (props) => {
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
-                            {selectedEmployee.history.map((date, i) => {
+                            {
+        
+                                getStudentHistory(selectedEmployee?.id, Object.values(history))[0].clockedInOutHistory.map((history, i) => {
+                              
+                                if(history.status == 'in'){
+                                    x = history.timeMilli
+                                }else{
+                                    y=history.timeMilli
+                                }
                                 return (
+                                    <>
                                     <Row className="marginBottom">
                                         <Col>
-                                            <p>{Object.keys(date)[0]}</p>
+                                            {getDateFromMilli(history.timeMilli)}
                                         </Col>
                                         <Col>
                                             <Card className="alignRight marginRight">
-                                                <p>Clocked In: {getTimeFromMillisecond(date[Object.keys(date)[0]].in)}</p>
-                                                <p> Clocked Out: {getTimeFromMillisecond(date[Object.keys(date)[0]].out)}</p>
-                                                <p>Total : {getHoursWorked(selectedEmployee.history[i])} </p>
-                                                <p>Set By: {date[Object.keys(date)[0]].setBy}</p>
+                                                <p>Clocked {toCapitalize(history.status)}: {getTimeFromMillisecond(history.timeMilli)}</p>
+                                                <p>Set By: {history.setBy}</p>
                                             </Card>
+                                        {
+                                            history.status == 'out' ?  
+                                                    <text>TOTAL hours here {getHoursWorked(x,y)}</text>
+                                            :''
+                                        }
                                         </Col>
                                     </Row>
+                                    </>
                                 )
                             })
                             }

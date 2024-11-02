@@ -8,6 +8,7 @@ import store from './app/store'
 import { Provider } from 'react-redux'
 import { getData } from './globalUtils/requests';
 import { addEmployeeBulk } from './app/EmployeeListSlice';
+import { setHistoryBulk } from './app/StudentHistorySlice';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
@@ -15,6 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 getData('/getallteachers','GET',addEmployeeBulk);
 getData('/getallstudents','GET',addEmployeeBulk);
+getData('/getstudenthistory','GET', setHistoryBulk);
 root.render(
   <LocalizationProvider dateAdapter={AdapterDayjs}>
   <Provider store={store}>
