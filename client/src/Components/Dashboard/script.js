@@ -15,7 +15,6 @@ import { studentHistory } from "../../app/StudentHistorySlice.js";
 import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
-import DatePicker from 'react-date-picker'
 export default (props) => {
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
