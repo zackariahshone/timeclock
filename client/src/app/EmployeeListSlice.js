@@ -39,34 +39,17 @@ export const employeeListSlice = createSlice({
         ]
       }
     },
-    timeClock: (state, action) => {
-      console.log(action);
-      console.log(current(state));
-      
-      const studentHistoryToUpDate = Object?.values(current(state)?.studentHistory)?.find(doc=>doc.id==action.payload.data.student.id)
-      console.log(studentHistoryToUpDate);
-      
-      switch (action.payload.data.student.status) {
+    timeClock: (state, action) => {        
+      let student = state.employees.find(student => student.id === action.payload.student.id);
+      switch (student.status) {
         case 'out':
-          let outstamp = new Date().getTime();
-          state.employees.forEach(student => {
-            if (student.name == action.payload.data.student.name) {
               student.status = 'in';
-              student.timeIn = action.payload.data.time
+              student.timeIn = new Date().getTime;
               student.timeOut = '';
-            }
-          });
-          outstamp = null
           break
         case 'in':
-          let instamp = new Date().getTime()
-          state.employees.forEach(student => {
-            if (student.name == action.payload.data.student.name) {
               student.status = 'out'
-              student.timeOut = action.payload.data.time
-            }
-          })
-          instamp = null;
+              student.timeOut = new Date().getTime;
           break
         default:
           break

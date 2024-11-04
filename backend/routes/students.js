@@ -50,7 +50,7 @@ router.post('/studenttimeclock', async (req, res) => {
       studentHistory.clockedInOutHistory = [...studentHistory.clockedInOutHistory]
       await History.findOneAndUpdate({id:studentHistoryID},{clockedInOutHistory:studentHistory.clockedInOutHistory})
       await Student.findOneAndUpdate({id:studentHistoryID},{status:historyData.status});
-      res.json({...req.body})
+      res.json({id:studentHistoryID,...historyData})
     } 
   } catch (e) {
     res.send({status:'err',"message":e}) 
