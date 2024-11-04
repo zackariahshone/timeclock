@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Student = require('../dbconnection/models/Students')
 const History = require('../dbconnection/models/History')
-const StudentBackup = require('../dbconnection/models/StudentBackup');
+// const StudentBackup = require('../dbconnection/models/StudentBackup');/
 router.post('/createstudent', async (req, res) => {
   console.log(req.body);
   try {
