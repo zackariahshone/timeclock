@@ -111,6 +111,6 @@ function SchoolListDisplay(index, empList) {
 }
 
 function deleteEmployee(employee){
-    console.log(employee);
+    // console.log(employee);
 
 }

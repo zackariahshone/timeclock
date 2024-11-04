@@ -8,7 +8,7 @@ export const employeeListSlice = createSlice({
   },
   reducers: {
     addEmployeeBulk: (state, action) => {
-      console.log(action);
+      // console.log(action);
       return {
         ...state,
         employees: [
@@ -18,7 +18,7 @@ export const employeeListSlice = createSlice({
       }
     },
     addEmployee: (state, action) => {
-      console.log(action);
+      // console.log(action);
       return {
         ...state,
         employees: [
@@ -28,9 +28,9 @@ export const employeeListSlice = createSlice({
       }
     },
     removeEmployee: (state, action) => {
-      console.log(action);
+      // console.log(action);
       const currentState = current(state).employees.filter((employee) => employee.id !== action.payload.data.id)
-      console.log(currentState);
+      // console.log(currentState);
 
       return {
         ...state,

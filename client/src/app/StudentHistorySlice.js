@@ -7,7 +7,7 @@ export const studentHistorySlice = createSlice({
   reducers: {
     addStudentHistory: (state,action) => {
       // state.studentHistory
-      console.log(action);
+      // console.log(action);
     
       let historyIndex;
        Object.values(current(state)).find((doc,x)=>{
@@ -16,8 +16,8 @@ export const studentHistorySlice = createSlice({
           return x
       })
       let currentHistory = Object.values(current(state)).find((doc)=>doc.id == action.payload.data.id)
-      console.log(historyIndex);
-      console.log(state[1].clockedInOutHistory);
+      // console.log(historyIndex);
+      // console.log(state[1].clockedInOutHistory);
       
       // console.log(StudentHistoryList);
       
@@ -29,7 +29,7 @@ export const studentHistorySlice = createSlice({
       
     },
     editStudentHistory: (state,action) => {
-      console.log(action);
+      // console.log(action);
       // return {
       //   ...state,
       //   employees: [
@@ -39,7 +39,7 @@ export const studentHistorySlice = createSlice({
       // }
     },
     setHistoryBulk:(state, action)=>{
-      console.log(action)
+      // console.log(action)
       return{
         ...state,
         ...action.payload.data        

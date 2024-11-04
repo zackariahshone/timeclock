@@ -4,6 +4,4 @@ const after = 1727743328305
 
 const difference =  after - before; 
 
-console.log(difference);
 
-console.log(difference / (1000 * 60 * 60));

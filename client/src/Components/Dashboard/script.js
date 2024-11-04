@@ -16,19 +16,18 @@ import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 export default (props) => {
+    const [csvData, setCsvData] = useState();
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
+    const [timeFilter, setTimeFilter] = useState({start:'',end:''})
     const employeeList = useSelector(students)
     const history = useSelector(studentHistory)
-    const selectedHistory = getStudentHistory(selectedEmployee?.id, Object.values(history));
     let x,y;
+    let r,c; 
     return (
         <Fragment>
-
             <h1>Insight</h1>
-
             <Container className="marginBottom">
-
                 {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
                 {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
                
@@ -56,9 +55,6 @@ export default (props) => {
                     </Row>
                 </Card>
             </Container>
-
-            
-
             <Container >
 
                 {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
@@ -69,17 +65,24 @@ export default (props) => {
                     <Container className="marginTop">
                         <DateRangePicker 
                             onChange={(e)=>{
-                                console.log(e)
+                                e.forEach((filter,x)=>{
+                                    if(filter != null  && x == 0){
+                                        console.log(new Date(filter.$d).getTime())
+                                        setTimeFilter({...timeFilter,start:new Date(filter.$d).getTime()})
+                                    }else if(filter != null){
+                                        setTimeFilter({...timeFilter,end:new Date(filter.$d).getTime()})
+                                    }
+                                })
                             }}
                         />
                         <div className="export">
-                            <ExportCSV data={[]} fileName={'newfile'}/>
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter))} fileName={'newfile'}/>
                         </div>
                     </Container>
+                                {console.log(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter))}
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {
-        
-                                getStudentHistory(selectedEmployee?.id, Object.values(history))[0].clockedInOutHistory.map((history, i) => {
+                                getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory.map((history, i) => {
                               
                                 if(history.status == 'in'){
                                     x = history.timeMilli
@@ -99,7 +102,7 @@ export default (props) => {
                                             </Card>
                                         {
                                             history.status == 'out' ?  
-                                                    <text>TOTAL hours here {getHoursWorked(x,y)}</text>
+                                                    <text>{getHoursWorked(x,y)} hrs</text>
                                             :''
                                         }
                                         </Col>
@@ -116,4 +119,19 @@ export default (props) => {
             </Container>
         </Fragment>
     )
+}
+
+function getCsvData(filteredData){
+    console.log(filteredData);
+    let row = [];
+    let collection =[];
+    row.push(Object.keys(filteredData[0]));
+    collection.push(Object.keys(filteredData[0].clockedInOutHistory[0]))
+    filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
+        collection.push(filteredOBj);
+    })
+    console.log(Object.values(filteredData));
+
+    console.log(collection);
+    return collection;
 }

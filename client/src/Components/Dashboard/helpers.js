@@ -63,14 +63,14 @@ export const getTimeFromMillisecond = (milliseconds) => {
 }
 
 export const getHoursWorked = (milliIn, milliOut) => {
-    return milliOut !== undefined ? (Number(milliOut) - Number(milliIn)) / (10000) : 0;
+    return milliOut !== undefined ? ((Number(milliOut) - Number(milliIn)) / (1000 * 60 * 60)).toFixed(2) : 0;
 }
 
 export const getDateFromMilli = (milli) => {
-    console.log(milli);
+    // console.log(milli);
     
     const date = new Date(1730557493735);
-    console.log(date);
+    // console.log(date);
     
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
     const day = date.getDate();
@@ -92,7 +92,20 @@ export const staffTotal = (list) => {
     return count;
 }
 
-export const getStudentHistory = (id,historyList) => historyList.filter(doc=>doc?.id == id);    
+export const getStudentHistory = (id,historyList,timefilter) =>{
+    // console.log(historyList.filter(doc=>doc?.id == id));
+    
+    if(timefilter?.start && timefilter?.end){
+        let listFilteredByID = historyList.filter(doc=>doc.id == id)    
+        let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > timefilter.start && history.timeMilli < timefilter.end );
+        // listFilteredByID.clockInOutHistory
+    
+        return [{clockedInOutHistory}]  
+        
+    }else{
+        return historyList.filter(doc=>doc?.id == id);    
+    }
+} 
 
 const ourData = [
     {
@@ -120,9 +133,11 @@ export const createCSV = ()=>{
 export const ExportCSV = ({ data, fileName }) => {
   const downloadCSV = () => {
     // Convert the data array into a CSV string
+    console.log(data);
+    
     const csvString = [
-      ["Header1", "Header2", "Header3"], // Specify your headers here
-      ...data.map(item => [item.field1, item.field2, item.field3]) // Map your data fields accordingly
+      data[0], // Specify your headers here
+      ...data.map(item => [item.status, item.timeMilli, item.time, item.setBy]) // Map your data fields accordingly
     ]
     .map(row => row.join(","))
     .join("\n");
