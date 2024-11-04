@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Col, Container, Row, Card, Button, CardTitle, Form } from "react-bootstrap";
 import { useSelector } from 'react-redux';
 import ExportCSV, {
@@ -24,6 +24,9 @@ export default (props) => {
     const history = useSelector(studentHistory)
     let x,y;
     let r,c; 
+    useEffect(()=>{
+        
+    },[timeFilter])
     return (
         <Fragment>
             <h1>Insight</h1>
@@ -67,19 +70,18 @@ export default (props) => {
                             onChange={(e)=>{
                                 e.forEach((filter,x)=>{
                                     if(filter != null  && x == 0){
-                                        console.log(new Date(filter.$d).getTime())
                                         setTimeFilter({...timeFilter,start:new Date(filter.$d).getTime()})
-                                    }else if(filter != null){
+                                    }else if(filter != null && x == 1){
                                         setTimeFilter({...timeFilter,end:new Date(filter.$d).getTime()})
                                     }
+                                    console.log(filter,x, timeFilter)
                                 })
                             }}
                         />
                         <div className="export">
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter))} fileName={'newfile'}/>
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))} fileName={'newfile'}/>
                         </div>
                     </Container>
-                                {console.log(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter))}
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {
                                 getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory.map((history, i) => {
@@ -122,16 +124,15 @@ export default (props) => {
 }
 
 function getCsvData(filteredData){
-    console.log(filteredData);
     let row = [];
     let collection =[];
-    row.push(Object.keys(filteredData[0]));
-    collection.push(Object.keys(filteredData[0].clockedInOutHistory[0]))
-    filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
-        collection.push(filteredOBj);
-    })
-    console.log(Object.values(filteredData));
-
-    console.log(collection);
+    if(filteredData > 0){
+        row.push(Object.keys(filteredData[0]));
+        collection.push(Object.keys(filteredData[0].clockedInOutHistory[0]))
+        filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
+            collection.push(filteredOBj);
+        })
+        return collection;
+    }
     return collection;
 }

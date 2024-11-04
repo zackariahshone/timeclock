@@ -60,15 +60,15 @@ export default (props) => {
                                 </Col>
                                 <Col xs={4}>
                                     <InputGroup className="mb-3">
-                                        <Form.Control value={currentStudentHistory.timeIn ? currentStudentHistory.timeIn : ''}  aria-label="First name" />
-                                        <Form.Control value={currentStudentHistory.timeOut ?currentStudentHistory.timeOut : ''}  aria-label="Last name" />
+                                        <Form.Control value={currentStudentHistory?.timeIn ? currentStudentHistory.timeIn : ''}  aria-label="First name" />
+                                        <Form.Control value={currentStudentHistory?.timeOut ?currentStudentHistory.timeOut : ''}  aria-label="Last name" />
                                     </InputGroup>
                                 </Col>
                                 {
                                     student.status == 'out' && (student.timeIn && student.timeOut) ?
                                         <Col>
                                             {/* {console.log(student.history[student.history.length - 1],'student.history log')} */}
-                                            <p> {getHoursWorked(currentStudentHistory.timeinMilli,currentStudentHistory.timeOutMilli,)} hrs</p>
+                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli,currentStudentHistory?.timeOutMilli,)} hrs</p>
                                         </Col>
                                         : <Col></Col>
                                 }
@@ -107,17 +107,20 @@ function getHoursWorked(timein, timeout) {
 
 function getLastTimeClockIn(history, studentid){
     const lastCheck = getStudentHistory(studentid, Object.values(history))
-    const lastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 1] 
-    const secondToLastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 2]
-    let timeIn,timeinMilli,timeOutMilli,timeOut;    
-    timeOut = lastDoc.status == 'out' ? lastDoc.time: null;
-    timeOutMilli = lastDoc.status == 'out' ? lastDoc.timeMilli: null;
-    if(lastDoc.status == 'in'){
-        timeIn = lastDoc.time
-        timeinMilli = lastDoc.timeMilli
-    }else{
-        timeIn = secondToLastDoc.time
-        timeinMilli = secondToLastDoc.timeMilli
+    console.log(lastCheck)
+    if(lastCheck.length > 0){
+        const lastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 1] 
+        const secondToLastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 2]
+        let timeIn,timeinMilli,timeOutMilli,timeOut;    
+        timeOut = lastDoc.status == 'out' ? lastDoc.time: null;
+        timeOutMilli = lastDoc.status == 'out' ? lastDoc.timeMilli: null;
+        if(lastDoc.status == 'in'){
+            timeIn = lastDoc.time
+            timeinMilli = lastDoc.timeMilli
+        }else{
+            timeIn = secondToLastDoc.time
+            timeinMilli = secondToLastDoc.timeMilli
+        }
+        return {timeIn,timeinMilli,timeOut,timeOutMilli}
     }
-    return {timeIn,timeinMilli,timeOut,timeOutMilli}
 }

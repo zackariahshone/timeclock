@@ -11,8 +11,6 @@ export const createItem = (route, body, action, type) => {
         },
         body: JSON.stringify(body) || '',
     }).then(response => response.json()).then(data => {
-        console.log(data);
-
         directReducer(action, data, type)
     })
 }
@@ -27,7 +25,6 @@ export const updateItem = (route, body, action, type) => {
         },
         body: JSON.stringify(body) || '',
     }).then(response => response.json()).then(data => {
-        console.log(data);
         if(action){
             directReducer(action, data, type)
         }
@@ -57,8 +54,6 @@ export const deleteItem = (route, body, action, type) => {
         },
         body: JSON.stringify(body) || '',
     }).then(response => response.json()).then(data => {
-        console.log(data);
-
         directReducer(action, data, type)
     })
 }

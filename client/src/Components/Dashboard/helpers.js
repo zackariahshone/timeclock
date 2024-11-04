@@ -67,11 +67,8 @@ export const getHoursWorked = (milliIn, milliOut) => {
 }
 
 export const getDateFromMilli = (milli) => {
-    // console.log(milli);
     
-    const date = new Date(1730557493735);
-    // console.log(date);
-    
+    const date = new Date(Number(milli));    
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
     const day = date.getDate();
     const year = date.getFullYear();
@@ -132,9 +129,7 @@ export const createCSV = ()=>{
 
 export const ExportCSV = ({ data, fileName }) => {
   const downloadCSV = () => {
-    // Convert the data array into a CSV string
-    console.log(data);
-    
+    // Convert the data array into a CSV string    
     const csvString = [
       data[0], // Specify your headers here
       ...data.map(item => [item.status, item.timeMilli, item.time, item.setBy]) // Map your data fields accordingly
