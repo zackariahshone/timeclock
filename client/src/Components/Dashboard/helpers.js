@@ -89,14 +89,11 @@ export const staffTotal = (list) => {
     return count;
 }
 
-export const getStudentHistory = (id,historyList,timefilter) =>{
-    // console.log(historyList.filter(doc=>doc?.id == id));
-    
+export const getStudentHistory = (id,historyList,timefilter) =>{    
     if(timefilter?.start && timefilter?.end){
         let listFilteredByID = historyList.filter(doc=>doc.id == id)    
         let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > timefilter.start && history.timeMilli < timefilter.end );
-        // listFilteredByID.clockInOutHistory
-    
+        
         return [{clockedInOutHistory}]  
         
     }else{
@@ -129,14 +126,14 @@ export const createCSV = ()=>{
 
 export const ExportCSV = ({ data, fileName }) => {
   const downloadCSV = () => {
-    // Convert the data array into a CSV string    
+    // Convert the data array into a CSV string  
+    
     const csvString = [
-      data[0], // Specify your headers here
-      ...data.map(item => [item.status, item.timeMilli, item.time, item.setBy]) // Map your data fields accordingly
+        data[0], // Specify your he   `aders here
+        ...data.map(item => [item.date,item.status, item.timeMilli, item.time, item.setBy,item.total]) // Map your data fields accordingly
     ]
     .map(row => row.join(","))
     .join("\n");
-
     // Create a Blob from the CSV string
     const blob = new Blob([csvString], { type: 'text/csv' });
 

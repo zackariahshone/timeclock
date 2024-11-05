@@ -15,6 +15,7 @@ import { studentHistory } from "../../app/StudentHistorySlice.js";
 import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { convertMilitaryToStandard } from "../TimeClock/helper.js";
 export default (props) => {
     const [csvData, setCsvData] = useState();
     const [selectedEmployee, setSelectedEmployee] = useState();
@@ -25,7 +26,7 @@ export default (props) => {
     let x,y;
     let r,c; 
     useEffect(()=>{
-        
+        console.log(timeFilter);
     },[timeFilter])
     return (
         <Fragment>
@@ -70,22 +71,21 @@ export default (props) => {
                             onChange={(e)=>{
                                 e.forEach((filter,x)=>{
                                     if(filter != null  && x == 0){
-                                        setTimeFilter({...timeFilter,start:new Date(filter.$d).getTime()})
+                                        setTimeFilter({start:new Date(filter.$d).getTime()})
                                     }else if(filter != null && x == 1){
                                         setTimeFilter({...timeFilter,end:new Date(filter.$d).getTime()})
                                     }
-                                    console.log(filter,x, timeFilter)
                                 })
                             }}
                         />
                         <div className="export">
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))} fileName={'newfile'}/>
+                        {console.log(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))}
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history)))} fileName={'newfile'}/>
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {
                                 getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory.map((history, i) => {
-                              
                                 if(history.status == 'in'){
                                     x = history.timeMilli
                                 }else{
@@ -126,11 +126,24 @@ export default (props) => {
 function getCsvData(filteredData){
     let row = [];
     let collection =[];
-    if(filteredData > 0){
+    let x, y;
+    if(filteredData.length > 0){
         row.push(Object.keys(filteredData[0]));
-        collection.push(Object.keys(filteredData[0].clockedInOutHistory[0]))
+        collection.push(['Date']);
+        collection[0].push(Object.keys(filteredData[0].clockedInOutHistory[0]))
+        collection[0].push('total');
         filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
-            collection.push(filteredOBj);
+            collection.push({...filteredOBj,'date':getDateFromMilli(filteredOBj.timeMilli), 'time':convertMilitaryToStandard(filteredOBj.time),'total':''});
+            if(filteredOBj.status == "in"){
+                x = filteredOBj.timeMilli
+                y = null
+            }else{ 
+                y = filteredOBj.timeMilli
+            }
+            if(x && y){               
+                const hrsWrked = getHoursWorked(x,y); 
+                collection.push({status: '', timeMilli: '', time: '', setBy:'','total':hrsWrked})
+            }
         })
         return collection;
     }
