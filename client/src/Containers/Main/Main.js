@@ -3,6 +3,7 @@ import { Card, Row, Modal, Button } from 'react-bootstrap'
 import { DisplayMenuOptions, menuConfig } from "./helpers.js";
 import { signin, signOut } from "../../app/CurrentUserSlice.js";
 import { TeacherSignIn } from "../../Components/SignIn/script.js";
+import logo from '../../img/web-app-manifest-192x192.png'
 import './style.css'
 
 export default (props) => {
@@ -14,7 +15,7 @@ export default (props) => {
             <div id='mainConatiner'>
                 <Row>
                     <div id="sideNav">
-                        <h1>ERC</h1>
+                        <img id='erclogo' src={logo} alt="ERC logo" />
                         {Object.keys(menuConfig).map(menuKey => (
                             <Fragment>
                                 {menuConfig[menuKey].map((menuItem) => (
