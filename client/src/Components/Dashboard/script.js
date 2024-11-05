@@ -80,7 +80,7 @@ export default (props) => {
                         />
                         <div className="export">
                         {console.log(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))}
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history)))} fileName={'newfile'}/>
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history)))} fileName={`${selectedEmployee.name}`}/>
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
@@ -99,7 +99,7 @@ export default (props) => {
                                         </Col>
                                         <Col>
                                             <Card className="alignRight marginRight">
-                                                <p>Clocked {toCapitalize(history.status)}: {getTimeFromMillisecond(history.timeMilli)}</p>
+                                                <p>Clocked {toCapitalize(history.status)}: {convertMilitaryToStandard(getTimeFromMillisecond(history.timeMilli))}</p>
                                                 <p>Set By: {history.setBy}</p>
                                             </Card>
                                         {
@@ -126,6 +126,7 @@ export default (props) => {
 function getCsvData(filteredData){
     let row = [];
     let collection =[];
+    let totalHours = [];
     let x, y;
     if(filteredData.length > 0){
         row.push(Object.keys(filteredData[0]));
@@ -142,9 +143,12 @@ function getCsvData(filteredData){
             }
             if(x && y){               
                 const hrsWrked = getHoursWorked(x,y); 
+                totalHours.push(hrsWrked)
                 collection.push({status: '', timeMilli: '', time: '', setBy:'','total':hrsWrked})
             }
         })
+        console.log(totalHours.reduce((a,b)=>Number(a)+Number(b)));
+        collection.push({status: '', timeMilli: '', time: '', setBy:'billiableHours','total':totalHours.reduce((a, b) => Number(a) + Number(b))})
         return collection;
     }
     return collection;

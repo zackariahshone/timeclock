@@ -60,15 +60,15 @@ export default (props) => {
                                 </Col>
                                 <Col xs={4}>
                                     <InputGroup className="mb-3">
-                                        <Form.Control value={currentStudentHistory?.timeIn ? currentStudentHistory.timeIn : ''}  aria-label="First name" />
-                                        <Form.Control value={currentStudentHistory?.timeOut ?currentStudentHistory.timeOut : ''}  aria-label="Last name" />
+                                        <Form.Control value={currentStudentHistory?.timeIn ? convertMilitaryToStandard(currentStudentHistory.timeIn) : ''}  aria-label="First name" />
+                                        <Form.Control value={currentStudentHistory?.timeOut ?convertMilitaryToStandard(currentStudentHistory.timeOut) : ''}  aria-label="Last name" />
                                     </InputGroup>
                                 </Col>
                                 {
                                     student.status == 'out' && (student.timeIn && student.timeOut) ?
                                         <Col>
                                             {/* {console.log(student.history[student.history.length - 1],'student.history log')} */}
-                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli,currentStudentHistory?.timeOutMilli,)} hrs</p>
+                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli,currentStudentHistory?.timeOutMilli)} hrs</p>
                                         </Col>
                                         : <Col></Col>
                                 }
