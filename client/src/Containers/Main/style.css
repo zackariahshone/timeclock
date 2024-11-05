@@ -7,9 +7,11 @@
 
    .menuItem{
       cursor: pointer;
-      font-size: 150%;
+      font-size: 100%;
    }
-
+   .mainRow{
+      height: 100vh;
+   }
    #main{
     background-color: aliceblue;
     width:80%;

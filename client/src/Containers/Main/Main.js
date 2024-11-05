@@ -13,16 +13,16 @@ export default (props) => {
     return (
         <Fragment>
             <div id='mainConatiner'>
-                <Row>
+                <Row className = 'mainRow'>
                     <div id="sideNav">
                         <img id='erclogo' src={logo} alt="ERC logo" />
                         {Object.keys(menuConfig).map(menuKey => (
                             <Fragment>
                                 {menuConfig[menuKey].map((menuItem) => (
-                                    <p
+                                    <h6
                                         className={`menuItem ${menuItem == pageId ? 'selected' : ''} `}
                                         onClick={() => { setPageId(menuItem) }}
-                                    >{menuItem}</p>
+                                    >{menuItem}</h6>
                                 ))}
                                 ___________________________
                             </Fragment>
