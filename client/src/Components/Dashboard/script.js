@@ -124,31 +124,41 @@ export default (props) => {
 }
 
 function getCsvData(filteredData){
+    // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
     let row = [];
     let collection =[];
     let totalHours = [];
     let x, y;
+    let newRow = {};
     if(filteredData.length > 0){
         row.push(Object.keys(filteredData[0]));
-        collection.push(['Date']);
-        collection[0].push(Object.keys(filteredData[0].clockedInOutHistory[0]))
-        collection[0].push('total');
+        collection.push(['DateIn','DateOut','TimeIn','TimeOut','CheckedInBy', 'CheckedOutBy','TotalHours'])
         filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
-            collection.push({...filteredOBj,'date':getDateFromMilli(filteredOBj.timeMilli), 'time':convertMilitaryToStandard(filteredOBj.time),'total':''});
             if(filteredOBj.status == "in"){
+                newRow = {}
+                newRow.DateIn = getDateFromMilli(filteredOBj.timeMilli)
+                newRow.TimeIn = convertMilitaryToStandard(filteredOBj.time)
+                newRow.CheckedInBy = filteredOBj.setBy
+
                 x = filteredOBj.timeMilli
                 y = null
             }else{ 
-                y = filteredOBj.timeMilli
+                newRow.DateOut = getDateFromMilli(filteredOBj.timeMilli)
+                newRow.TimeOut = convertMilitaryToStandard(filteredOBj.time)
+                newRow.CheckedOutBy = filteredOBj.setBy
+                y = filteredOBj.timeMilli 
             }
             if(x && y){               
                 const hrsWrked = getHoursWorked(x,y); 
                 totalHours.push(hrsWrked)
-                collection.push({status: '', timeMilli: '', time: '', setBy:'','total':hrsWrked})
+                newRow.Total = hrsWrked
+                collection.push(newRow)
             }
         })
         console.log(totalHours.reduce((a,b)=>Number(a)+Number(b)));
-        collection.push({status: '', timeMilli: '', time: '', setBy:'billiableHours','total':totalHours.reduce((a, b) => Number(a) + Number(b))})
+            // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
+
+        collection.push({DateIn: '', DateOut: '', TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':totalHours.reduce((a, b) => Number(a) + Number(b))})
         return collection;
     }
     return collection;

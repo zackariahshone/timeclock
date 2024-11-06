@@ -127,10 +127,11 @@ export const createCSV = ()=>{
 export const ExportCSV = ({ data, fileName }) => {
   const downloadCSV = () => {
     // Convert the data array into a CSV string  
-    
+        // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
+
     const csvString = [
         data[0], // Specify your he   `aders here
-        ...data.map(item => [item.date,item.status, item.timeMilli, item.time, item.setBy,item.total]) // Map your data fields accordingly
+        ...data.map(item => [item.DateIn,item.DateOut, item.TimeIn, item.TimeOut, item.CheckedInBy ,item.CheckedOutBy,item.Total]) // Map your data fields accordingly
     ]
     .map(row => row.join(","))
     .join("\n");
