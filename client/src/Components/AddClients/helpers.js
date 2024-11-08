@@ -40,6 +40,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
     const handleShow = () => setShow(true);
     const dispatch = useDispatch();
     const [empName, setEmpName] = useState();
+    const [empID, setEmpId]  = useState();
     const [program, setProgramName] = useState();
     return (
         <>
@@ -49,20 +50,27 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                 </Modal.Header>
                 <Modal.Body>
 
-                            <Row>
-                                <Col>
+                            {/* <Row> */}
+                                <Row>
                                   {toCapitalize(type)} Name:  <input
                                         placeholder="enter name"
                                         onBlur={(e) => {
                                             setEmpName(e.target.value)
                                         }}
                                     />
-                                </Col>
-                                <Col>
+                                </Row>
+                                <Row>
                                     Start Date: <input placeholder={new Date().toDateString()} />
-                                </Col>
-                              
-                                <Col className="radioButtons">
+                                </Row>
+                                <Row>
+                                    ID Number: <input
+                                        placeholder="Enter ERC ID"
+                                        onBlur={(e) => {
+                                            setEmpId(e.target.value)
+                                        }}
+                                    />
+                                <Row/>
+                                <Row className="radioButtons">
                                     <div
                                         onChange={(e) => {
                                             setProgramName(e.target.value)
@@ -73,7 +81,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                         <br />
                                         <input type="radio" value={`Aspire`} name="program" /> Aspire
                                     </div>
-                                </Col>
+                                </Row>
                             </Row>
 
                 </Modal.Body>
@@ -92,7 +100,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     program,
                                     status: 'out',
                                     history: [],
-                                    id: generateUniqueId(),
+                                    id: empID ? empID : generateUniqueId(),
                                     type
                                 },addEmployee,'');
                                 setEmpName('');

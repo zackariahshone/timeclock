@@ -17,16 +17,21 @@ import { students } from "../../app/EmployeeListSlice.js";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { convertMilitaryToStandard } from "../TimeClock/helper.js";
 export default (props) => {
+    const employeeList = useSelector(students)
+    const history = useSelector(studentHistory)
     const [csvData, setCsvData] = useState();
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
     const [timeFilter, setTimeFilter] = useState({start:'',end:''})
-    const employeeList = useSelector(students)
-    const history = useSelector(studentHistory)
+    const [filteredList, setFilteredList] = useState()
     let x,y;
     let r,c; 
     useEffect(()=>{
-        console.log(timeFilter);
+        if(selectedEmployee){
+            setFilteredList(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory)
+        }else if(selectedEmployee && (timeFilter.start && timeFilter.end)){
+            setFilteredList(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory)
+        }
     },[timeFilter])
     return (
         <Fragment>
@@ -60,7 +65,7 @@ export default (props) => {
                 </Card>
             </Container>
             <Container >
-
+                            {console.log(filteredList)}
                 {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
                     <>
 
@@ -79,7 +84,6 @@ export default (props) => {
                             }}
                         />
                         <div className="export">
-                        {console.log(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))}
                             <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history)))} fileName={`${selectedEmployee.name}`}/>
                         </div>
                     </Container>
@@ -158,7 +162,7 @@ function getCsvData(filteredData){
         console.log(totalHours.reduce((a,b)=>Number(a)+Number(b)));
             // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
 
-        collection.push({DateIn: '', DateOut: '', TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':totalHours.reduce((a, b) => Number(a) + Number(b))})
+        collection.push({DateIn: '', DateOut: '', TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b)))})
         return collection;
     }
     return collection;
