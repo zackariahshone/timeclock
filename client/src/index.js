@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import store from './app/store'
 import { Provider } from 'react-redux'
 import { getData } from './globalUtils/requests';
@@ -11,19 +12,21 @@ import { addEmployeeBulk } from './app/EmployeeListSlice';
 import { setHistoryBulk } from './app/StudentHistorySlice';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-
+import { PrimeReactProvider } from "primereact/api"
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-getData('/getallteachers','GET',addEmployeeBulk);
-getData('/getallstudents','GET',addEmployeeBulk);
-getData('/getstudenthistory','GET', setHistoryBulk);
+getData('/getallteachers', 'GET', addEmployeeBulk);
+getData('/getallstudents', 'GET', addEmployeeBulk);
+getData('/getstudenthistory', 'GET', setHistoryBulk);
 root.render(
   <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <Provider store={store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>
+    <Provider store={store}>
+      <PrimeReactProvider>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </PrimeReactProvider>
+    </Provider>
   </LocalizationProvider>
 );
 

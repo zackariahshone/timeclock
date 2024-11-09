@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Col, Container, Row, Card, Button, CardTitle, Form } from "react-bootstrap";
+import { Calendar } from 'primereact/calendar';
+
 import { useSelector } from 'react-redux';
 import ExportCSV, {
     displaySchoolInsights,
@@ -24,8 +26,8 @@ export default (props) => {
     const [showStatus, setShowStatus] = useState();
     const [timeFilter, setTimeFilter] = useState({start:new Date().getTime(),end:''})
     const [filteredList, setFilteredList] = useState()
+    const [dates, setDates] = useState();
     let x,y;
-    let r,c; 
     useEffect(()=>{
         if(selectedEmployee){
             setFilteredList(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory)
@@ -67,28 +69,20 @@ export default (props) => {
             <Container >
                 {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
                     <>
-
+                    <Container>
+                    </Container>    
                     <Card >
                         <>
                     <Container className="marginTop">
-                        <DateRangePicker 
-                            onChange={(e)=>{
-                                e.forEach((filter,x)=>{
-                                    if(filter != null  && x == 0){
-                                        setTimeFilter({start:new Date(filter.$d).getTime()})
-                                    }else if(filter != null && x == 1){
-                                        setTimeFilter({...timeFilter,end:new Date(filter.$d).getTime()})
-                                    }
-                                })
-                            }}
-                        />
+
                         <div className="export">
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))} fileName={`${selectedEmployee.name}`}/>
+                            <Calendar style={{marginRight:'2%'}} value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),dates))} fileName={`${selectedEmployee.name}`}/>
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
                             {
-                                getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory.map((history, i) => {
+                                getStudentHistory(selectedEmployee?.id, Object.values(history),dates)[0].clockedInOutHistory.map((history, i) => {
                                 if(history.status == 'in'){
                                     x = history.timeMilli
                                 }else{
@@ -134,7 +128,7 @@ function getCsvData(filteredData){
     let totalHours = [];
     let x, y;
     let newRow = {};
-    if(filteredData.length > 0){
+    if(filteredData[0].clockedInOutHistory.length > 0){
         row.push(Object.keys(filteredData[0]));
         collection.push(['DateIn','DateOut','TimeIn','TimeOut','CheckedInBy', 'CheckedOutBy','TotalHours'])
         filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{

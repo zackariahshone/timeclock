@@ -90,9 +90,12 @@ export const staffTotal = (list) => {
 }
 
 export const getStudentHistory = (id,historyList,timefilter) =>{    
-    if(timefilter?.start && timefilter?.end){
+    if(timefilter !== undefined && timefilter.length == 2){
+        const filterOne = new Date(timefilter[0]).getTime()
+        const filterTwo = new Date(timefilter[1]).getTime();
+        const twetnyFourHours = 24 * 60 * 60 * 1000; 
         let listFilteredByID = historyList.filter(doc=>doc.id == id)    
-        let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > timefilter.start && history.timeMilli < timefilter.end );
+        let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > filterOne && history.timeMilli  < filterTwo + (twetnyFourHours) );
         
         return [{id:listFilteredByID[0].id ,clockedInOutHistory}]  
         
