@@ -94,7 +94,7 @@ export const getStudentHistory = (id,historyList,timefilter) =>{
         let listFilteredByID = historyList.filter(doc=>doc.id == id)    
         let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > timefilter.start && history.timeMilli < timefilter.end );
         
-        return [{clockedInOutHistory}]  
+        return [{id:listFilteredByID[0].id ,clockedInOutHistory}]  
         
     }else{
         return historyList.filter(doc=>doc?.id == id);    

@@ -22,7 +22,7 @@ export default (props) => {
     const [csvData, setCsvData] = useState();
     const [selectedEmployee, setSelectedEmployee] = useState();
     const [showStatus, setShowStatus] = useState();
-    const [timeFilter, setTimeFilter] = useState({start:'',end:''})
+    const [timeFilter, setTimeFilter] = useState({start:new Date().getTime(),end:''})
     const [filteredList, setFilteredList] = useState()
     let x,y;
     let r,c; 
@@ -65,7 +65,6 @@ export default (props) => {
                 </Card>
             </Container>
             <Container >
-                            {console.log(filteredList)}
                 {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
                     <>
 
@@ -84,7 +83,7 @@ export default (props) => {
                             }}
                         />
                         <div className="export">
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history)))} fileName={`${selectedEmployee.name}`}/>
+                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),timeFilter))} fileName={`${selectedEmployee.name}`}/>
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
@@ -129,6 +128,7 @@ export default (props) => {
 
 function getCsvData(filteredData){
     // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
+    console.log('getCSVData',filteredData);
     let row = [];
     let collection =[];
     let totalHours = [];
@@ -162,7 +162,7 @@ function getCsvData(filteredData){
         console.log(totalHours.reduce((a,b)=>Number(a)+Number(b)));
             // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
 
-        collection.push({DateIn: '', DateOut: '', TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b)))})
+        collection.push({DateIn: 'ID#', DateOut: `${filteredData[0].id}`, TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b)))})
         return collection;
     }
     return collection;
