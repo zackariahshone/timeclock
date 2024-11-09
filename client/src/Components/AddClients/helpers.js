@@ -11,29 +11,6 @@ import { useDispatch } from 'react-redux';
 import './style.css'
 import { createItem } from "../../globalUtils/requests";
 
-const ContractorDummynames = [
-    'Elin Mays',
-    'Bronwyn Powell',
-    'Zaynah Vaughn',
-    'Caleb Guzman',
-    'Sinead OMoore',
-    'Louise Pierce',
-    'Conor Bullock',
-    'Tomasz Shepard',
-    'Cian Shah',
-    'Clara Martinez']
-const clientDummyNames = ['Aysha Whitehead',
-    'Tobias Sandoval',
-    'Lloyd Tate',
-    'Solomon Jordan',
-    'Donna Hanna',
-    'Mila Moses',
-    'Aled Ballard',
-    'Zuzanna Pittman',
-    'Eva Gaines',
-    'Arun Newman']
-
-
 export const CreateStaffModal = ({ show, setShow, type }) => {
 
     const handleClose = () => setShow(false);
@@ -110,7 +87,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                         variant="primary">
                         Create New {toCapitalize(type)}
                     </Button>
-                    <Button
+                    {/* <Button
                         variant="danger"
                         onClick={() => {
                             {
@@ -129,7 +106,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                 })
                             }
                         }}
-                    >dummy dump {type}</Button>
+                    >dummy dump {type}</Button> */}
                 </Modal.Footer>
             </Modal>
         </>

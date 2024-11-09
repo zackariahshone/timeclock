@@ -153,10 +153,10 @@ function getCsvData(filteredData){
                 collection.push(newRow)
             }
         })
-        console.log(totalHours.reduce((a,b)=>Number(a)+Number(b)));
+        const billableHours = totalHours.length > 0 ?Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b))) : 0;
             // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
 
-        collection.push({DateIn: 'ID#', DateOut: `${filteredData[0].id}`, TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b)))})
+        collection.push({DateIn: 'ID#', DateOut: `${filteredData[0].id}`, TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':billableHours})
         return collection;
     }
     return collection;
