@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const Student = require('../dbconnection/models/Students')
 const History = require('../dbconnection/models/History')
-// const StudentBackup = require('../dbconnection/models/StudentBackup');/
+const StudentBackup = require('../dbconnection/models/StudentBackup');
 router.post('/createstudent', async (req, res) => {
   try {
+    await StudentBackup.create(req.body);
     const createdStudent = await Student.create(req.body)
     res.json(createdStudent)
   } catch (e) {
