@@ -121,8 +121,6 @@ export default (props) => {
 }
 
 function getCsvData(filteredData){
-    // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
-    console.log('getCSVData',filteredData);
     let row = [];
     let collection =[];
     let totalHours = [];

@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 export const currentUserSlice = createSlice({
   name: 'currentUser',
@@ -12,13 +12,11 @@ export const currentUserSlice = createSlice({
         userSignedIn:action.payload.teacherName
       }
     },
-    signOut: (state,action) => {
+    signOut: (state,action) => {      
       return {
         ...state,
-       currentUser:{
         signedIn:false,
         userSignedIn:''
-       }
       }
     },
   },
@@ -27,5 +25,5 @@ export const currentUserSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { signin, signOut} = currentUserSlice.actions
 export const userSignedIn =  (state) => state.currentUser.userSignedIn;
-export const students = (state)=> state.employeeList.employees.filter(emp=>emp.type == 'student');
+export const signedInStatus = (state)=>state.currentUser.signedIn
 export default currentUserSlice.reducer

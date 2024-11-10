@@ -1,7 +1,9 @@
-import React, { Fragment, useState, useDispatch, useSelector } from "react";
+import React, { Fragment, useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+
 import { Card, Row, Modal, Button } from 'react-bootstrap'
 import { DisplayMenuOptions, menuConfig } from "./helpers.js";
-import { signin, signOut } from "../../app/CurrentUserSlice.js";
+import { signin, signOut, userSignedIn,signedInStatus } from "../../app/CurrentUserSlice.js";
 import { TeacherSignIn } from "../../Components/SignIn/script.js";
 import logo from '../../img/web-app-manifest-192x192.png'
 import './style.css'
@@ -10,6 +12,9 @@ export default (props) => {
     const [pageId, setPageId] = useState('DashBoard');
     const [signedIn, setSignedIn] = useState(false);
     const [signInName, setSignInName] = useState();
+    const loggedInName = useSelector(userSignedIn)
+    const loggedInStatus = useSelector(signedInStatus);
+    const dispatch = useDispatch();
     return (
         <Fragment>
             <div id='mainConatiner'>
@@ -30,7 +35,7 @@ export default (props) => {
                         ))}
                     </div>
                     <div id="main">
-                        {!signedIn ?
+                        {!loggedInStatus ?
                             <>
                                 <div
                                     className="modal show"
@@ -38,7 +43,7 @@ export default (props) => {
                                 >
 
                                     <Modal.Dialog>
-                                        <Modal.Header closeButton>
+                                        <Modal.Header>
                                             <Modal.Title>Sign In</Modal.Title>
                                         </Modal.Header>
 
@@ -57,7 +62,10 @@ export default (props) => {
 
                             :
                             <Fragment>
-                                <div className="signinName">Signed in as {signInName}</div>
+                                <div className="signinName">Signed in as {loggedInName}
+                                <Button
+                                    onClick={()=>{dispatch(signOut())}}
+                                 className="switchUserButton"> Switch User</Button></div>
                                 {DisplayMenuOptions(pageId, setSignedIn)}
                             </Fragment>
                         }

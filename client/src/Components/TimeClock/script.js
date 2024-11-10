@@ -5,7 +5,7 @@ import { timeClock, students } from "../../app/EmployeeListSlice";
 import { userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
 import { convertMilitaryToStandard } from "./helper";
-import {createItem, getData} from "../../globalUtils/requests"
+import { createItem, getData } from "../../globalUtils/requests"
 import { addStudentHistory, setHistoryBulk, studentHistory } from "../../app/StudentHistorySlice";
 import { getStudentHistory } from "../Dashboard/helpers";
 
@@ -17,7 +17,7 @@ export default (props) => {
     const history = useSelector(studentHistory);
     const dispatch = useDispatch();
     useEffect(() => {
-        getData('/getstudenthistory','GET', setHistoryBulk);
+        getData('/getstudenthistory', 'GET', setHistoryBulk);
         setStatusChange(false);
     }, [statusChange])
     return (
@@ -47,7 +47,7 @@ export default (props) => {
 
             <h3 className="titleMarginBottom">Students:</h3>
             {studentList.map((student) => {
-                const currentStudentHistory = getLastTimeClockIn(history,student.id)
+                const currentStudentHistory = getLastTimeClockIn(history, student.id)
                 return (
                     <Form>
                         <Card body>
@@ -60,15 +60,14 @@ export default (props) => {
                                 </Col>
                                 <Col xs={4}>
                                     <InputGroup className="mb-3">
-                                        <Form.Control value={currentStudentHistory?.timeIn ? convertMilitaryToStandard(currentStudentHistory.timeIn) : ''}  aria-label="First name" />
-                                        <Form.Control value={currentStudentHistory?.timeOut ?convertMilitaryToStandard(currentStudentHistory.timeOut) : ''}  aria-label="Last name" />
+                                        <Form.Control onChange={()=>{}} value={currentStudentHistory?.timeIn ? convertMilitaryToStandard(currentStudentHistory.timeIn) : ''} aria-label="First name" />
+                                        <Form.Control onChange={()=>{}} value={currentStudentHistory?.timeOut ? convertMilitaryToStandard(currentStudentHistory.timeOut) : ''} aria-label="Last name" />
                                     </InputGroup>
                                 </Col>
                                 {
                                     student.status == 'out' && (student.timeIn && student.timeOut) ?
                                         <Col>
-                                            {/* {console.log(student.history[student.history.length - 1],'student.history log')} */}
-                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli,currentStudentHistory?.timeOutMilli)} hrs</p>
+                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli, currentStudentHistory?.timeOutMilli)} hrs</p>
                                         </Col>
                                         : <Col></Col>
                                 }
@@ -76,12 +75,12 @@ export default (props) => {
                                     <Button
                                         onClick={() => {
                                             const timeClockData = {
-                                                    student,
-                                                    time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                                                    timeMilli: `${new Date().getTime()}`,
-                                                    setBy:currentUser
-                                                }
-                                            createItem('/studenttimeclock',timeClockData);
+                                                student,
+                                                time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                                                timeMilli: `${new Date().getTime()}`,
+                                                setBy: currentUser
+                                            }
+                                            createItem('/studenttimeclock', timeClockData);
                                             dispatch(timeClock(timeClockData));
                                             setStatusChange(true);
                                         }}
@@ -97,7 +96,7 @@ export default (props) => {
 }
 
 function getHoursWorked(timein, timeout) {
-    if(timein && timeout){
+    if (timein && timeout) {
         const clockedIn = timein
         const clockedOut = timeout
         return ((Number(clockedOut) - Number(clockedIn)) / (1000 * 60 * 60)).toFixed(2);
@@ -105,22 +104,21 @@ function getHoursWorked(timein, timeout) {
     return null;
 }
 
-function getLastTimeClockIn(history, studentid){
+function getLastTimeClockIn(history, studentid) {
     const lastCheck = getStudentHistory(studentid, Object.values(history))
-    console.log(lastCheck)
-    if(lastCheck.length > 0){
-        const lastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 1] 
+    if (lastCheck.length > 0) {
+        const lastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 1]
         const secondToLastDoc = lastCheck[0].clockedInOutHistory[lastCheck[0].clockedInOutHistory.length - 2]
-        let timeIn,timeinMilli,timeOutMilli,timeOut;    
-        timeOut = lastDoc.status == 'out' ? lastDoc.time: null;
-        timeOutMilli = lastDoc.status == 'out' ? lastDoc.timeMilli: null;
-        if(lastDoc.status == 'in'){
+        let timeIn, timeinMilli, timeOutMilli, timeOut;
+        timeOut = lastDoc.status == 'out' ? lastDoc.time : null;
+        timeOutMilli = lastDoc.status == 'out' ? lastDoc.timeMilli : null;
+        if (lastDoc.status == 'in') {
             timeIn = lastDoc.time
             timeinMilli = lastDoc.timeMilli
-        }else{
+        } else {
             timeIn = secondToLastDoc.time
             timeinMilli = secondToLastDoc.timeMilli
         }
-        return {timeIn,timeinMilli,timeOut,timeOutMilli}
+        return { timeIn, timeinMilli, timeOut, timeOutMilli }
     }
 }

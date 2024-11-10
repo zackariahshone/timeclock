@@ -14,29 +14,6 @@ import { CreateStaffModal } from "./helpers";
 import './style.css'
 import { deleteItem } from "../../globalUtils/requests";
 
-
-const ContractorDummynames = [
-    'Elin Mays',
-    'Bronwyn Powell',
-    'Zaynah Vaughn',
-    'Caleb Guzman',
-    'Sinead OMoore',
-    'Louise Pierce',
-    'Conor Bullock',
-    'Tomasz Shepard',
-    'Cian Shah',
-    'Clara Martinez']
-const clientDummyNames = ['Aysha Whitehead',
-    'Tobias Sandoval',
-    'Lloyd Tate',
-    'Solomon Jordan',
-    'Donna Hanna',
-    'Mila Moses',
-    'Aled Ballard',
-    'Zuzanna Pittman',
-    'Eva Gaines',
-    'Arun Newman']
-
 export default (props) => {
     const { type } = props;
     const studentList = useSelector(students);
@@ -108,9 +85,4 @@ function SchoolListDisplay(index, empList) {
             </Col>
         ))
     );
-}
-
-function deleteEmployee(employee){
-    // console.log(employee);
-
 }
