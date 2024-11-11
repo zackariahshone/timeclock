@@ -76,8 +76,8 @@ export default (props) => {
                     <Container className="marginTop">
 
                         <div className="export">
-                            <Calendar style={{marginRight:'2%'}} value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
-                            <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),dates))} fileName={`${selectedEmployee.name}`}/>
+                            <ExportCSV style={{marginRight:'2%'}} data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),dates))} fileName={`${selectedEmployee.name}`}/>
+                            <Calendar  value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
                         </div>
                     </Container>
                             <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
