@@ -69,6 +69,42 @@ router.put('/updatedstudent',async(req, res)=>{
   }
   })
 
+
+  router.put('/updatestudentrecord',async(req, res)=>{
+
+    const {id,milliIndex,recordChanges} = req.body;
+    console.log(id, milliIndex, recordChanges);
+    
+    const newMilli = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime()
+    const newTime = new Date(newMilli);
+    const studentHistoryToUpdate = await History.findOne({id})
+    // console.log(studentHistoryToUpdate);
+    
+    let index = 0;
+    let recordToUpdate = studentHistoryToUpdate.clockedInOutHistory.find((doc,x)=>{
+      if(doc.timeMilli == milliIndex){
+        index = x;
+        return true; 
+      }
+    })
+    // console.log(studentHistoryToUpdate.clockedInOutHistory[index]);
+    console.log(recordToUpdate);
+    
+    studentHistoryToUpdate.clockedInOutHistory[index] = {
+      ...studentHistoryToUpdate.clockedInOutHistory[index],
+      "timeMilli": newMilli,
+      "time": `${newTime.getHours()}: ${newTime.getMinutes()}`,
+    }
+    console.log(studentHistoryToUpdate.clockedInOutHistory);
+    studentHistoryToUpdate.clockedInOutHistory = studentHistoryToUpdate.clockedInOutHistory.sort((a,b)=>a.timeMilli - b.timeMilli )
+    console.log(studentHistoryToUpdate.clockedInOutHistory);
+
+    await studentHistoryToUpdate.save()
+    // studentHistoryToUpdate.clockedInOutHistory[index].set()
+    const allStudentHistory = await History.find({});
+    res.json({ ...allStudentHistory });
+  })
+
 router.delete('/deleteallhistory',async(req,res)=>{
   const result = await History.deleteMany({});
   res.send(result);

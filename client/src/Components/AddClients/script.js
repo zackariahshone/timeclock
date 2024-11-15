@@ -13,6 +13,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CreateStaffModal } from "./helpers";
 import './style.css'
 import { deleteItem } from "../../globalUtils/requests";
+import { EditRecord } from "../EditRecord/script";
+import { getStudentHistory } from "../Dashboard/helpers";
+import { studentHistory } from "../../app/StudentHistorySlice";
 
 export default (props) => {
     const { type } = props;
@@ -22,6 +25,9 @@ export default (props) => {
     const [show, setShow] = useState(false);
     const [searchText, setSearchText] = useState();
     const [change, setChange] = useState(false);
+    const [record, setRecord] = useState();
+    const history = useSelector(studentHistory)
+
     useEffect(() => {
         if (change == true) {
             setChange(false);
@@ -57,7 +63,8 @@ export default (props) => {
                             <div className="textInCreateCard">Creat new {type}</div>
                         </Card>
                     </Col>
-                    {SchoolListDisplay(searchText, filteredList)}
+                    {SchoolListDisplay(searchText, filteredList, setRecord,setChange)}
+                   {type == 'student' && record ? <EditRecord record={record} list= {getStudentHistory(record.id, Object.values(history))[0]?.clockedInOutHistory}/> : ''}
                 </Row>
             </Col>
             {show ? <CreateStaffModal type={type} show = {show} setShow ={setShow}/>:''}
@@ -65,12 +72,17 @@ export default (props) => {
     )
 }
 
-function SchoolListDisplay(index, empList) {
+function SchoolListDisplay(index, empList,setRecord,setChange) {
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
     return (
         (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={3}>
-                <Card>
+                <Card
+                    onClick={(e)=>{
+                        setRecord(employee)
+                        setChange(true);
+                    }}
+                >
                 <Card.Header className="textRight"><text 
                     onClick = {()=>{
                         deleteItem(`/delete${employee.type}`,{id:employee.id},removeEmployee)

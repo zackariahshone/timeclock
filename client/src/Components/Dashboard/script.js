@@ -16,25 +16,14 @@ import ExportCSV, {
 import { studentHistory } from "../../app/StudentHistorySlice.js";
 import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { convertMilitaryToStandard } from "../TimeClock/helper.js";
-export default (props) => {
+export default () => {
     const employeeList = useSelector(students)
     const history = useSelector(studentHistory)
-    const [csvData, setCsvData] = useState();
     const [selectedEmployee, setSelectedEmployee] = useState();
-    const [showStatus, setShowStatus] = useState();
-    const [timeFilter, setTimeFilter] = useState({start:new Date().getTime(),end:''})
-    const [filteredList, setFilteredList] = useState()
+  
     const [dates, setDates] = useState();
     let x,y;
-    useEffect(()=>{
-        if(selectedEmployee){
-            setFilteredList(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory)
-        }else if(selectedEmployee && (timeFilter.start && timeFilter.end)){
-            setFilteredList(getStudentHistory(selectedEmployee?.id, Object.values(history),timeFilter)[0].clockedInOutHistory)
-        }
-    },[timeFilter])
     return (
         <Fragment>
             <h1>Insight</h1>
@@ -42,7 +31,7 @@ export default (props) => {
                 {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
                 {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
                
-                <Card className={showStatus ? 'showStatus' : 'hideStatus'}>
+                <Card >
                     <Row className="marginBottom">
                         <Col>
                             <h3 id='clockedIn'>Clocked In</h3>
