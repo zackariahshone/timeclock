@@ -6,13 +6,15 @@ import {
     Form,
     InputGroup,
     Row,
-    Button
+    Button,
+    Table
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { teachers } from "../../app/EmployeeListSlice";
 import { Calendar } from "primereact/calendar";
 import { getData } from "../../globalUtils/requests";
 import { exportData, setExportData } from "../../app/ExportData";
+import './style.css'
 const dropDowns = [{ "Programs": ['Aspire', "Richardson Industries"] }]
 export const Billing = () => {
     const [dates, setDates] = useState()
@@ -58,27 +60,31 @@ export const Billing = () => {
                 </Row>
             </Container>
             {dataForExport != null ?
-                <>
-                    <Row>
-                        {Object.keys(dataForExport[0]).map((key) => {
+                <div className="previewData">
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                            {Object.keys(dataForExport[0]).map((key) => {
                             return (
-                                <Col>{key}</Col>
+                                <th>{key}</th>
                             )
                         })}
-                    </Row>
-                    <Row>
+                            </tr>
+                        </thead>
+                        <tbody>
                         {
-                            dataForExport.map((doc)=>{
+                            dataForExport.map((doc) => {
                                 const values = Object.values(doc);
-                                return(
-                                    <Row>
-                                        {values.map((colVal)=> <Col>{colVal}</Col>)}
-                                    </Row>
+                                return (
+                                    <tr>
+                                        {values.map((colVal) => <td>{colVal}</td>)}
+                                    </tr>
                                 )
                             })
                         }
-                    </Row>
-                </>
+                        </tbody>
+                    </Table>
+                </div>
                 : ''
             }
         </Container>

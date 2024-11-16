@@ -7,12 +7,11 @@ router.get('/reports', async (req, res) => {
     const end = req.query?.end
     const building = req.query?.building
     const allHistory = await History.find();
+    let x, y = 0;
     const historyExec = allHistory.map(async (doc) => {
         let row = {}
         const timeClock = doc?.clockedInOutHistory
         let student = await Student.find({ id: doc.id })
-        // console.log(student[0].name);
-
         if (student[0].name && student[0].program == building) {
             timeClock.forEach((time) => {
                 console.log(start,end, time.timeMilli);
@@ -26,12 +25,15 @@ router.get('/reports', async (req, res) => {
                     row.dateIn = getDateFromMilli(time.timeMilli)
                     row.timeIn = convertMilitaryToStandard(time.time)
                     row.checkedInBy = time.setBy
+                    x = time.timeMilli
                 }
                 if (time.status == 'out') {
                     row.dateOut = getDateFromMilli(time.timeMilli)
                     row.timeOut = convertMilitaryToStandard(time.time)
                     row.checkedOutBy = time.setBy
+                    row.totalHours = getHoursWorked(x,time.timeMilli)
                     valuesInFilter.push(row)
+                    
                     row = {}
                 }
             }
@@ -67,5 +69,9 @@ function convertMilitaryToStandard(militaryTime) {
         return standardTime;
     }
     return '';
+}
+
+function getHoursWorked (milliIn, milliOut) {
+    return milliOut !== undefined ? ((Number(milliOut) - Number(milliIn)) / (1000 * 60 * 60)).toFixed(2) : 0;
 }
 module.exports = router
