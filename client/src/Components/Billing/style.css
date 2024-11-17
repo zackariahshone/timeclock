@@ -20,3 +20,11 @@
     background: #61c5e3; 
   }
 
+.previewData{
+    overflow:auto;
+}
+.calendarFilter{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+}

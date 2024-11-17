@@ -7,43 +7,52 @@ router.get('/reports', async (req, res) => {
     const end = req.query?.end
     const building = req.query?.building
     const allHistory = await History.find();
+    const students = await Student.find();
+    
     let x, y = 0;
-    const historyExec = allHistory.map(async (doc) => {
-        let row = {}
-        const timeClock = doc?.clockedInOutHistory
-        let student = await Student.find({ id: doc.id })
-        if (student[0].name && student[0].program == building) {
-            timeClock.forEach((time) => {
-                console.log(start,end, time.timeMilli);
-                console.log(time.timeMilli > start)
-                console.log(time.timeMilli < end + (24 * 60 * 60 * 1000))
-                if((time.timeMilli > start && time.timeMilli < end + (24 * 60 * 60 * 1000))){
+    // await Promise.all([
+        allHistory.map(async (doc) => {
+            let row = {}
+            const timeClock = doc?.clockedInOutHistory
+            let student = students.find(e=>e.id == doc.id)
+            console.log(student);
+            console.log(student.name, student.program, building);
+            
+            if (student.name && student.program == building) {
+                timeClock.forEach((time) => {
+                    console.log(start, end, time.timeMilli);
+                    console.log(time.timeMilli > start)
+                    console.log(time.timeMilli < end + (24 * 60 * 60 * 1000))
+                    if ((time.timeMilli > start && time.timeMilli < end + (24 * 60 * 60 * 1000))) {
 
-                    if (time.status == 'in') {
-                    row.studentName = student[0].name
-                    row.studentId = student[0].id
-                    row.dateIn = getDateFromMilli(time.timeMilli)
-                    row.timeIn = convertMilitaryToStandard(time.time)
-                    row.checkedInBy = time.setBy
-                    x = time.timeMilli
-                }
-                if (time.status == 'out') {
-                    row.dateOut = getDateFromMilli(time.timeMilli)
-                    row.timeOut = convertMilitaryToStandard(time.time)
-                    row.checkedOutBy = time.setBy
-                    row.totalHours = getHoursWorked(x,time.timeMilli)
-                    valuesInFilter.push(row)
-                    
-                    row = {}
-                }
+                        if (time.status == 'in') {
+                            row.studentName = student.name
+                            row.studentId = student.id
+                            row.dateIn = getDateFromMilli(time.timeMilli)
+                            row.timeIn = convertMilitaryToStandard(time.time)
+                            row.checkedInBy = time.setBy
+                            x = time.timeMilli
+                        }
+                        if (time.status == 'out') {
+                            row.dateOut = getDateFromMilli(time.timeMilli)
+                            row.timeOut = convertMilitaryToStandard(time.time)
+                            row.checkedOutBy = time.setBy
+                            row.totalHours = getHoursWorked(x, time.timeMilli)
+                            valuesInFilter.push(row)
+                            row = {}
+                        }
+                    }
+                    // console.log(time);
+                })
             }
-                // console.log(time);
-            })
-        }
-    })
-    await Promise.all(historyExec);
+            // resolve(doc+1)
+        })
+    // ])
+
+    // await Promise.all([historyExec])//then(()=>{
     console.log(valuesInFilter);
-     res.json(valuesInFilter)
+    res.json(valuesInFilter)
+    // })
 })
 
 function getDateFromMilli(milli) {
@@ -71,7 +80,7 @@ function convertMilitaryToStandard(militaryTime) {
     return '';
 }
 
-function getHoursWorked (milliIn, milliOut) {
+function getHoursWorked(milliIn, milliOut) {
     return milliOut !== undefined ? ((Number(milliOut) - Number(milliIn)) / (1000 * 60 * 60)).toFixed(2) : 0;
 }
 module.exports = router

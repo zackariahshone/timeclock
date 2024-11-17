@@ -44,18 +44,17 @@ export const Billing = () => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </Col>
-                    <Col xs={12} md={6}>
-                        <InputGroup className="mb-3">
-                            <InputGroup.Text>Start and End Filters</InputGroup.Text>
-                            <Calendar value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
-                            <Button
-                                onClick={() => {
-                                    const url = `/reports?start=${new Date(dates[0]).getTime()}&end=${new Date(dates[1]).getTime()}&building=${filters.program}`
-                                    console.log(new Date(dates[0]).getTime())
-                                    getData(url, 'GET', setExportData)
-                                }}
-                                variant='info'> Submit Filters </Button>
-                        </InputGroup>
+                    <Col>
+                          <span> Date and Time Filter: <Calendar className="calendarFilter" value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection /></span>
+                    </Col>
+                    <Col>
+                        <Button
+                            onClick={() => {
+                                const url = `/reports?start=${new Date(dates[0]).getTime()}&end=${new Date(dates[1]).getTime()}&building=${filters.program}`
+                                console.log(new Date(dates[0]).getTime())
+                                getData(url, 'GET', setExportData)
+                            }}
+                            variant='info'> Submit Filters </Button>
                     </Col>
                 </Row>
             </Container>
@@ -64,24 +63,24 @@ export const Billing = () => {
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                            {Object.keys(dataForExport[0]).map((key) => {
-                            return (
-                                <th>{key}</th>
-                            )
-                        })}
+                                {Object.keys(dataForExport[0]).map((key) => {
+                                    return (
+                                        <th>{key}</th>
+                                    )
+                                })}
                             </tr>
                         </thead>
                         <tbody>
-                        {
-                            dataForExport.map((doc) => {
-                                const values = Object.values(doc);
-                                return (
-                                    <tr>
-                                        {values.map((colVal) => <td>{colVal}</td>)}
-                                    </tr>
-                                )
-                            })
-                        }
+                            {
+                                dataForExport.map((doc) => {
+                                    const values = Object.values(doc);
+                                    return (
+                                        <tr>
+                                            {values.map((colVal) => <td>{colVal}</td>)}
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </Table>
                 </div>
@@ -154,3 +153,6 @@ export const ProgramList = ({ setSignedIn, setSignInName }) => {
         </Dropdown>
     )
 }
+
+// Richardson Industries 
+// Richardson Industries
