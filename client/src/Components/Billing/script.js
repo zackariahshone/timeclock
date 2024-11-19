@@ -14,8 +14,10 @@ import { teachers } from "../../app/EmployeeListSlice";
 import { Calendar } from "primereact/calendar";
 import { getData } from "../../globalUtils/requests";
 import { exportData, setExportData } from "../../app/ExportData";
+import ExportCSV from '../Dashboard/helpers';
 import './style.css'
 const dropDowns = [{ "Programs": ['Aspire', "Richardson Industries"] }]
+const ColumnHeaders = ['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','StudentName','StudentId', 'TotalHours'];
 export const Billing = () => {
     const [dates, setDates] = useState()
     const [filters, setFilters] = useState({});
@@ -55,6 +57,8 @@ export const Billing = () => {
                                 getData(url, 'GET', setExportData)
                             }}
                             variant='info'> Submit Filters </Button>
+                            
+                            <ExportCSVReport style={{marginRight:'2%'}} data={dataForExport} fileName={`new file`} disable = {dataForExport?false:true}/>
                     </Col>
                 </Row>
             </Container>
@@ -63,9 +67,11 @@ export const Billing = () => {
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                                {Object.keys(dataForExport[0]).map((key) => {
+                                {/* {dataForExport[0].map((key) => { */}
+                                {['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','StudentName','StudentId', 'TotalHours'].map((key,x)=>{
+                                    console.log(key)
                                     return (
-                                        <th>{key}</th>
+                                         <th>{key}</th>
                                     )
                                 })}
                             </tr>
@@ -74,9 +80,12 @@ export const Billing = () => {
                             {
                                 dataForExport.map((doc) => {
                                     const values = Object.values(doc);
+                                    console.log(doc)
                                     return (
                                         <tr>
-                                            {values.map((colVal) => <td>{colVal}</td>)}
+                                            {['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','StudentName','StudentId', 'Total'].map((index)=>{
+                                                return <td>{doc[index]}</td>
+                                            })}
                                         </tr>
                                     )
                                 })
@@ -90,69 +99,33 @@ export const Billing = () => {
     )
 }
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a
-        href=""
-        ref={ref}
-        onClick={(e) => {
-            e.preventDefault();
-            onClick(e);
-        }}
-    >
-        {children}
-        &#x25bc;
-    </a>
-));
+function ExportCSVReport ({ data, fileName,disable }) {
+    console.log(data);
+    
+  const downloadCSV = () => {
+    // Convert the data array into a CSV string  
+        // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
 
-const CustomMenu = React.forwardRef(
-    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-        const [value, setValue] = useState('');
+    const csvString = [
+        data[0], // Specify your headers here
+        ...data.map(item => [item.DateIn,item.DateOut, item.TimeIn, item.TimeOut, item.CheckedInBy ,item.CheckedOutBy,item.StudentName, item.StudentId, Math.floor(item.Total)]) // Map your data fields accordingly
+    ]
+    .map(row => row.join(","))
+    .join("\n");
+    // Create a Blob from the CSV string
+    const blob = new Blob([csvString], { type: 'text/csv' });
 
-        return (
-            <div
-                ref={ref}
-                style={style}
-                className={className}
-                aria-labelledby={labeledBy}
-            >
-                <Form.Control
-                    autoFocus
-                    className="mx-3 my-2 w-auto"
-                    placeholder="Type to filter..."
-                    onChange={(e) => setValue(e.target.value)}
-                    value={value}
-                />
-                <ul className="list-unstyled">
-                    {React.Children.toArray(children).filter(
-                        (child) =>
-                            !value || child.props.children.toLowerCase().startsWith(value),
-                    )}
-                </ul>
-            </div>
-        );
-    },
-);
+    // Generate a download link and initiate the download
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName || 'download.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
-export const ProgramList = ({ setSignedIn, setSignInName }) => {
-    const teachersList = useSelector(teachers);
-    const dispatch = useDispatch()
-    return (
-        <Dropdown>
-            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                Select From Teacher List:
-            </Dropdown.Toggle>
+  return <Button className="exportButton" variant={disable?'secondary':'success'} disabled={disable} onClick={downloadCSV}>Export CSV</Button>;
+};
 
-            <Dropdown.Menu as={CustomMenu}>
-                {dropDowns[0].Programs.map((program, key) => (
-                    <Dropdown.Item
-                        onClick={() => { }}
-                        eventKey={key}>{program}</Dropdown.Item>
-
-                ))}
-            </Dropdown.Menu>
-        </Dropdown>
-    )
-}
-
-// Richardson Industries 
-// Richardson Industries

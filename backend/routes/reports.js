@@ -1,58 +1,50 @@
 const router = require('express').Router();
 const History = require('../dbconnection/models/History')
 const Student = require('../dbconnection/models/Students')
+
+
 router.get('/reports', async (req, res) => {
-    const valuesInFilter = [];
+    const rowHeaders = ['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','Client Name','Client Id' ,'TotalHours']
+    const valuesInFilter = [rowHeaders];
     const start = req.query?.start
     const end = req.query?.end
     const building = req.query?.building
     const allHistory = await History.find();
     const students = await Student.find();
-    
     let x, y = 0;
-    // await Promise.all([
         allHistory.map(async (doc) => {
             let row = {}
             const timeClock = doc?.clockedInOutHistory
             let student = students.find(e=>e.id == doc.id)
-            console.log(student);
-            console.log(student.name, student.program, building);
             
             if (student.name && student.program == building) {
                 timeClock.forEach((time) => {
-                    console.log(start, end, time.timeMilli);
-                    console.log(time.timeMilli > start)
-                    console.log(time.timeMilli < end + (24 * 60 * 60 * 1000))
-                    if ((time.timeMilli > start && time.timeMilli < end + (24 * 60 * 60 * 1000))) {
+            
+                    if ((Number(time.timeMilli) > Number(start) && Number(time.timeMilli) < Number(end) + (24 * 60 * 60 * 1000))) {
 
                         if (time.status == 'in') {
-                            row.studentName = student.name
-                            row.studentId = student.id
-                            row.dateIn = getDateFromMilli(time.timeMilli)
-                            row.timeIn = convertMilitaryToStandard(time.time)
-                            row.checkedInBy = time.setBy
+                            row.StudentName = student.name
+                            row.StudentId = student.id
+                            row.DateIn = getDateFromMilli(time.timeMilli)
+                            row.TimeIn = convertMilitaryToStandard(time.time)
+                            row.CheckedInBy = time.setBy
                             x = time.timeMilli
                         }
                         if (time.status == 'out') {
-                            row.dateOut = getDateFromMilli(time.timeMilli)
-                            row.timeOut = convertMilitaryToStandard(time.time)
-                            row.checkedOutBy = time.setBy
-                            row.totalHours = getHoursWorked(x, time.timeMilli)
+                            row.DateOut = getDateFromMilli(time.timeMilli)
+                            row.TimeOut = convertMilitaryToStandard(time.time)
+                            row.CheckedOutBy = time.setBy
+                            row.Total = getHoursWorked(x, time.timeMilli)
                             valuesInFilter.push(row)
+                            x = null
                             row = {}
                         }
                     }
-                    // console.log(time);
                 })
             }
-            // resolve(doc+1)
         })
-    // ])
 
-    // await Promise.all([historyExec])//then(()=>{
-    console.log(valuesInFilter);
     res.json(valuesInFilter)
-    // })
 })
 
 function getDateFromMilli(milli) {

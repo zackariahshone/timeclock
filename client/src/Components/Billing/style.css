@@ -22,9 +22,13 @@
 
 .previewData{
     overflow:auto;
+    margin-top: 2%;
 }
 .calendarFilter{
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 
+}
+.exportButton{
+    margin-left:1%;
 }

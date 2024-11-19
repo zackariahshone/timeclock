@@ -105,30 +105,8 @@ export const getStudentHistory = (id,historyList,timefilter) =>{
     }
 } 
 
-const ourData = [
-    {
-      firstName: 'Idorenyin',
-      lastName: 'Udoh'
-    },
-    {
-      firstName: 'Loyle',
-      lastName: 'Carner'
-    },
-    {
-      firstName: 'Tamunotekena',
-      lastName: 'Dagogo'
-    }
-  ]
-  
-  const titleKeys = Object.keys(ourData[0])
-  const refinedData = []
-  refinedData.push(titleKeys)
-export const createCSV = ()=>{
-
-}
-
-
-export const ExportCSV = ({ data, fileName }) => {
+const ExportCSV = ({ data, fileName }) => {
+    
   const downloadCSV = () => {
     // Convert the data array into a CSV string  
         // DateIn	DateOut	TimeIn	TimeOut	CheckedInBy, CheckedOutBy	Total Hours
