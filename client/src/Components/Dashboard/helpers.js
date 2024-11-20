@@ -90,7 +90,6 @@ export const staffTotal = (list) => {
 }
 
 export const getStudentHistory = (id,historyList,timefilter) =>{    
-    console.log(timefilter)
     if(timefilter !== undefined && timefilter.length == 2){
         const filterOne = new Date(timefilter[0]).getTime()
         const filterTwo = new Date(timefilter[1]).getTime();
@@ -104,6 +103,7 @@ export const getStudentHistory = (id,historyList,timefilter) =>{
         return historyList.filter(doc=>doc?.id == id);    
     }
 } 
+
 
 const ExportCSV = ({ data, fileName }) => {
     
