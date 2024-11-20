@@ -23,7 +23,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   console.log(student);
 return (
   <Card body>
-  {studentHistory.map((doc) => {
+  {studentHistory.map((doc , x) => {
     console.log(doc);
     
     return (
@@ -32,9 +32,10 @@ return (
           <Col xs={2}>
             <text>{student.name}</text>
           </Col>
+          {  x == studentHistory.length - 1 ?
           <Col xs={2}>
             <text>{student.status}</text>
-          </Col>
+          </Col>:<Col xs={2}></Col>}
           <Col xs={4}>
             <InputGroup className="mb-3">
               <Form.Control onChange={() => { }} value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''} aria-label="First name" />
@@ -49,7 +50,7 @@ return (
               : <Col></Col>
           }
           <Col>
-            <Button
+           { x == studentHistory.length - 1 ?  <Button
               onClick={() => {
                 const timeClockData = {
                   student,
@@ -61,7 +62,8 @@ return (
                 dispatch(timeClock(timeClockData));
                 setStatusChange(true);
               }}
-              variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>
+              variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} 
+              </Button>:''}
           </Col>
         </Row>
     </Form>)
@@ -115,14 +117,17 @@ export function getLastTimeClockIn(history, studentid) {
 }
 
 export function getstudentHistoryFromID(rawhisory, studentid) {
-  return Object.values(rawhisory).filter(doc => doc.id == studentid)[0].clockedInOutHistory
+  return Object.values(rawhisory).filter(doc => doc.id == studentid)[0]?.clockedInOutHistory
 }
 
 export function getTodaysClockInHistory(history) {
-  const now = new Date();
-  const milliSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  console.log(history);
   const todayCollection = [];
-  let timeIn, timeinMilli, timeOutMilli, timeOut;
+  if(history){
+
+    const now = new Date();
+    const milliSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+    let timeIn, timeinMilli, timeOutMilli, timeOut;
   history.forEach((record) => {
     if (milliSeconds < Number(record.timeMilli)) {
       if (record.status == 'in') {
@@ -135,7 +140,7 @@ export function getTodaysClockInHistory(history) {
         todayCollection.push({ timeIn, timeinMilli, timeOut, timeOutMilli })
       }
     }
-
   })
+}
   return todayCollection;
 }

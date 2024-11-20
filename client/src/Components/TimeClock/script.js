@@ -22,10 +22,10 @@ export default (props) => {
     const currentUser = useSelector(userSignedIn);
     const history = useSelector(studentHistory);
     const dispatch = useDispatch();
-    // useEffect(() => {
-    //     getData('/getstudenthistory', 'GET', setHistoryBulk);
-    //     setStatusChange(false);
-    // }, [statusChange])
+    useEffect(() => {
+        getData('/getstudenthistory', 'GET', setHistoryBulk);
+        setStatusChange(false);
+    }, [statusChange])
     return (
 
         <Fragment>
@@ -57,9 +57,10 @@ export default (props) => {
                 const currentStudentHistory = getLastTimeClockIn(history, student.id)
                 return (
                     <>
-
-                <CheckinCheckoutButtons student={student} studentHistory={getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} currentUser={currentUser} setStatusChange={setStatusChange} />
-                    {/* <Form>
+                    {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id)).length > 0 ?
+                        <CheckinCheckoutButtons student={student} studentHistory={getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} currentUser={currentUser} setStatusChange={setStatusChange} />
+                        :  
+                    <Form>
                         <Card body>
                             <Row>
                                 <Col xs={2}>
@@ -98,7 +99,8 @@ export default (props) => {
                                 </Col>
                             </Row>
                         </Card>
-                    </Form> */}
+                    </Form>
+                    }
                     </>
                 )
             })}
