@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   Card,
@@ -6,8 +6,10 @@ import {
   Col,
   InputGroup,
   Button,
-
+  Modal,
+  Container
 } from "react-bootstrap";
+import { Calendar } from 'primereact/calendar';
 import { getStudentHistory } from "../Dashboard/helpers";
 import { useDispatch } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
@@ -15,31 +17,31 @@ import { createItem } from "../../globalUtils/requests";
 
 
 
-
-
-
 export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, setStatusChange }) => {
   const dispatch = useDispatch();
+  const [show, setShow] = useState(false);
+
   let totalTimeWorked = 0;
   return (
     <Card
       className="timeClockCard"
-     body>
-    <Row>
-      <Col xs = {2}>
-        <Card.Text className="timeClockCardTitle">
-          {student.name}
-        </Card.Text>
-      </Col>
-      <Col xs = {2}>
-        <Card.Text
-          className="timeClockCardTitle"
-        >
-          Checked {student.status}
-        </Card.Text>
-      </Col>
-    </Row>
+      body>
+      <Row>
+        <Col xs={2}>
+          <Card.Text className="timeClockCardTitle">
+            {student.name}
+          </Card.Text>
+        </Col>
+        <Col xs={2}>
+          <Card.Text
+            className="timeClockCardTitle"
+          >
+            Checked {student.status}
+          </Card.Text>
+        </Col>
+      </Row>
       {studentHistory.map((doc, x) => {
+        const lastRecord = studentHistory.length-1 == x
         const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli)
         totalTimeWorked += Number(sessionHours);
         return (
@@ -48,20 +50,25 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               <Col xs={2}>
 
               </Col>
-          
+
               <Col xs={4}>
-                <InputGroup className="mb-3 rowBorderBottom">
-                  <Form.Control onChange={() => { }} value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''} aria-label="Time In" />
-                  <Form.Control onChange={() => { }} value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} aria-label="Time Out" />
+                <InputGroup
+                  onClick={() => {
+                    if(lastRecord){
+                      setShow(true);
+                    }
+                  }}
+                  className="mb-3 rowBorderBottom">
+                  <Form.Control
+                    value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
+                    aria-label="Time In" />
+                  <Form.Control
+                    value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} aria-label="Time Out" />
                 </InputGroup>
               </Col>
-              {/* { */}
-                {/* student.status == 'out' ? */}
-                  <Col>
-                   {sessionHours ? <p> {sessionHours} hrs</p>:''}
-                  </Col>
-                  {/* : <Col></Col> */}
-              {/* } */}
+              <Col>
+                {sessionHours ? <p> {sessionHours} hrs</p> : ''}
+              </Col>
               <Col>
                 {x == studentHistory.length - 1 ? <Button
                   onClick={() => {
@@ -81,16 +88,48 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
             </Row>
           </Form>)
       })}
-            <Row>
-              <Col xs={{ span: 3, offset: 8 }}>
-              <div className={ totalTimeWorked >= 5 ? "timeHit" : 'timeMissing'}>
-                Todays Total Time :  {totalTimeWorked.toFixed(2)}
-              </div>
-              </Col>
-            </Row>
+      <Row>
+        <Col xs={{ span: 3, offset: 8 }}>
+          <div className={totalTimeWorked >= 5 ? "timeHit" : 'timeMissing'}>
+            Todays Total Time :  {totalTimeWorked.toFixed(2)}
+          </div>
+        </Col>
+      </Row>
+    { show? <EditTimeModal show={show} setShow={setShow}/>:<></>}
     </Card>
   )
 }
+export function EditTimeModal({show, setShow}) {
+  // const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [datetime12h, setDateTime12h] = useState(null);
+  const [time, setTime] = useState(null);
+
+  return (
+    <>
+      <Modal show={show} onHide={handleClose}>
+        
+        <Modal.Body>
+        <div>
+          <Calendar value={time} onChange={(e) => setTime(e.value)} inline timeOnly hourFormat="12" /> 
+        </div>
+        
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
 
 export function getHoursWorked(timein, timeout) {
   if (timein && timeout) {
@@ -139,6 +178,7 @@ export function getLastTimeClockIn(history, studentid) {
 export function getstudentHistoryFromID(rawhisory, studentid) {
   return Object.values(rawhisory).filter(doc => doc.id == studentid)[0]?.clockedInOutHistory
 }
+
 
 export function getTodaysClockInHistory(history) {
   const todayCollection = [];
