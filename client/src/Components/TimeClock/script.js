@@ -54,7 +54,8 @@ export default (props) => {
             <h3 className="titleMarginBottom">Students:</h3>
             {studentList.map((student) => {
                 {/* {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} */}
-                const currentStudentHistory = getLastTimeClockIn(history, student.id)
+                const currentStudentHistory = getLastTimeClockIn(history, student.id);
+                const todaysHistoryArray = getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))
                 return (
                     <>
                     {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id)).length > 0 ?
@@ -62,9 +63,19 @@ export default (props) => {
                         :  
                     <Form>
                         <Card body>
+                            <Card.Text
+                                className="timeClockCardTitle"
+                            >
+                                {student.name}
+                            </Card.Text>
+                            <Card.Text
+                                className="timeClockCardTitle"
+                            >
+                               Checked {student.status}
+                            </Card.Text>
                             <Row>
                                 <Col xs={2}>
-                                    <text>{student.name}</text>
+                                    {/* <text>{student.name}</text> */}
                                 </Col>
                                 <Col xs={2}>
                                     <text>{student.status}</text>

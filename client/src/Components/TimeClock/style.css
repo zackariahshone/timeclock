@@ -2,3 +2,27 @@
     margin-top: 3%;
     text-align: left;
 }
+.timeClockCardTitle{
+    text-align: left;
+    font-weight: bolder;
+    margin-left: 5%;
+}
+
+.rowBorderBottom{
+    /* border-style: solid; */
+    /* border-width: .5px; */
+    border-bottom: .5px solid black;
+    border-width: 50%;
+    margin-bottom:2%;
+    /* border-color: black; */
+}
+.timeClockCard{
+    margin-bottom: 2%;
+}
+.timeHit{
+    width: 50%;
+    background-color: rgb(161, 238, 163);
+}
+.timeMissing{
+    background-color: rgb(218, 135, 135);
+}
