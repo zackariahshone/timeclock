@@ -29,3 +29,8 @@
     background-color: rgb(218, 135, 135);
     border-radius: 10px;
 }
+
+.errorMSG{
+    background-color: rgb(218, 135, 135);
+    color: red;
+}

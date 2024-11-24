@@ -21,6 +21,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [timeToEdit, setTimeToEdit] = useState();
+  let validationDate = {};
   let totalTimeWorked = 0;
   return (
     <Card
@@ -41,7 +42,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
         </Col>
       </Row>
       {studentHistory.length > 0 ? studentHistory.map((doc, x) => {
-        const lastRecord = studentHistory.length-1 == x
+        const lastRecord = studentHistory.length - 1 == x
         const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli);
         totalTimeWorked += Number(sessionHours);
         return (
@@ -53,22 +54,27 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               <Col xs={4}>
                 <InputGroup
                   onClick={(e) => {
+                    console.log(studentHistory[x - 1]);
+                    if (e.target.id == 'timeIn') {
+                      validationDate = { start: studentHistory[x - 1].timeOutMilli, end: studentHistory[x].timeOutMilli }
+                    }
                     setTimeToEdit({
-                      action:e.target.id,
-                      id:student.id,
-                      timeMilli: e.target.id =='timeIn' ? doc.timeinMilli : doc.timeOutMilli
+                      action: e.target.id,
+                      id: student.id,
+                      timeMilli: e.target.id == 'timeIn' ? doc.timeinMilli : doc.timeOutMilli,
+                      validationDate
                     })
-                    if(lastRecord){
+                    if (lastRecord) {
                       setShow(true);
                     }
                   }}
                   className="mb-3 rowBorderBottom">
                   <Form.Control
-                    id= 'timeIn'
+                    id='timeIn'
                     value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
                     aria-label="Time In" />
                   <Form.Control
-                    id= 'timeOut'
+                    id='timeOut'
                     value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} aria-label="Time Out" />
                 </InputGroup>
               </Col>
@@ -93,43 +99,43 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               </Col>
             </Row>
           </Form>)
-      }): 
+      }) :
         <Form>
-            <Row className="">
-              <Col xs={2}>
-              </Col>
+          <Row className="">
+            <Col xs={2}>
+            </Col>
 
-              <Col xs={4}>
-                <InputGroup
-                  className="mb-3 rowBorderBottom">
-                  <Form.Control
-                    id= 'timeIn'
-                    aria-label="Time In" />
-                  <Form.Control
-                    id= 'timeOut'
-                    />
-                </InputGroup>
-              </Col>
-              <Col>
-              </Col>
-              <Col>
-                <Button
-                  onClick={() => {
-                    const timeClockData = {
-                      student,
-                      time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                      timeMilli: `${new Date().getTime()}`,
-                      setBy: currentUser
-                    }
-                    createItem('/studenttimeclock', timeClockData);
-                    dispatch(timeClock(timeClockData));
-                    setStatusChange(true);
-                  }}
-                  variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
-                </Button>
-              </Col>
-            </Row>
-          </Form>
+            <Col xs={4}>
+              <InputGroup
+                className="mb-3 rowBorderBottom">
+                <Form.Control
+                  id='timeIn'
+                  aria-label="Time In" />
+                <Form.Control
+                  id='timeOut'
+                />
+              </InputGroup>
+            </Col>
+            <Col>
+            </Col>
+            <Col>
+              <Button
+                onClick={() => {
+                  const timeClockData = {
+                    student,
+                    time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                    timeMilli: `${new Date().getTime()}`,
+                    setBy: currentUser
+                  }
+                  createItem('/studenttimeclock', timeClockData);
+                  dispatch(timeClock(timeClockData));
+                  setStatusChange(true);
+                }}
+                variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
+              </Button>
+            </Col>
+          </Row>
+        </Form>
       }
       <Row>
         <Col xs={{ span: 3, offset: 8 }}>
@@ -138,39 +144,45 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </div>
         </Col>
       </Row>
-    { show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange = {setStatusChange}/>:<></>}
+      {show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange={setStatusChange} /> : <></>}
     </Card>
   )
 }
 
-export function EditTimeModal({show, setShow, timeToEdit, setStatusChange}) {
-  
+export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [time, setTime] = useState(null);
-  
-  console.log(new Date(time).getTime());
+  const [error, setError] = useState();
+  console.log(timeToEdit);
   return (
     <>
       <Modal show={show} onHide={handleClose}>
-        
         <Modal.Body>
-        <div>
-          <Calendar value={time} onChange={(e) => setTime(e.value)} inline timeOnly hourFormat="12" /> 
-        </div>
-        
+          <div>
+            <Calendar value={time} onChange={(e) => setTime(e.value)} inline timeOnly hourFormat="12" />
+          </div>
         </Modal.Body>
         <Modal.Footer>
+          {error ? <div className="errorMSG"> {error}</div>:''}
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button 
-          variant="primary" 
-          onClick={()=>{
-              updateTime(timeToEdit,{newTime:new Date(time).getTime()})
-              setStatusChange(true);
-              handleClose() 
+          <Button
+            variant="primary"
+            onClick={() => {
+              let chosenTime = new Date(time).getTime();
+              if ( chosenTime > timeToEdit.validationDate.start && 
+                  (chosenTime < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
+                updateTime(timeToEdit, { newTime: new Date(time).getTime() })
+                setStatusChange(true);
+                handleClose()
+                setError('');
+              }else{
+                setError('Input Out of Range');
               }
+            }
             }>
             Save Changes
           </Button>
@@ -261,10 +273,10 @@ export function getTodaysClockInHistory(history) {
   return todayCollection;
 }
 
-export function updateTime(currentTimeStamp, newTimeStamp){
+export function updateTime(currentTimeStamp, newTimeStamp) {
   const reqBody = {
     currentTimeStamp,
     newTimeStamp
   }
-updateItem('/updatetimeclock',reqBody)
+  updateItem('/updatetimeclock', reqBody)
 }
