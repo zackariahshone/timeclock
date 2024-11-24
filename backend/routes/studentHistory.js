@@ -8,13 +8,22 @@ router.post('/addhistory', async (req, res) => {
 
 router.post('/updatetimeclock', async (req, res) => {
     console.log(req.body)
-    const historyCollection = await studentHistory.findOne({id:req.body.currentTimeStamp.id})    
-    const historyToEdit = historyCollection.clockedInOutHistory.find((doc)=>doc.timeMilli == req.body.currentTimeStamp.timeMilli)
-    console.log(historyToEdit);
-    historyToEdit.timeMilli = req.body.newTimeStamp.newTime
-    historyToEdit.time = `${new Date(req.body.newTimeStamp.newTime).getHours()} : ${new Date(req.body.newTimeStamp.newTime).getMinutes()}`
-    console.log(historyToEdit);
-    await historyCollection.save()
+    const filter = { 
+        id:req.body.currentTimeStamp.id , 
+        'clockedInOutHistory.timeMilli': req.body.currentTimeStamp.timeMilli // Match the specific entry
+      };
+      const update = {
+        $set: {
+          'clockedInOutHistory.$.timeMilli':  req.body.newTimeStamp.newTime, // New timeMilli
+          'clockedInOutHistory.$.time': `${new Date(req.body.newTimeStamp.newTime).getHours()} : ${new Date(req.body.newTimeStamp.newTime).getMinutes()}`           // New time
+        }
+      };
+      
+    const historyCollection = await studentHistory.findOneAndUpdate(filter,update)   
+    console.log(historyCollection);
+    // historyToEdit.timeMilli = req.body.newTimeStamp.newTime
+    // historyToEdit.time = `${new Date(req.body.newTimeStamp.newTime).getHours()} : ${new Date(req.body.newTimeStamp.newTime).getMinutes()}`
+    // await historyCollection.save()
     res.send('200')
 });
 

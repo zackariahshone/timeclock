@@ -40,15 +40,14 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </Card.Text>
         </Col>
       </Row>
-      {studentHistory.map((doc, x) => {
+      {studentHistory.length > 0 ? studentHistory.map((doc, x) => {
         const lastRecord = studentHistory.length-1 == x
-        const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli)
+        const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli);
         totalTimeWorked += Number(sessionHours);
         return (
           <Form>
             <Row className="">
               <Col xs={2}>
-
               </Col>
 
               <Col xs={4}>
@@ -94,7 +93,44 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               </Col>
             </Row>
           </Form>)
-      })}
+      }): 
+        <Form>
+            <Row className="">
+              <Col xs={2}>
+              </Col>
+
+              <Col xs={4}>
+                <InputGroup
+                  className="mb-3 rowBorderBottom">
+                  <Form.Control
+                    id= 'timeIn'
+                    aria-label="Time In" />
+                  <Form.Control
+                    id= 'timeOut'
+                    />
+                </InputGroup>
+              </Col>
+              <Col>
+              </Col>
+              <Col>
+                <Button
+                  onClick={() => {
+                    const timeClockData = {
+                      student,
+                      time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                      timeMilli: `${new Date().getTime()}`,
+                      setBy: currentUser
+                    }
+                    createItem('/studenttimeclock', timeClockData);
+                    dispatch(timeClock(timeClockData));
+                    setStatusChange(true);
+                  }}
+                  variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+      }
       <Row>
         <Col xs={{ span: 3, offset: 8 }}>
           <div className={totalTimeWorked >= 5 ? "timeHit" : 'timeMissing'}>
@@ -102,12 +138,12 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </div>
         </Col>
       </Row>
-    { show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit}/>:<></>}
+    { show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange = {setStatusChange}/>:<></>}
     </Card>
   )
 }
 
-export function EditTimeModal({show, setShow, timeToEdit}) {
+export function EditTimeModal({show, setShow, timeToEdit, setStatusChange}) {
   
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -132,6 +168,7 @@ export function EditTimeModal({show, setShow, timeToEdit}) {
           variant="primary" 
           onClick={()=>{
               updateTime(timeToEdit,{newTime:new Date(time).getTime()})
+              setStatusChange(true);
               handleClose() 
               }
             }>

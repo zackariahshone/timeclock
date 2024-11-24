@@ -22,7 +22,10 @@
 .timeHit{
     width: 50%;
     background-color: rgb(161, 238, 163);
+    border-radius: 2%;
 }
 .timeMissing{
+    width: 50%;
     background-color: rgb(218, 135, 135);
+    border-radius: 10px;
 }
