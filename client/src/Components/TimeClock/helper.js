@@ -110,9 +110,13 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                 className="mb-3 rowBorderBottom">
                 <Form.Control
                   id='timeIn'
-                  aria-label="Time In" />
+                  aria-label="Time In" 
+                  readOnly  
+                  />
                 <Form.Control
                   id='timeOut'
+                  aria-label="Time out"
+                  readOnly
                 />
               </InputGroup>
             </Col>
