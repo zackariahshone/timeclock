@@ -1,6 +1,7 @@
 import AddClients from "../../Components/AddClients/script.js";
 import TimeClock from "../../Components/TimeClock/script.js";
 import DashBoard from "../../Components/Dashboard/script.js";
+import { Billing } from "../../Components/Billing/script.js";
 
 
 export const DisplayMenuOptions = (menuOption) => {
@@ -13,6 +14,8 @@ export const DisplayMenuOptions = (menuOption) => {
             return <AddClients type="teacher"/>
         case "Time Clock":
             return <TimeClock />
+        case "Billing":
+            return <Billing/>
         default:
             return <DashBoard />
     }
@@ -21,7 +24,7 @@ export const DisplayMenuOptions = (menuOption) => {
 export const menuConfig = {
     "optionsSet1": [
         'DashBoard',
-        'Fees And Invoicing'
+        'Billing'
     ],
     "optionsSet2": [
         'Students',

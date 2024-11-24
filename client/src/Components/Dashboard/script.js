@@ -57,9 +57,7 @@ export default () => {
             </Container>
             <Container >
                 {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
-                    <>
-                    <Container>
-                    </Container>    
+                    <>   
                     <Card >
                         <>
                     <Container className="marginTop">
@@ -110,6 +108,8 @@ export default () => {
 }
 
 function getCsvData(filteredData){
+    console.log(filteredData);
+    
     let row = [];
     let collection =[];
     let totalHours = [];
@@ -140,10 +140,11 @@ function getCsvData(filteredData){
                 collection.push(newRow)
             }
         })
-        const billableHours = totalHours.length > 0 ?Math.floor(totalHours.reduce((a, b) => Number(a) + Number(b))) : 0;
+      
             // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
 
-        collection.push({DateIn: 'ID#', DateOut: `${filteredData[0].id}`, TimeIn: '', TimeOut:'',CheckedInBy:'',CheckedOutBy:'Billable Hours','Total':billableHours})
+       console.log(collection);
+       
         return collection;
     }
     return collection;

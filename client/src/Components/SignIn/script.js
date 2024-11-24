@@ -52,7 +52,7 @@ const CustomMenu = React.forwardRef(
     },
 );
 
-export const TeacherSignIn = ({signedIn, setSignedIn,teacherList,setSignInName}) => {
+export const TeacherSignIn = ({setSignedIn,setSignInName}) => {
     const teachersList = useSelector(teachers);
     const dispatch = useDispatch() 
     return (
