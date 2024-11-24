@@ -13,14 +13,14 @@ import { Calendar } from 'primereact/calendar';
 import { getStudentHistory } from "../Dashboard/helpers";
 import { useDispatch } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
-import { createItem } from "../../globalUtils/requests";
+import { createItem, updateItem } from "../../globalUtils/requests";
 
 
 
 export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, setStatusChange }) => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
-
+  const [timeToEdit, setTimeToEdit] = useState();
   let totalTimeWorked = 0;
   return (
     <Card
@@ -53,16 +53,23 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
 
               <Col xs={4}>
                 <InputGroup
-                  onClick={() => {
+                  onClick={(e) => {
+                    setTimeToEdit({
+                      action:e.target.id,
+                      id:student.id,
+                      timeMilli: e.target.id =='timeIn' ? doc.timeinMilli : doc.timeOutMilli
+                    })
                     if(lastRecord){
                       setShow(true);
                     }
                   }}
                   className="mb-3 rowBorderBottom">
                   <Form.Control
+                    id= 'timeIn'
                     value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
                     aria-label="Time In" />
                   <Form.Control
+                    id= 'timeOut'
                     value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} aria-label="Time Out" />
                 </InputGroup>
               </Col>
@@ -95,18 +102,18 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </div>
         </Col>
       </Row>
-    { show? <EditTimeModal show={show} setShow={setShow}/>:<></>}
+    { show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit}/>:<></>}
     </Card>
   )
 }
-export function EditTimeModal({show, setShow}) {
-  // const [show, setShow] = useState(false);
 
+export function EditTimeModal({show, setShow, timeToEdit}) {
+  
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [datetime12h, setDateTime12h] = useState(null);
   const [time, setTime] = useState(null);
-
+  
+  console.log(new Date(time).getTime());
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -121,7 +128,13 @@ export function EditTimeModal({show, setShow}) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button 
+          variant="primary" 
+          onClick={()=>{
+              updateTime(timeToEdit,{newTime:new Date(time).getTime()})
+              handleClose() 
+              }
+            }>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -129,7 +142,6 @@ export function EditTimeModal({show, setShow}) {
     </>
   );
 }
-
 
 export function getHoursWorked(timein, timeout) {
   if (timein && timeout) {
@@ -139,7 +151,6 @@ export function getHoursWorked(timein, timeout) {
   }
   return null;
 }
-
 
 export function convertMilitaryToStandard(militaryTime) {
   if (militaryTime) {
@@ -179,7 +190,6 @@ export function getstudentHistoryFromID(rawhisory, studentid) {
   return Object.values(rawhisory).filter(doc => doc.id == studentid)[0]?.clockedInOutHistory
 }
 
-
 export function getTodaysClockInHistory(history) {
   const todayCollection = [];
   if (history) {
@@ -212,4 +222,12 @@ export function getTodaysClockInHistory(history) {
     })
   }
   return todayCollection;
+}
+
+export function updateTime(currentTimeStamp, newTimeStamp){
+  const reqBody = {
+    currentTimeStamp,
+    newTimeStamp
+  }
+updateItem('/updatetimeclock',reqBody)
 }

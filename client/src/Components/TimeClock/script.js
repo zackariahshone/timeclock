@@ -4,13 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { timeClock, students } from "../../app/EmployeeListSlice";
 import { userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
-import { 
-    convertMilitaryToStandard, 
+import {
+    convertMilitaryToStandard,
     getHoursWorked,
     getstudentHistoryFromID,
     getLastTimeClockIn,
-    getTodaysClockInHistory, 
-    CheckinCheckoutButtons} from "./helper";
+    getTodaysClockInHistory,
+    CheckinCheckoutButtons
+} from "./helper";
 import { createItem, getData } from "../../globalUtils/requests"
 import { addStudentHistory, setHistoryBulk, studentHistory } from "../../app/StudentHistorySlice";
 import { getStudentHistory } from "../Dashboard/helpers";
@@ -53,65 +54,69 @@ export default (props) => {
 
             <h3 className="titleMarginBottom">Students:</h3>
             {studentList.map((student) => {
-                {/* {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} */}
+                {/* {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} */ }
                 const currentStudentHistory = getLastTimeClockIn(history, student.id);
-                const todaysHistoryArray = getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))
+                const todaysHistoryArray = getTodaysClockInHistory(getstudentHistoryFromID(history, student.id))
                 return (
                     <>
-                    {getTodaysClockInHistory(getstudentHistoryFromID(history,student.id)).length > 0 ?
-                        <CheckinCheckoutButtons student={student} studentHistory={getTodaysClockInHistory(getstudentHistoryFromID(history,student.id))} currentUser={currentUser} setStatusChange={setStatusChange} />
-                        :  
-                    <Form>
-                        <Card body>
-                            <Card.Text
-                                className="timeClockCardTitle"
-                            >
-                                {student.name}
-                            </Card.Text>
-                            <Card.Text
-                                className="timeClockCardTitle"
-                            >
-                               Checked {student.status}
-                            </Card.Text>
-                            <Row>
-                                <Col xs={2}>
-                                    {/* <text>{student.name}</text> */}
-                                </Col>
-                                <Col xs={2}>
-                                    <text>{student.status}</text>
-                                </Col>
-                                <Col xs={4}>
-                                    <InputGroup className="mb-3">
-                                        <Form.Control onChange={()=>{}} value={currentStudentHistory?.timeIn ? convertMilitaryToStandard(currentStudentHistory.timeIn) : ''} aria-label="First name" />
-                                        <Form.Control onChange={()=>{}} value={currentStudentHistory?.timeOut ? convertMilitaryToStandard(currentStudentHistory.timeOut) : ''} aria-label="Last name" />
-                                    </InputGroup>
-                                </Col>
-                                {
-                                    student.status == 'out' && (student.timeIn && student.timeOut) ?
-                                        <Col>
-                                            <p> {getHoursWorked(currentStudentHistory?.timeinMilli, currentStudentHistory?.timeOutMilli)} hrs</p>
+                        {getTodaysClockInHistory(getstudentHistoryFromID(history, student.id)).length > 0 ?
+                            <CheckinCheckoutButtons student={student} studentHistory={getTodaysClockInHistory(getstudentHistoryFromID(history, student.id))} currentUser={currentUser} setStatusChange={setStatusChange} />
+                            :
+                            <Form>
+                                <Card
+                                    className="timeClockCard"
+                                    body>
+                                    <Row>
+                                        <Col xs={2}>
+                                            <Card.Text className="timeClockCardTitle">
+                                                {student.name}
+                                            </Card.Text>
                                         </Col>
-                                        : <Col></Col>
-                                }
-                                <Col>
-                                    <Button
-                                        onClick={() => {
-                                            const timeClockData = {
-                                                student,
-                                                time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                                                timeMilli: `${new Date().getTime()}`,
-                                                setBy: currentUser
-                                            }
-                                            createItem('/studenttimeclock', timeClockData);
-                                            dispatch(timeClock(timeClockData));
-                                            setStatusChange(true);
-                                        }}
-                                        variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </Form>
-                    }
+                                        <Col xs={2}>
+                                            <Card.Text
+                                                className="timeClockCardTitle"
+                                            >
+                                                Checked {student.status}
+                                            </Card.Text>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={2}>
+                                            {/* <text>{student.name}</text> */}
+                                        </Col>
+                                       
+                                        <Col xs={4}>
+                                            <InputGroup className="mb-3 rowBorderBottom">
+                                                <Form.Control onChange={() => { }} value={currentStudentHistory?.timeIn ? convertMilitaryToStandard(currentStudentHistory.timeIn) : ''} aria-label="First name" />
+                                                <Form.Control onChange={() => { }} value={currentStudentHistory?.timeOut ? convertMilitaryToStandard(currentStudentHistory.timeOut) : ''} aria-label="Last name" />
+                                            </InputGroup>
+                                        </Col>
+                                        {
+                                            student.status == 'out' && (student.timeIn && student.timeOut) ?
+                                                <Col>
+                                                    <p> {getHoursWorked(currentStudentHistory?.timeinMilli, currentStudentHistory?.timeOutMilli)} hrs</p>
+                                                </Col>
+                                                : <Col></Col>
+                                        }
+                                        <Col>
+                                            <Button
+                                                onClick={() => {
+                                                    const timeClockData = {
+                                                        student,
+                                                        time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                                                        timeMilli: `${new Date().getTime()}`,
+                                                        setBy: currentUser
+                                                    }
+                                                    createItem('/studenttimeclock', timeClockData);
+                                                    dispatch(timeClock(timeClockData));
+                                                    setStatusChange(true);
+                                                }}
+                                                variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'} </Button>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Form>
+                        }
                     </>
                 )
             })}

@@ -17,7 +17,7 @@ export const createItem = (route, body, action, type) => {
 
 export const updateItem = (route, body, action, type) => {
     fetch(route, {
-        method: 'UPDATE',
+        method: 'POST',
         mode: "cors",
         headers: {
             'Content-Type': 'application/json',
