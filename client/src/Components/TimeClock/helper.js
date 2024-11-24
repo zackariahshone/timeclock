@@ -56,7 +56,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   onClick={(e) => {
                     console.log(studentHistory[x - 1]);
                     if (e.target.id == 'timeIn') {
-                      validationDate = { start: studentHistory[x - 1].timeOutMilli, end: studentHistory[x].timeOutMilli }
+                      validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
                     }
                     setTimeToEdit({
                       action: e.target.id,
@@ -173,7 +173,8 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
             variant="primary"
             onClick={() => {
               let chosenTime = new Date(time).getTime();
-              if ( chosenTime > timeToEdit.validationDate.start && 
+              let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
+              if ( chosenTime > startDateFilter && 
                   (chosenTime < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
                 updateTime(timeToEdit, { newTime: new Date(time).getTime() })
                 setStatusChange(true);
@@ -242,18 +243,15 @@ export function getstudentHistoryFromID(rawhisory, studentid) {
 export function getTodaysClockInHistory(history) {
   const todayCollection = [];
   if (history) {
-    let lastStatus = '';
     const now = new Date();
     const milliSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
     let timeIn, timeinMilli, timeOutMilli, timeOut = '00:00';
     history.forEach((record, x) => {
       let lastRecord = history.length == x + 1
-
       if (milliSeconds < Number(record.timeMilli)) {
         if (record.status == 'in') {
           timeIn = record.time
           timeinMilli = record.timeMilli
-          lastStatus = 'in'
           if (lastRecord) {
             console.log(lastRecord, record);
             timeOut = ''
@@ -265,12 +263,17 @@ export function getTodaysClockInHistory(history) {
           timeOut = record.time
           timeOutMilli = record.timeMilli
           todayCollection.push({ timeIn, timeinMilli, timeOut, timeOutMilli })
-          lastStatus = 'out'
         }
       }
     })
   }
   return todayCollection;
+}
+
+export function getTodayMillisecond() {
+  const now = new Date();
+  const milliSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  return milliSeconds;
 }
 
 export function updateTime(currentTimeStamp, newTimeStamp) {
