@@ -39,12 +39,9 @@ export const employeeListSlice = createSlice({
       switch (student.status) {
         case 'out':
               student.status = 'in';
-              student.timeIn = new Date().getTime;
-              student.timeOut = '';
           break
         case 'in':
               student.status = 'out'
-              student.timeOut = new Date().getTime;
           break
         default:
           break

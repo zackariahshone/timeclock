@@ -72,10 +72,15 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   <Form.Control
                     id='timeIn'
                     value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
-                    aria-label="Time In" />
+                    aria-label="Time In" 
+                    readOnly
+                    />
                   <Form.Control
                     id='timeOut'
-                    value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} aria-label="Time Out" />
+                    value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} 
+                    aria-label="Time Out" 
+                    readOnly
+                    />
                 </InputGroup>
               </Col>
               <Col>
@@ -157,9 +162,8 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(new Date(Number(timeToEdit.timeMilli)));
   const [error, setError] = useState();
-  console.log(timeToEdit);
   return (
     <>
       <Modal show={show} onHide={handleClose}>
