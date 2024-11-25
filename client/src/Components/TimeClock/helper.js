@@ -54,7 +54,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               <Col xs={4}>
                 <InputGroup
                   onClick={(e) => {
-                    console.log(studentHistory[x - 1]);
                     if (e.target.id == 'timeIn') {
                       validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
                     }else if(e.target.id == 'timeOut'){
@@ -139,7 +138,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     setBy: currentUser
                   }
                   createItem('/studenttimeclock', timeClockData);
-                  dispatch(timeClock(timeClockData));
                   setStatusChange(true);
                 }}
                 variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
