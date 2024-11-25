@@ -285,6 +285,7 @@ export function getTodayMillisecond() {
 }
 
 export function updateTime(currentTimeStamp, newTimeStamp) {
+  
   const reqBody = {
     currentTimeStamp,
     newTimeStamp
