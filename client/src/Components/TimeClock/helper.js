@@ -71,7 +71,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   className="mb-3 rowBorderBottom">
                   <Form.Control
                     id='timeIn'
-                    value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
+                    value={doc?.timeIn ? convertMilitaryToStandard(getTimeFromMillisecond(doc?.timeinMilli)) : ''}
                     aria-label="Time In" 
                     readOnly
                     />
