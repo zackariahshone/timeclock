@@ -15,7 +15,7 @@ router.post('/updatetimeclock', async (req, res) => {
       const update = {
         $set: {
           'clockedInOutHistory.$.timeMilli':  req.body.newTimeStamp.newTime, // New timeMilli
-          'clockedInOutHistory.$.time': `${new Date(req.body.newTimeStamp.newTime).getHours()} : ${new Date(req.body.newTimeStamp.newTime).getMinutes()}`           // New time
+          'clockedInOutHistory.$.time': `${new Date(req.body.newTimeStamp.newTime).getHours()}:${new Date(req.body.newTimeStamp.newTime).getMinutes()}`           // New time
         }
       };
       

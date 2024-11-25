@@ -57,8 +57,9 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     console.log(studentHistory[x - 1]);
                     if (e.target.id == 'timeIn') {
                       validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
-                    }else if(e.target.id == 'timeIn'){
+                    }else if(e.target.id == 'timeOut'){
                       validationDate = { start: studentHistory[x]?.timeinMilli, end: studentHistory[x+1]?.timeinMilli }
+                      console.log(validationDate)
                     }
                     setTimeToEdit({
                       action: e.target.id,
