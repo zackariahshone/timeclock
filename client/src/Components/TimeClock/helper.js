@@ -57,6 +57,8 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     console.log(studentHistory[x - 1]);
                     if (e.target.id == 'timeIn') {
                       validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
+                    }else if(e.target.id == 'timeIn'){
+                      validationDate = { start: studentHistory[x]?.timeinMilli, end: studentHistory[x+1]?.timeinMilli }
                     }
                     setTimeToEdit({
                       action: e.target.id,
@@ -182,8 +184,8 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
             onClick={() => {
               let chosenTime = new Date(time).getTime();
               let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
-              if ( chosenTime > startDateFilter && 
-                  (chosenTime < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
+              console.log( timeToEdit.validationDate.start, getTodayMillisecond())
+              if ( new Date(time).getTime() > startDateFilter && (new Date(time).getTime() < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
                 updateTime(timeToEdit, { newTime: new Date(time).getTime() })
                 setStatusChange(true);
                 handleClose()
