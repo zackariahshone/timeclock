@@ -5,29 +5,31 @@ import { getDateFromMilli, getStudentHistory, toCapitalize } from "../Dashboard/
 import { Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { convertMilitaryToStandard } from "../TimeClock/helper";
 import { updateItem } from "../../globalUtils/requests";
+import { getPreviousSunday } from "./helpers";
 export const EditRecord = ({ record,list }) => {
     const { id, name } = record;    
     const history = useSelector(studentHistory)
     const recordHistory = getStudentHistory(id, Object.values(history))[0]?.clockedInOutHistory
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
     const [recordChanges, setRecordChanges] = useState();
+    const [show, setShow] = useState(false);
+    const previousSunday = getPreviousSunday()
     if(recordHistory){
     return (
         <Fragment>
-            <h1>EDIT: {name}</h1>
             <Row>
                 {
                     
                     daysOfWeek.map((day) => (
                         <Col>
-                            <h4>{day}</h4>
                             {
                                 list.map((historyRecord,x) => {
                                 const { status, timeMilli, time, setBy } = historyRecord;
                                 const dayOfRecord = getDayOfWeekFromMillisecond(timeMilli);
-                                if (day == dayOfRecord) {
+                                if(day == dayOfRecord && timeMilli > previousSunday){
                                     return (
-                                        <Row key={`history_${x}`}>
+                                        <Fragment>
+                                       <Row key={`history_${x}`}>
                                             <Card key={`card_${x}`}>
                                                 <Card.Body key={`card_body${x}`}>
                                                     <Card.Title key={`card_Title${x}`}>
@@ -68,8 +70,11 @@ export const EditRecord = ({ record,list }) => {
                                                 </Card.Body>
                                             </Card>
                                         </Row>
+                                    
+                                        </Fragment>
                                     )
-                                } 
+                                }
+                                
                             })}
                         </Col>
                     ))
@@ -79,6 +84,8 @@ export const EditRecord = ({ record,list }) => {
     )
     }
 }
+
+
 
 function getDayOfWeekFromMillisecond(milliseconds) {
     const date = new Date(Number(milliseconds));
