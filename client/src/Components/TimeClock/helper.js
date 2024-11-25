@@ -59,7 +59,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                       validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
                     }else if(e.target.id == 'timeOut'){
                       validationDate = { start: studentHistory[x]?.timeinMilli, end: studentHistory[x+1]?.timeinMilli }
-                      console.log(validationDate)
                     }
                     setTimeToEdit({
                       action: e.target.id,
@@ -214,6 +213,8 @@ export function getHoursWorked(timein, timeout) {
 }
 
 export function convertMilitaryToStandard(militaryTime) {
+  console.log(militaryTime);
+  
   if (militaryTime) {
     // Split the time string into hours and minutes
     const [hours, minutes] = militaryTime.split(":").map(Number);
