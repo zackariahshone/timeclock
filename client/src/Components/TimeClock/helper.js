@@ -48,7 +48,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
         return (
           <Form>
             <Row className="">
-              <Col xs={2}>
+              <Col xs={4}>
               </Col>
 
               <Col xs={4}>
