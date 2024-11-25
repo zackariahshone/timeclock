@@ -7,10 +7,9 @@ import {
   InputGroup,
   Button,
   Modal,
-  Container
 } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
-import { getStudentHistory } from "../Dashboard/helpers";
+import { getStudentHistory, getTimeFromMillisecond } from "../Dashboard/helpers";
 import { useDispatch } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
 import { createItem, updateItem } from "../../globalUtils/requests";
@@ -48,15 +47,16 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
         return (
           <Form>
             <Row className="">
-              <Col xs={2}>
+              <Col xs={4}>
               </Col>
 
               <Col xs={4}>
                 <InputGroup
                   onClick={(e) => {
-                    console.log(studentHistory[x - 1]);
                     if (e.target.id == 'timeIn') {
                       validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
+                    }else if(e.target.id == 'timeOut'){
+                      validationDate = { start: studentHistory[x]?.timeinMilli, end: studentHistory[x+1]?.timeinMilli }
                     }
                     setTimeToEdit({
                       action: e.target.id,
@@ -71,13 +71,13 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   className="mb-3 rowBorderBottom">
                   <Form.Control
                     id='timeIn'
-                    value={doc?.timeIn ? convertMilitaryToStandard(doc.timeIn) : ''}
+                    value={doc?.timeIn ? convertMilitaryToStandard(getTimeFromMillisecond(doc?.timeinMilli)) : ''}
                     aria-label="Time In" 
                     readOnly
                     />
                   <Form.Control
                     id='timeOut'
-                    value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} 
+                    value={doc?.timeOut ? convertMilitaryToStandard(getTimeFromMillisecond(doc?.timeOutMilli)) : ''} 
                     aria-label="Time Out" 
                     readOnly
                     />
@@ -137,7 +137,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     setBy: currentUser
                   }
                   createItem('/studenttimeclock', timeClockData);
-                  dispatch(timeClock(timeClockData));
                   setStatusChange(true);
                 }}
                 variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
@@ -180,14 +179,13 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
           <Button
             variant="primary"
             onClick={() => {
-              let chosenTime = new Date(time).getTime();
+              // let chosenTime = new Date(time).getTime();
               let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
-              if ( chosenTime > startDateFilter && 
-                  (chosenTime < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
+              console.log( timeToEdit.validationDate.start, getTodayMillisecond())
+              if ( new Date(time).getTime() > startDateFilter && (new Date(time).getTime() < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
                 updateTime(timeToEdit, { newTime: new Date(time).getTime() })
-                setStatusChange(true);
+                setStatusChange(true)
                 handleClose()
-                setError('');
               }else{
                 setError('Input Out of Range');
               }
@@ -211,6 +209,8 @@ export function getHoursWorked(timein, timeout) {
 }
 
 export function convertMilitaryToStandard(militaryTime) {
+  console.log(militaryTime);
+  
   if (militaryTime) {
     // Split the time string into hours and minutes
     const [hours, minutes] = militaryTime.split(":").map(Number);
