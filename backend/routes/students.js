@@ -70,7 +70,7 @@ router.put('/updatedstudent',async(req, res)=>{
   })
 
 
-  router.put('/updatestudentrecord',async(req, res)=>{
+  router.post('/updatestudentrecord',async(req, res)=>{
 
     const {id,milliIndex,recordChanges} = req.body;
     console.log(id, milliIndex, recordChanges);

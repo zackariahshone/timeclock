@@ -80,11 +80,7 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
         (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={3}>
                 <Card
-                    onClick={(e)=>{
-                        setRecord(employee)
-                        setShowEditModal(true)
-                        setChange(true);
-                    }}
+                   
                 >
                 <Card.Header className="textRight"><text 
                     onClick = {()=>{
@@ -94,8 +90,25 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
                     <Card.Body>
                         <Card.Title> Name: {employee.name}</Card.Title>
                         <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
+                        {employee.buildingName ? <p>{employee.buildingName}</p> : ''}
                     </Card.Body>
-                    <Card.Footer> {employee.buildingName ? <p>{employee.buildingName}</p> : ''}</Card.Footer>
+                    <Card.Footer> 
+                    <Row>
+                        <Col>
+
+                        </Col>
+                        <Col>
+
+                        <Button
+                         onClick={()=>{
+                            setRecord(employee)
+                            setShowEditModal(true)
+                            setChange(true);
+                        }}
+                        > Edit Hours</Button>
+                        </Col>
+                    </Row>
+                    </Card.Footer>
                 </Card>
             </Col>
         ))

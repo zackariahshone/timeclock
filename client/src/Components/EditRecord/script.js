@@ -20,7 +20,6 @@ export const EditRecord = ({ record, list }) => {
             <Fragment>
                 <Row>
                     {
-
                         daysOfWeek.map((day) => (
                             <Col>
                                 {
