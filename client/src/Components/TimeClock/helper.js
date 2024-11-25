@@ -7,10 +7,9 @@ import {
   InputGroup,
   Button,
   Modal,
-  Container
 } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
-import { getStudentHistory } from "../Dashboard/helpers";
+import { getStudentHistory, getTimeFromMillisecond } from "../Dashboard/helpers";
 import { useDispatch } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
 import { createItem, updateItem } from "../../globalUtils/requests";
@@ -78,7 +77,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     />
                   <Form.Control
                     id='timeOut'
-                    value={doc?.timeOut ? convertMilitaryToStandard(doc.timeOut) : ''} 
+                    value={doc?.timeOut ? convertMilitaryToStandard(getTimeFromMillisecond(doc?.timeOutMilli)) : ''} 
                     aria-label="Time Out" 
                     readOnly
                     />
@@ -180,14 +179,13 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
           <Button
             variant="primary"
             onClick={() => {
-              let chosenTime = new Date(time).getTime();
+              // let chosenTime = new Date(time).getTime();
               let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
               console.log( timeToEdit.validationDate.start, getTodayMillisecond())
               if ( new Date(time).getTime() > startDateFilter && (new Date(time).getTime() < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
                 updateTime(timeToEdit, { newTime: new Date(time).getTime() })
-                setStatusChange(true);
+                setStatusChange(true)
                 handleClose()
-                setError('');
               }else{
                 setError('Input Out of Range');
               }
