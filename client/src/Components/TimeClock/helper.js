@@ -109,7 +109,9 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           <Row className="">
             <Col xs={2}>
             </Col>
+            <Col xs={2}>
 
+            </Col>
             <Col xs={4}>
               <InputGroup
                 className="mb-3 rowBorderBottom">
