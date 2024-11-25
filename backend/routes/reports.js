@@ -17,7 +17,7 @@ router.get('/reports', async (req, res) => {
             const timeClock = doc?.clockedInOutHistory
             let student = students.find(e=>e.id == doc.id)
             
-            if (student.name && student.program == building) {
+            if (student?.name && student?.program == building) {
                 timeClock.forEach((time) => {
             
                     if ((Number(time.timeMilli) > Number(start) && Number(time.timeMilli) < Number(end) + (24 * 60 * 60 * 1000))) {
