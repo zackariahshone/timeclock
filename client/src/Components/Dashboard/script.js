@@ -107,9 +107,7 @@ export default () => {
     )
 }
 
-function getCsvData(filteredData){
-    console.log(filteredData);
-    
+function getCsvData(filteredData){    
     let row = [];
     let collection =[];
     let totalHours = [];
@@ -140,11 +138,7 @@ function getCsvData(filteredData){
                 collection.push(newRow)
             }
         })
-      
-            // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours
-
-       console.log(collection);
-       
+            // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours       
         return collection;
     }
     return collection;

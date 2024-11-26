@@ -6,9 +6,7 @@ export const exportDataSlice = createSlice({
    
   },
   reducers: {
-    setExportData: (state,action) => {
-        console.log(action);
-        
+    setExportData: (state,action) => {        
       return {
         ...state,
         data:action.payload.data,

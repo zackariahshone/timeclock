@@ -22,7 +22,6 @@ export const Billing = () => {
     const [dates, setDates] = useState()
     const [filters, setFilters] = useState({});
     const dataForExport = useSelector(exportData);
-    console.log(dataForExport);
 
     return (
         <Container>
@@ -37,7 +36,6 @@ export const Billing = () => {
 
                             <Dropdown.Menu
                                 onClick={(e) => {
-                                    console.log(e.target.textContent)
                                     setFilters({ ...filters, 'program': e.target.textContent })
                                 }}
                             >
@@ -53,7 +51,6 @@ export const Billing = () => {
                         <Button
                             onClick={() => {
                                 const url = `/reports?start=${new Date(dates[0]).getTime()}&end=${new Date(dates[1]).getTime()}&building=${filters.program}`
-                                console.log(new Date(dates[0]).getTime())
                                 getData(url, 'GET', setExportData)
                             }}
                             variant='info'> Submit Filters </Button>
@@ -69,7 +66,6 @@ export const Billing = () => {
                             <tr>
                                 {/* {dataForExport[0].map((key) => { */}
                                 {['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','StudentName','StudentId', 'TotalHours'].map((key,x)=>{
-                                    console.log(key)
                                     return (
                                          <th>{key}</th>
                                     )
@@ -80,7 +76,6 @@ export const Billing = () => {
                             {
                                 dataForExport.map((doc) => {
                                     const values = Object.values(doc);
-                                    console.log(doc)
                                     return (
                                         <tr>
                                             {['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy','StudentName','StudentId', 'Total'].map((index)=>{
@@ -100,7 +95,6 @@ export const Billing = () => {
 }
 
 function ExportCSVReport ({ data, fileName,disable }) {
-    console.log(data);
     
   const downloadCSV = () => {
     // Convert the data array into a CSV string  

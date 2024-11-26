@@ -183,7 +183,6 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
             onClick={() => {
               // let chosenTime = new Date(time).getTime();
               let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
-              console.log( timeToEdit.validationDate.start, getTodayMillisecond())
               if ( new Date(time).getTime() > startDateFilter && (new Date(time).getTime() < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
                 updateTime(timeToEdit, { newTime: new Date(time).getTime() })
                 setStatusChange(true)
@@ -210,9 +209,7 @@ export function getHoursWorked(timein, timeout) {
   return null;
 }
 
-export function convertMilitaryToStandard(militaryTime) {
-  console.log(militaryTime);
-  
+export function convertMilitaryToStandard(militaryTime) {  
   if (militaryTime) {
     // Split the time string into hours and minutes
     const [hours, minutes] = militaryTime.split(":").map(Number);
@@ -263,7 +260,6 @@ export function getTodaysClockInHistory(history) {
           timeIn = record.time
           timeinMilli = record.timeMilli
           if (lastRecord) {
-            console.log(lastRecord, record);
             timeOut = ''
             timeOutMilli = '';
             todayCollection.push({ timeIn, timeinMilli, timeOut, timeOutMilli })

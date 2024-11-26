@@ -95,9 +95,8 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
                     <Card.Footer> 
                     <Row>
                         <Col>
-
                         </Col>
-                        <Col>
+                        { employee.type == "student"?<Col>
 
                         <Button
                          onClick={()=>{
@@ -106,7 +105,7 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
                             setChange(true);
                         }}
                         > Edit Hours</Button>
-                        </Col>
+                        </Col>:''}
                     </Row>
                     </Card.Footer>
                 </Card>
