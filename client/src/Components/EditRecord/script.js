@@ -20,7 +20,6 @@ export const EditRecord = ({ record, list }) => {
                 <Row>
                     {
                         daysOfWeek.map((day) => {
-                            {/* dayNotSet = true */}
                             return (
                                 <Col>
                                     {
@@ -39,7 +38,8 @@ export const EditRecord = ({ record, list }) => {
                                                                 setBy={setBy} 
                                                                 weeklyList={weeklyList} 
                                                                 x={x} 
-                                                                list={list} />
+                                                                list={list} 
+                                                                id={id} />
                                                         </Row>
                                                     </Fragment>
                                                 )
@@ -67,7 +67,7 @@ function getMilliFromDateAndTime(date, time) {
     return new Date(`${date} ${time}`)
 }
 
-function HourEditCard({ timeMilli, status, time, setBy, weeklyList, x }) {
+function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x }) {
     const [recordChanges, setRecordChanges] = useState();
     const [error, setError] = useState();
     console.log(`${x}`);
@@ -100,32 +100,28 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, x }) {
                 </Form.Group>
                 <Card.Footer>
                     <Row>
-                        {/* <Col>{!error ? {error}:''}</Col> */}
+                        <Col
+                            className={error ? "error-outofBounds":''}
+                        >{error ? `${error}`:''}</Col>
                         <Col >
                             <Button 
                                 disabled={!recordChanges}
                                 onClick={() => {
                                     const millisecondChange = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime();
-                                    console.log()
-                                    console.log(millisecondChange > Number(weeklyList[x-1].timeMilli))
-                                    if (weeklyList[x].status == 'in' && millisecondChange > Number(weeklyList[x-1].timeMilli)) {
-                                        console.log(weeklyList[x-1].status);
-                                        console.log('changes', recordChanges)
-                                        console.log(weeklyList[x-1])
-                                        //check vs previous out time and and next out time if it exists
-                                        console.log('record time to validate', new Date(`${recordChanges.date} ${recordChanges.time}`).getTime())
-                                        // updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
-                                    } else if (weeklyList[x].status == 'out') {
-                                        console.log(weeklyList[x].status);
-                                        console.log('changes', recordChanges)
-                                        console.log(weeklyList[--x])
-                                        //check vs last time in and next time in if avaialable
-                                        console.log('record time to validate', new Date(`${recordChanges.date} ${recordChanges.time}`).getTime())
-                                        // updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
+                               
+                                    if (weeklyList[x].status == 'in' && 
+                                        millisecondChange > Number(weeklyList[x-1].timeMilli) && 
+                                        (weeklyList[x+1] == undefined || millisecondChange < Number(weeklyList[x+1].timeMilli))) {
+                                        updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
+                                        setError('');
+                                    } else if ( weeklyList[x].status == 'out' && 
+                                        millisecondChange > Number(weeklyList[x-1].timeMilli) && 
+                                        (weeklyList[x+1] == undefined || millisecondChange < Number(weeklyList[x+1].timeMilli))) {
+                                        updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
+                                                setError('');
                                     }else{
                                         setError('Input Out of Bounds');
                                     }
-                                    // updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
                                 }}
                                 variant="info">Save</Button>
                         </Col>

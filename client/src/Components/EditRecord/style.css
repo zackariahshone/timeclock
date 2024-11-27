@@ -3,3 +3,7 @@
     max-width: none !important;
     width:95% !important;
 }
+.error-outofBounds{
+    background-color: rgb(220, 135, 135);
+    color:red;
+}
