@@ -52,9 +52,10 @@ const CustomMenu = React.forwardRef(
     },
 );
 
-export const TeacherSignIn = ({setSignedIn,setSignInName}) => {
+export const TeacherSignIn = () => {
     const teachersList = useSelector(teachers);
     const dispatch = useDispatch() 
+    
     return (
         <Dropdown>
             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
@@ -63,13 +64,13 @@ export const TeacherSignIn = ({setSignedIn,setSignInName}) => {
 
             <Dropdown.Menu as={CustomMenu}>
                 {teachersList.map((teacher,key)=>(
-                <Dropdown.Item 
-                onClick={()=>{
-                    setSignedIn(true);
-                    setSignInName(teacher.name);
-                    dispatch(signin({
-                        signedIn:true,
-                        teacherName:teacher.name
+                    <Dropdown.Item 
+                    onClick={()=>{
+                        console.log(teacher);
+                        dispatch(signin({
+                            signedIn:true,
+                            teacherName:teacher.name,
+                            admin:teacher.admin ? teacher.admin : false
                     }))
                 }}
                 eventKey={key}>{teacher.name}</Dropdown.Item>

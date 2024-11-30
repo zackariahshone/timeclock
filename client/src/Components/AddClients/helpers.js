@@ -20,7 +20,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
     const [empName, setEmpName] = useState();
     const [empID, setEmpId] = useState();
     const [program, setProgramName] = useState();
-    const [admin, setAdmin] = useState();
+    const [admin, setAdmin] = useState(false);
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -68,13 +68,13 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <div>
                         <Form
                             onChange={(e) => {
-                                setProgramName(e.target.value)
+                                setAdmin(e.target.value)
                             }}>
                             Admin:
                             <br />
-                            <input type="radio" value={false} name="program" /> false
+                            <input type="radio" value={false} name="admin" /> false
                             <br />
-                            <input type="radio" value={true} name="program" /> true
+                            <input type="radio" value={true} name="admin" /> true
                         </Form>
                     </div>
                     </Row>:''}
@@ -86,7 +86,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <Button
                         onClick={() => {
                             if (empName && program) {
-
                                 let createitemOBJ =  {
                                     name: empName,
                                     dateStarted: new Date().toDateString(),
@@ -94,11 +93,10 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     group: `${program} ${type}}`,
                                     program,
                                     status: 'out',
-                                    history: [],
                                     id: empID ? empID : generateUniqueId(),
                                     type,
                                 }
-                                if(type == 'teacher') {createitemOBJ.admin = admin} ;
+                                if(type == 'teacher') {createitemOBJ.admin = admin};
                                 createItem(`/create${type}`, createitemOBJ, addEmployee, '');
                                 setEmpName('');
                             }

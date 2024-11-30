@@ -45,3 +45,6 @@
       margin-top: 1%;
       /* height: 10%; */
    }
+   .sideNavMenu{
+      border-bottom: 1px solid black;
+   }

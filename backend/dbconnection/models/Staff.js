@@ -9,6 +9,7 @@ const { Schema, model } = require('mongoose');
   program:String,
   status:String,
   type:String,
+  admin:Boolean,
   id:String
 });
 module.exports = model('Teacher', teacherSchema);

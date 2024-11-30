@@ -37,7 +37,7 @@ export const menuConfig = {
     "optionSet3":[
         'signup'
     ],
-    "optionSet4":[
+    "admin":[
         'Admin Preferences'
     ]
 

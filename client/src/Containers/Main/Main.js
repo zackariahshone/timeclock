@@ -3,36 +3,43 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Card, Row, Modal, Button } from 'react-bootstrap'
 import { DisplayMenuOptions, menuConfig } from "./helpers.js";
-import { signin, signOut, userSignedIn,signedInStatus } from "../../app/CurrentUserSlice.js";
+import { signOut, userSignedIn,signedInStatus, isAdmin } from "../../app/CurrentUserSlice.js";
 import { TeacherSignIn } from "../../Components/SignIn/script.js";
 import logo from '../../img/web-app-manifest-192x192.png'
 import './style.css'
 
-export default (props) => {
+export default () => {
     const [pageId, setPageId] = useState('DashBoard');
     const [signedIn, setSignedIn] = useState(false);
-    const [signInName, setSignInName] = useState();
     const loggedInName = useSelector(userSignedIn)
     const loggedInStatus = useSelector(signedInStatus);
+    const admin = useSelector(isAdmin);
     const dispatch = useDispatch();
+
+    console.log(loggedInName);
     return (
         <Fragment>
             <div id='mainConatiner'>
                 <Row className = 'mainRow'>
                     <div id="sideNav">
                         <img id='erclogo' src={logo} alt="ERC logo" />
-                        {Object.keys(menuConfig).map(menuKey => (
-                            <Fragment>
+                        {Object.keys(menuConfig).map(menuKey => {
+                            if(menuKey == 'admin' && !admin){
+                               return(<></>)
+                            } else{
+                                return(
+                                    <Fragment>
                                 {menuConfig[menuKey].map((menuItem) => (
                                     <h6
-                                        className={`menuItem ${menuItem == pageId ? 'selected' : ''} `}
-                                        onClick={() => { setPageId(menuItem) }}
+                                    className={`menuItem ${menuItem == pageId ? 'selected' : ''} `}
+                                    onClick={() => { setPageId(menuItem) }}
                                     >{menuItem}</h6>
                                 ))}
-                                ___________________________
+                                <div className="sideNavMenu"></div>
                             </Fragment>
-
-                        ))}
+                            )
+                        }
+                        })}
                     </div>
                     <div id="main">
                         {!loggedInStatus ?
@@ -51,7 +58,7 @@ export default (props) => {
                                             <Card>
                                                 <Card.Title>Teacher Sign In</Card.Title>
                                                 <Card.Body>
-                                                    {<TeacherSignIn setSignInName={setSignInName} signedIn={signedIn} setSignedIn={setSignedIn} />}
+                                                    {<TeacherSignIn  signedIn={signedIn} />}
                                                 </Card.Body>
                                             </Card>
                                         </Modal.Body>

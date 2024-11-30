@@ -5,7 +5,7 @@ const Teacher = require('../dbconnection/models/Staff')
  * Handle Sign up
  */
 router.post('/createteacher', async (req, res) => {
-  try {
+  try {        
     const createdTeacher = await Teacher.create(req.body)
     res.json(createdTeacher)
   } catch (e) {
