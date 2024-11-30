@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { addEmployee} from "../../app/EmployeeListSlice";
+import { addEmployee } from "../../app/EmployeeListSlice";
 import {
     Col,
     Row,
     Button,
-    Modal
+    Modal,
+    Form
 } from "react-bootstrap";
 import { useDispatch } from 'react-redux';
 import './style.css'
@@ -17,8 +18,9 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
     const handleShow = () => setShow(true);
     const dispatch = useDispatch();
     const [empName, setEmpName] = useState();
-    const [empID, setEmpId]  = useState();
+    const [empID, setEmpId] = useState();
     const [program, setProgramName] = useState();
+    const [admin, setAdmin] = useState();
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -27,40 +29,55 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                 </Modal.Header>
                 <Modal.Body>
 
-                            {/* <Row> */}
-                                <Row>
-                                  {toCapitalize(type)} Name:  <input
-                                        placeholder="enter name"
-                                        onBlur={(e) => {
-                                            setEmpName(e.target.value)
-                                        }}
-                                    />
-                                </Row>
-                                <Row>
-                                    Start Date: <input placeholder={new Date().toDateString()} />
-                                </Row>
-                                <Row>
-                                    ID Number: <input
-                                        placeholder="Enter ERC ID"
-                                        onBlur={(e) => {
-                                            setEmpId(e.target.value)
-                                        }}
-                                    />
-                                <Row/>
-                                <Row className="radioButtons">
-                                    <div
-                                        onChange={(e) => {
-                                            setProgramName(e.target.value)
-                                        }}>
-                                        Program Name: 
-                                        <br/>
-                                        <input type="radio" value={`Richardson Industries`} name="program" /> Richardson Industries
-                                        <br />
-                                        <input type="radio" value={`Aspire`} name="program" /> Aspire
-                                    </div>
-                                </Row>
-                            </Row>
+                    {/* <Row> */}
+                    <Row>
+                        {toCapitalize(type)} Name:  <input
+                            placeholder="enter name"
+                            onBlur={(e) => {
+                                setEmpName(e.target.value)
+                            }}
+                        />
+                    </Row>
+                    <Row>
+                        Start Date: <input placeholder={new Date().toDateString()} />
+                    </Row>
+                    <Row>
+                        ID Number: <input
+                            placeholder="Enter ERC ID"
+                            onBlur={(e) => {
+                                setEmpId(e.target.value)
+                            }} />
+                    </Row>
+                    <Row className="radioButtons">
+                    <div>
 
+                        <Form
+                            onChange={(e) => {
+                                setProgramName(e.target.value)
+                            }}>
+                            Program Name:
+                            <br />
+                            <input type="radio" value={`Richardson Industries`} name="program" /> Richardson Industries
+                            <br />
+                            <input type="radio" value={`Aspire`} name="program" /> Aspire
+                        </Form>
+                    </div>
+                    </Row>
+                    {type == 'teacher' ? 
+                    <Row>
+                    <div>
+                        <Form
+                            onChange={(e) => {
+                                setProgramName(e.target.value)
+                            }}>
+                            Admin:
+                            <br />
+                            <input type="radio" value={false} name="program" /> false
+                            <br />
+                            <input type="radio" value={true} name="program" /> true
+                        </Form>
+                    </div>
+                    </Row>:''}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -69,7 +86,8 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <Button
                         onClick={() => {
                             if (empName && program) {
-                                createItem(`/create${type}`,{
+
+                                let createitemOBJ =  {
                                     name: empName,
                                     dateStarted: new Date().toDateString(),
                                     buildingName: program,
@@ -78,8 +96,10 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     status: 'out',
                                     history: [],
                                     id: empID ? empID : generateUniqueId(),
-                                    type
-                                },addEmployee,'');
+                                    type,
+                                }
+                                if(type == 'teacher') {createitemOBJ.admin = admin} ;
+                                createItem(`/create${type}`, createitemOBJ, addEmployee, '');
                                 setEmpName('');
                             }
                             handleClose()

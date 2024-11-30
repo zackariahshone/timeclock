@@ -2,6 +2,7 @@ import AddClients from "../../Components/AddClients/script.js";
 import TimeClock from "../../Components/TimeClock/script.js";
 import DashBoard from "../../Components/Dashboard/script.js";
 import { Billing } from "../../Components/Billing/script.js";
+import { AdminPrefrences } from "../../Components/AdminPrefrences/script.js";
 
 
 export const DisplayMenuOptions = (menuOption) => {
@@ -16,6 +17,8 @@ export const DisplayMenuOptions = (menuOption) => {
             return <TimeClock />
         case "Billing":
             return <Billing/>
+        case "Admin Preferences":
+            return <AdminPrefrences/>
         default:
             return <DashBoard />
     }
@@ -33,6 +36,9 @@ export const menuConfig = {
     ],
     "optionSet3":[
         'signup'
+    ],
+    "optionSet4":[
+        'Admin Preferences'
     ]
 
 }

@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CreateStaffModal } from "./helpers";
 import './style.css'
 import { deleteItem } from "../../globalUtils/requests";
-import { EditRecord } from "../EditRecord/script";
 import { getStudentHistory } from "../Dashboard/helpers";
 import { studentHistory } from "../../app/StudentHistorySlice";
 import { EditItemModal } from "../EditRecord/helpers";
