@@ -6,7 +6,8 @@ import { Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { convertMilitaryToStandard } from "../TimeClock/helper";
 import { updateItem } from "../../globalUtils/requests";
 import { getPreviousSunday } from "./helpers";
-export const EditRecord = ({ record, list }) => {
+import { isAdmin } from "../../app/CurrentUserSlice";
+export const EditRecord = ({ record, list,admin }) => {
     const { id, name } = record;
     const history = useSelector(studentHistory)
     const recordHistory = getStudentHistory(id, Object.values(history))[0]?.clockedInOutHistory
@@ -70,6 +71,7 @@ function getMilliFromDateAndTime(date, time) {
 function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x }) {
     const [recordChanges, setRecordChanges] = useState();
     const [error, setError] = useState();
+    const admin = useSelector(isAdmin)
     console.log(`${x}`);
     
     return (
@@ -104,8 +106,9 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x }) {
                             className={error ? "error-outofBounds":''}
                         >{error ? `${error}`:''}</Col>
                         <Col >
+                        {admin?
                             <Button 
-                                disabled={!recordChanges}
+                            disabled={!recordChanges}
                                 onClick={() => {
                                     const millisecondChange = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime();
                                
@@ -117,13 +120,15 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x }) {
                                     } else if ( weeklyList[x].status == 'out' && 
                                         millisecondChange > Number(weeklyList[x-1].timeMilli) && 
                                         (weeklyList[x+1] == undefined || millisecondChange < Number(weeklyList[x+1].timeMilli))) {
-                                        updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
-                                                setError('');
-                                    }else{
-                                        setError('Input Out of Bounds');
-                                    }
-                                }}
-                                variant="info">Save</Button>
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges }, setHistoryBulk) 
+                                            setError('');
+                                        }else{
+                                            setError('Input Out of Bounds');
+                                        }
+                                    }}
+                                    variant="info">Save</Button>:
+                                    <></>
+                                }
                         </Col>
                     </Row>
                 </Card.Footer>

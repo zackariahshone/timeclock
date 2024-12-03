@@ -100,7 +100,6 @@ router.put('/updatedstudent',async(req, res)=>{
     console.log(studentHistoryToUpdate.clockedInOutHistory);
 
     await studentHistoryToUpdate.save()
-    // studentHistoryToUpdate.clockedInOutHistory[index].set()
     const allStudentHistory = await History.find({});
     res.json({ ...allStudentHistory });
   })

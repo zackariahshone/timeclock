@@ -7,7 +7,8 @@ import Modal from 'react-bootstrap/Modal';
 
 import { EditRecord } from "./script";
 import './style.css'
-
+import { isAdmin } from "../../app/CurrentUserSlice";
+import { useSelector } from "react-redux";
 
 export function getPreviousSunday() {
     const now = new Date();
@@ -30,10 +31,10 @@ export function getPreviousSunday() {
   }
 
 export  function EditItemModal({show, setShow, record, list}) {
-  
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    console.log(record);
+    const admin = useSelector(isAdmin)
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
     return (
@@ -41,7 +42,6 @@ export  function EditItemModal({show, setShow, record, list}) {
         <Modal 
             scrollable={true} 
             dialogClassName="my-modal" 
-            // size="xl"  
             show={show} 
             onHide={handleClose} 
             centered>
@@ -54,7 +54,7 @@ export  function EditItemModal({show, setShow, record, list}) {
                     ))}
           </Modal.Header>
           <Modal.Body>
-            <EditRecord record = {record} list = {list}/>
+            <EditRecord admin={admin} record = {record} list = {list}/>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

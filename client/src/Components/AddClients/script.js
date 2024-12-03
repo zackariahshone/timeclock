@@ -16,7 +16,7 @@ import { deleteItem } from "../../globalUtils/requests";
 import { getStudentHistory } from "../Dashboard/helpers";
 import { studentHistory } from "../../app/StudentHistorySlice";
 import { EditItemModal } from "../EditRecord/helpers";
-
+import { isAdmin } from "../../app/CurrentUserSlice";
 export default (props) => {
     const { type } = props;
     const studentList = useSelector(students);
@@ -28,6 +28,7 @@ export default (props) => {
     const [change, setChange] = useState(false);
     const [record, setRecord] = useState();
     const history = useSelector(studentHistory)
+    const admin = useSelector(isAdmin)
 
     useEffect(() => {
         if (change == true) {
@@ -55,6 +56,7 @@ export default (props) => {
             </Row>
             <Col>
                 <Row>
+                    {admin ? 
                     <Col  xs={12} md={3} >
                         <Card 
                         onClick={()=>{
@@ -63,8 +65,9 @@ export default (props) => {
                         className="createNewCard">
                             <div className="textInCreateCard">Creat new {type}</div>
                         </Card>
-                    </Col>
-                    {SchoolListDisplay(searchText, filteredList, setRecord,setChange,setShowEditModal)}
+                    </Col>:''
+                        }
+                    {SchoolListDisplay(searchText, filteredList, setRecord,setChange,setShowEditModal,admin)}
                    {type == 'student' && record && showEditModal ? <EditItemModal show={showEditModal} setShow ={setShowEditModal} record={record} list= {getStudentHistory(record.id, Object.values(history))[0]?.clockedInOutHistory} />:''}
                 </Row>
             </Col>
@@ -73,7 +76,7 @@ export default (props) => {
     )
 }
 
-function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) {
+function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal,admin) {
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
     return (
         (index ? filtered : empList).map((employee) => (
@@ -81,11 +84,16 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
                 <Card
                    
                 >
-                <Card.Header className="textRight"><text 
-                    onClick = {()=>{
-                        deleteItem(`/delete${employee.type}`,{id:employee.id},removeEmployee)
-                    }}
-                    className="deleteButton">x</text></Card.Header>
+                <Card.Header className="textRight">
+                    {
+                        admin ?
+                        <text 
+                        onClick = {()=>{
+                            deleteItem(`/delete${employee.type}`,{id:employee.id},removeEmployee)
+                        }}
+                        className="deleteButton">x</text>:''
+                    }
+                    </Card.Header>
                     <Card.Body>
                         <Card.Title> Name: {employee.name}</Card.Title>
                         <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
@@ -103,7 +111,7 @@ function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal) 
                             setShowEditModal(true)
                             setChange(true);
                         }}
-                        > Edit Hours</Button>
+                        > View Hours</Button>
                         </Col>:''}
                     </Row>
                     </Card.Footer>
