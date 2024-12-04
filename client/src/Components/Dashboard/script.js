@@ -27,6 +27,40 @@ export default () => {
     return (
         <Fragment>
             <h1>Insight</h1>
+            <Container>
+                <Card>
+                    <Row>
+                        <Col>
+                            Date Filter: <Calendar onChange={()=>{}} 
+                                showIcon/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Richardson
+                        </Col>
+                        <Col>
+                            Date Clockin Amount
+                        </Col>
+                        <Col>
+                            Date Percentage
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Aspire
+                        </Col>
+                        <Col>
+                            Date Clockin Amount
+                        </Col>
+                        <Col>
+                            Date Percentage
+                        </Col>
+                    </Row>
+                    
+                </Card>
+            </Container>
+
             <Container className="marginBottom">
                 {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
                 {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
