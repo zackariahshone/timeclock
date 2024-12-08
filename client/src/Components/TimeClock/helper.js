@@ -16,7 +16,8 @@ import { createItem, updateItem } from "../../globalUtils/requests";
 
 
 
-export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, setStatusChange }) => {
+export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, setStatusChange, program }) => {  
+  
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [timeToEdit, setTimeToEdit] = useState();
@@ -36,11 +37,12 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           <Card.Text
             className="timeClockCardTitle"
           >
-            Checked {student.status}
+            Checked {student.programs[program]}
           </Card.Text>
         </Col>
       </Row>
-      {studentHistory.length > 0 ? studentHistory.map((doc, x) => {
+      {studentHistory.length > 0 ? 
+      studentHistory.map((doc, x) => {
         const lastRecord = studentHistory.length - 1 == x
         const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli);
         totalTimeWorked += Number(sessionHours);
@@ -49,7 +51,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
             <Row className="">
               <Col xs={4}>
               </Col>
-
               <Col xs={4}>
                 <InputGroup
                   onClick={(e) => {
@@ -91,6 +92,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   onClick={() => {
                     const timeClockData = {
                       student,
+                      program,
                       time: `${new Date().getHours()}:${new Date().getMinutes()}`,
                       timeMilli: `${new Date().getTime()}`,
                       setBy: currentUser
@@ -99,7 +101,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     dispatch(timeClock(timeClockData));
                     setStatusChange(true);
                   }}
-                  variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
+                  variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
                 </Button> : ''}
               </Col>
             </Row>
@@ -110,7 +112,6 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
             <Col xs={2}>
             </Col>
             <Col xs={2}>
-
             </Col>
             <Col xs={4}>
               <InputGroup
@@ -136,12 +137,14 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     student,
                     time: `${new Date().getHours()}:${new Date().getMinutes()}`,
                     timeMilli: `${new Date().getTime()}`,
-                    setBy: currentUser
+                    setBy: currentUser,
+                    program
                   }
                   createItem('/studenttimeclock', timeClockData);
+                  dispatch(timeClock(timeClockData));
                   setStatusChange(true);
                 }}
-                variant={student.status == "out" ? 'info' : 'danger'}>  {student.status == "out" ? 'Check In' : 'Check Out'}
+                variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
               </Button>
             </Col>
           </Row>
@@ -243,8 +246,10 @@ export function getLastTimeClockIn(history, studentid) {
   }
 }
 
-export function getstudentHistoryFromID(rawhisory, studentid) {
-  return Object.values(rawhisory).filter(doc => doc.id == studentid)[0]?.clockedInOutHistory
+export function getstudentHistoryFromID(rawhistory, studentid,program) {  
+  let array = []
+  array = Object.values(rawhistory).filter(doc => doc.id == studentid && doc[program] != undefined) 
+  return array.length > 0 ? array[0][program] : array
 }
 
 export function getTodaysClockInHistory(history) {

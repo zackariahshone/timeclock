@@ -7,7 +7,7 @@ const connection = mongoose.connect(uri);
 
 mongoose.set(
     {
-        autoIndex:true,
+        autoIndex:true
     }
     );
 

@@ -20,6 +20,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
     const [empName, setEmpName] = useState();
     const [empID, setEmpId] = useState();
     const [program, setProgramName] = useState();
+    const [programs,setPrograms] = useState([]);
     const [admin, setAdmin] = useState(false);
     return (
         <>
@@ -39,7 +40,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                         />
                     </Row>
                     <Row>
-                        Start Date: <input placeholder={new Date().toDateString()} />
+                        Admission Date: <input placeholder={new Date().toDateString()} />
                     </Row>
                     <Row>
                         ID Number: <input
@@ -53,13 +54,20 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
 
                         <Form
                             onChange={(e) => {
-                                setProgramName(e.target.value)
+                                console.log()
+                                if(e.target.checked){
+                                    setProgramName(e.target.value)
+                                    setPrograms( [...programs,e.target.value])
+                                }else if(!e.target.checked){
+                                    let cleanup = program.filter((p)=>p != e.target.value)
+                                    setPrograms(cleanup)
+                                }
                             }}>
                             Program Name:
                             <br />
-                            <input type="radio" value={`Richardson Industries`} name="program" /> Richardson Industries
+                            <input type="checkbox" value={`Richardson Industries`} name="program" /> Richardson Industries
                             <br />
-                            <input type="radio" value={`Aspire`} name="program" /> Aspire
+                            <input type="checkbox" value={`Aspire`} name="program" /> Aspire
                         </Form>
                     </div>
                     </Row>
@@ -84,14 +92,16 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                         Close
                     </Button>
                     <Button
-                        onClick={() => {
+                        onClick={() => {                            
                             if (empName && program) {
                                 let createitemOBJ =  {
                                     name: empName,
                                     dateStarted: new Date().toDateString(),
                                     buildingName: program,
-                                    group: `${program} ${type}}`,
+                                    group: `${type}`,
                                     program,
+                                    programs:getProgramStatus(programs),
+                                    programStatus:getProgramStatus(programs),
                                     status: 'out',
                                     id: empID ? empID : generateUniqueId(),
                                     type,
@@ -144,5 +154,12 @@ export function generateUniqueId() {
 
 export function toCapitalize(str) {
     return `${str.charAt(0).toUpperCase()}${str.slice(1)}`
+}
+export function getProgramStatus(programs){
+    let StatusObject = {}
+    programs.forEach(program=>{
+        StatusObject[program] = 'out';
+    })
+    return StatusObject;
 }
 
