@@ -31,9 +31,7 @@ router.delete('/deletestudents', async (req, res) => {
   res.json('success')
 })
 router.post('/studenttimeclock', async (req, res) => {
-  console.log(req.body);
   try {
-    let promisises = []
     const studentHistoryID = req.body.student.id;
     console.log(req.body.student.programs[req.body.program])
     const historyData = {
@@ -42,16 +40,12 @@ router.post('/studenttimeclock', async (req, res) => {
       time: req.body.time,
       setBy: req.body.setBy
     }
-    console.log()
     let studentHistory = await History.findOne({ id: studentHistoryID });
-    // console.log("status", student.programStatus.Aspire)
     let studentToUpdate = await Student.findOne({id:studentHistoryID})
     if (!studentHistory) {
       await History.create({ id: studentHistoryID, [req.body.program]: [historyData] });
-      // await Student.findOneAndUpdate({ id: studentHistoryID }, { programStatus: { [req.body.program]: historyData.status } });
       studentToUpdate.programs[req.body.program] = historyData.status;
-      //  student.programStatus.set(req.body.program,historyData.status)
-      //  await Student.findOneAndUpdate({id:studentHistoryID},{status:{[req.body.program]:historyData.status}},{upsert: true});
+
       await Student.findOneAndUpdate({ id: studentHistoryID }, { programs: { ...studentToUpdate?.programs, [req.body.program]: historyData.status } });
       res.json(req.body)
     }
@@ -61,11 +55,6 @@ router.post('/studenttimeclock', async (req, res) => {
       await History.findOneAndUpdate({ id: studentHistoryID }, { [req.body.program]: studentHistory[req.body.program] })
       studentToUpdate.programs[req.body.program] = historyData.status;
       await Student.findOneAndUpdate({ id: studentHistoryID }, { programs: { ...studentToUpdate?.programs, [req.body.program]: historyData.status } });
-      // student.programStatus.set(req.body.program,historyData.status)
-      // promisises.push(await student.save())
-
-      // Promise.all(promisises)
-
       res.json({ id: studentHistoryID, ...historyData })
     }
   } catch (e) {

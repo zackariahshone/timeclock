@@ -157,12 +157,12 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </div>
         </Col>
       </Row>
-      {show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange={setStatusChange} /> : <></>}
+      {show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange={setStatusChange} program={program}/> : <></>}
     </Card>
   )
 }
 
-export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
+export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange, program }) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -187,7 +187,7 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange }) {
               // let chosenTime = new Date(time).getTime();
               let startDateFilter = timeToEdit.validationDate.start ? timeToEdit.validationDate.start : getTodayMillisecond();
               if ( new Date(time).getTime() > startDateFilter && (new Date(time).getTime() < timeToEdit.validationDate.end || !timeToEdit.validationDate.end)) {
-                updateTime(timeToEdit, { newTime: new Date(time).getTime() })
+                updateTime(program, timeToEdit, { newTime: new Date(time).getTime() })
                 setStatusChange(true)
                 handleClose()
               }else{
@@ -287,9 +287,10 @@ export function getTodayMillisecond() {
   return milliSeconds;
 }
 
-export function updateTime(currentTimeStamp, newTimeStamp) {
+export function updateTime(program,currentTimeStamp, newTimeStamp) {
   
   const reqBody = {
+    program,
     currentTimeStamp,
     newTimeStamp
   }
