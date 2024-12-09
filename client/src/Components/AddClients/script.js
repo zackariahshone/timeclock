@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {  teachers, students, addEmployee, removeEmployee } from "../../app/EmployeeListSlice";
+import React, { Fragment, useEffect, useState } from "react";
+import { teachers, students, addEmployee, removeEmployee } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -27,6 +27,8 @@ export default (props) => {
     const [searchText, setSearchText] = useState();
     const [change, setChange] = useState(false);
     const [record, setRecord] = useState();
+    const [program, setProgram] = useState();
+
     const history = useSelector(studentHistory)
     const admin = useSelector(isAdmin)
 
@@ -56,67 +58,136 @@ export default (props) => {
             </Row>
             <Col>
                 <Row>
-                    {admin ? 
-                    <Col  xs={12} md={3} >
-                        <Card 
-                        onClick={()=>{
-                            setShow(true);
-                        }}
-                        className="createNewCard">
-                            <div className="textInCreateCard">Creat new {type}</div>
-                        </Card>
-                    </Col>:''
-                        }
-                    {SchoolListDisplay(searchText, filteredList, setRecord,setChange,setShowEditModal,admin)}
-                   {type == 'student' && record && showEditModal ? <EditItemModal show={showEditModal} setShow ={setShowEditModal} record={record} list= {getStudentHistory(record.id, Object.values(history))[0]?.clockedInOutHistory} />:''}
+                    {admin ?
+                        <Col xs={12} md={3} >
+                            <Card
+                                onClick={() => {
+                                    setShow(true);
+                                }}
+                                className="createNewCard">
+                                <div className="textInCreateCard">Creat new {type}</div>
+                            </Card>
+                        </Col> : ''
+                    }
+                    <SchoolListDisplay
+                        searchText={searchText}
+                        empList={filteredList}
+                        setRecord={setRecord}
+                        setChange={setChange}
+                        setShowEditModal={setShowEditModal}
+                        admin={admin}
+                        setProgram={setProgram}
+                        program={program}
+                    />
+                    {type == 'student' && record && showEditModal ?
+                        <EditItemModal
+                            show={showEditModal}
+                            setShow={setShowEditModal}
+                            record={record}
+                            list={getStudentHistory(record.id, Object.values(history))[0][program]}
+                        />
+                        : ''}
                 </Row>
             </Col>
-            {show ? <CreateStaffModal type={type} show = {show} setShow ={setShow}/>:''}
+            {show ? <CreateStaffModal type={type} show={show} setShow={setShow} /> : ''}
         </Container>
     )
 }
 
-function SchoolListDisplay(index, empList,setRecord,setChange,setShowEditModal,admin) {
+function SchoolListDisplay({
+    index,
+    empList,
+    setRecord,
+    setChange,
+    setShowEditModal,
+    admin,
+    program,
+    setProgram
+}) {
+    // const [radio, setRadio] = false(false)
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
+    const [checked, setChecked] = useState();
+    const [cardprogram, setCardProgram] = useState(program)
     return (
         (index ? filtered : empList).map((employee) => (
-            <Col id="empCard" xs={12} md={3}>
-                <Card
-                   
-                >
-                <Card.Header className="textRight">
-                    {
-                        admin ?
-                        <text 
-                        onClick = {()=>{
-                            deleteItem(`/delete${employee.type}`,{id:employee.id},removeEmployee)
-                        }}
-                        className="deleteButton">x</text>:''
-                    }
-                    </Card.Header>
-                    <Card.Body>
-                        <Card.Title> Name: {employee.name}</Card.Title>
-                        <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
-                        {employee.buildingName ? <p>{employee.buildingName}</p> : ''}
-                    </Card.Body>
-                    <Card.Footer> 
-                    <Row>
-                        <Col>
-                        </Col>
-                        { employee.type == "student"?<Col>
-
-                        <Button
-                         onClick={()=>{
-                            setRecord(employee)
-                            setShowEditModal(true)
-                            setChange(true);
-                        }}
-                        > View Hours</Button>
-                        </Col>:''}
-                    </Row>
-                    </Card.Footer>
-                </Card>
+            <Col id="empCard" xs={12} md={6}>
+                <EmployeeCard
+                    admin={admin}
+                    employee={employee}
+                    program={program}
+                    setRecord={setRecord}
+                    setShowEditModal={setShowEditModal}
+                    setChange={setChange}
+                    setProgram={setProgram}
+                />
             </Col>
         ))
     );
+}
+
+
+function EmployeeCard({ 
+    admin,
+    employee,
+    program,
+    setRecord,
+    setShowEditModal,
+    setChange,
+    setProgram
+}) {
+    const [cardprogram, setCardProgram] = useState(program)
+    return (
+        <Card>
+            <Card.Header className="textRight">
+                {
+                    admin ?
+                        <text
+                            onClick={() => {
+                                deleteItem(`/delete${employee.type}`, { id: employee.id }, removeEmployee)
+                            }}
+                            className="deleteButton">x</text> : ''
+                }
+            </Card.Header>
+            <Card.Body>
+                <Card.Title> Name: {employee.name}</Card.Title>
+                <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
+                {employee.buildingName ? <p>{employee.buildingName}</p> : ''}
+            </Card.Body>
+            <Card.Footer>
+                <Row>
+                    {employee.type == "student" ?
+                        <Fragment>
+
+                            <Col>
+                                <Form
+                                    onChange={(e) => {
+                                        setCardProgram(e.target.value)
+                                    }}>
+                                    Programs:
+                                    {Object.keys(employee.programs).map((prog) => (
+                                        <>
+                                            <br />
+                                            <input type="radio" value={prog} checked={cardprogram == prog} name={prog} /> {prog}
+                                        </>
+                                    ))}
+                                </Form>
+                            </Col>
+                            <Row>
+                                <Col>
+                                    <Button
+                                        onClick={() => {
+                                            setRecord(employee)
+                                            setShowEditModal(true)
+                                            setChange(true);
+                                            setProgram(cardprogram)
+                                        }}
+                                    > View Hours</Button>
+                                </Col>
+                            </Row>
+                        </Fragment>
+
+                        : ''}
+                </Row>
+            </Card.Footer>
+        </Card>)
 }

@@ -89,7 +89,7 @@ export const staffTotal = (list) => {
     return count;
 }
 
-export const getStudentHistory = (id,historyList,timefilter) =>{    
+export const getStudentHistory = (id,historyList,timefilter,programKey) =>{    
     if(timefilter !== undefined && timefilter.length == 2){
         const filterOne = new Date(timefilter[0]).getTime()
         const filterTwo = new Date(timefilter[1]).getTime();

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { 
     Button,
-    Col
+    Col,
+    Row
  } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 
@@ -30,13 +31,11 @@ export function getPreviousSunday() {
     return previousSunday.getTime();
   }
 
-export  function EditItemModal({show, setShow, record, list}) {
-
+export  function EditItemModal({show, setShow, record, list, program, setProgram}) {  
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const admin = useSelector(isAdmin)
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
-
     return (
       <>
         <Modal 
@@ -45,7 +44,14 @@ export  function EditItemModal({show, setShow, record, list}) {
             show={show} 
             onHide={handleClose} 
             centered>
-            <Modal.Title>{record.name}</Modal.Title>
+            <Modal.Title>
+                <Row>
+                  <Col>
+                  {record.name}
+                  </Col>
+                </Row>
+              </Modal.Title>
+            
           <Modal.Header closeButton>
             {daysOfWeek.map((day) => (
                         <Col>
@@ -54,7 +60,11 @@ export  function EditItemModal({show, setShow, record, list}) {
                     ))}
           </Modal.Header>
           <Modal.Body>
-            <EditRecord admin={admin} record = {record} list = {list}/>
+            <EditRecord 
+              admin={admin} 
+              record = {record} 
+              list = {list}
+              />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
