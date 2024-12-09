@@ -172,7 +172,7 @@ function EmployeeCard({
                                     ))}
                                 </Form>
                             </Col>
-                            <Row>
+                            {/* <Row> */}
                                 <Col>
                                     <Button
                                         onClick={() => {
@@ -183,7 +183,7 @@ function EmployeeCard({
                                         }}
                                     > View Hours</Button>
                                 </Col>
-                            </Row>
+                            {/* </Row> */}
                         </Fragment>
 
                         : ''}
