@@ -107,8 +107,6 @@ function SchoolListDisplay({
 }) {
     // const [radio, setRadio] = false(false)
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
-    const [checked, setChecked] = useState();
-    const [cardprogram, setCardProgram] = useState(program)
     return (
         (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={6}>
@@ -136,7 +134,8 @@ function EmployeeCard({
     setChange,
     setProgram
 }) {
-    const [cardprogram, setCardProgram] = useState(Object.keys(employee.programs)[0])
+    const [cardprogram, setCardProgram] = useState( 'programs' in employee ? Object.keys(employee?.programs)[0]:'')
+    
     return (
         <Card>
             <Card.Header className="textRight">
@@ -165,7 +164,7 @@ function EmployeeCard({
                                         setCardProgram(e.target.value)
                                     }}>
                                     Programs:
-                                    {Object.keys(employee.programs).map((prog) => (
+                                    {Object.keys(employee?.programs).map((prog) => (
                                         <>
                                             <br />
                                             <input type="radio" value={prog} checked={cardprogram == prog} name={prog} /> {prog}

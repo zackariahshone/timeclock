@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Col, Container, Row, Card, Button, CardTitle, Form } from "react-bootstrap";
+import { Col, Container, Row, Card, Button, CardTitle, Form,Dropdown } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
 
 import { useSelector } from 'react-redux';
@@ -21,9 +21,10 @@ export default () => {
     const employeeList = useSelector(students)
     const history = useSelector(studentHistory)
     const [selectedEmployee, setSelectedEmployee] = useState();
-  
+    const [empProg, setEmpProg] = useState();
     const [dates, setDates] = useState();
-    let x,y;
+    const programKeys = ['Aspire', 'Richardson Industries'];
+    let x, y;
     return (
         <Fragment>
             <h1>Insight</h1>
@@ -31,8 +32,8 @@ export default () => {
                 <Card>
                     <Row>
                         <Col>
-                            Date Filter: <Calendar onChange={()=>{}} 
-                                showIcon/>
+                            Date Filter: <Calendar onChange={() => { }}
+                                showIcon />
                         </Col>
                     </Row>
                     <Row>
@@ -57,82 +58,120 @@ export default () => {
                             Date Percentage
                         </Col>
                     </Row>
-                    
+
                 </Card>
             </Container>
 
             <Container className="marginBottom">
-                {employeeList ? displaySchoolInsights("aspire", filterByPrograms('aspire', employeeList)) : ''}
-                {employeeList ? displaySchoolInsights("richardson industries", filterByPrograms('richardson industries', employeeList)) : ''}
-               
+                {employeeList ? displaySchoolInsights("Aspire", filterByPrograms('Aspire', employeeList)) : ''}
+                {employeeList ? displaySchoolInsights("Richardson Industries", filterByPrograms('Richardson Industries', employeeList)) : ''}
+
                 <Card >
                     <Row className="marginBottom">
                         <Col>
-                            <h3 id='clockedIn'>Clocked In</h3>
-                            {getStudentStatus('in', employeeList)?.map(emp => (
-                                <p
-                                    onClick={() => { setSelectedEmployee(emp) }}
-                                    className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
-                                >{emp.name}</p>
-                            ))
+                            {
+                                programKeys.map(pg => (
+                                    <Col>
+                                        <h3 id='clockedIn'>{pg} Clocked In</h3>
+                                        {getStudentStatus('in', employeeList, pg)?.map(emp => (
+                                            <p
+                                                onClick={() => { 
+                                                    setSelectedEmployee(emp)
+                                                    setEmpProg(Object.keys(emp.programs)[0]) 
+                                                }}
+                                                className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
+                                            >{emp.name}</p>
+                                        ))}
+                                    </Col>
+                                ))
                             }
                         </Col>
                         <Col>
-                            <h3 id='clockedOut'>Clocked Out</h3>
-                            {getStudentStatus('out', employeeList)?.map(emp => (
-                                <p className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
-                                    onClick={() => { setSelectedEmployee(emp) }}
-                                >{emp.name}</p>
+                            {programKeys.map(pg => (
+                                <Col>
+                                    <h3 id='clockedOut'>{pg} Clocked Out</h3>
+                                    {getStudentStatus('out', employeeList, pg)?.map(emp => (
+                                        <p className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
+                                            onClick={() => { setSelectedEmployee(emp) }}
+                                        >{emp.name}</p>
+                                    ))}
+                                </Col>
                             ))
                             }
                         </Col>
                     </Row>
                 </Card>
             </Container>
-            <Container >
-                {selectedEmployee &&  getStudentHistory(selectedEmployee.id,Object.values(history))[0]?.clockedInOutHistory ? 
-                    <>   
-                    <Card >
-                        <>
-                    <Container className="marginTop">
+            <Container>
+                {selectedEmployee && getStudentHistory(selectedEmployee.id, Object.values(history))[0] ?
+                    <>
+                        <Card>
+                            <Card.Header>
+                               <div
+                                className='removeSelectedEmp'
+                                onClick={()=>{
+                                    setSelectedEmployee(null);
+                                }}
+                               >X</div> 
+                            </Card.Header>
+                            <Dropdown 
+                                className="progSelector"
+                            >
+                                <Dropdown.Toggle variant="info" id="dropdown-basic">
+                                    {empProg ? empProg : 'Select Program'}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu
+                                  onClick={(e) => {
+                                    setEmpProg(e.target.textContent)
+                                }}
+                                >
+                                    {Object.keys(selectedEmployee.programs).map((prog)=>(
+                                        <>
+                                            <Dropdown.Item value = {prog} href={`#/${prog}`}>{prog}</Dropdown.Item>
+                                        </>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <>
+                                <Container className="marginTop">
 
-                        <div className="export">
-                            <ExportCSV style={{marginRight:'2%'}} data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history),dates))} fileName={`${selectedEmployee.name}`}/>
-                            <Calendar  value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
-                        </div>
-                    </Container>
-                            <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
-                            {
-                                getStudentHistory(selectedEmployee?.id, Object.values(history),dates)[0].clockedInOutHistory.map((history, i) => {
-                                if(history.status == 'in'){
-                                    x = history.timeMilli
-                                }else{
-                                    y=history.timeMilli
-                                }
-                                return (
-                                    <>
-                                    <Row className="marginBottom">
-                                        <Col>
-                                            {getDateFromMilli(history.timeMilli)}
-                                        </Col>
-                                        <Col>
-                                            <Card className="alignRight marginRight">
-                                                <p>Clocked {toCapitalize(history.status)}: {convertMilitaryToStandard(getTimeFromMillisecond(history.timeMilli))}</p>
-                                                <p>Set By: {history.setBy}</p>
-                                            </Card>
-                                        {
-                                            history.status == 'out' ?  
-                                                    <text>{getHoursWorked(x,y)} hrs</text>
-                                            :''
+                                    <div className="export">
+                                        <ExportCSV style={{ marginRight: '2%' }} data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history), dates))} fileName={`${selectedEmployee.name}`} />
+                                        <Calendar value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
+                                    </div>
+                                </Container>
+                                <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
+                                {
+                                    getStudentHistory(selectedEmployee?.id, Object.values(history), dates)[0][empProg].map((history, i) => {
+                                        if (history.status == 'in') {
+                                            x = history.timeMilli
+                                        } else {
+                                            y = history.timeMilli
                                         }
-                                        </Col>
-                                    </Row>
-                                    </>
-                                )
-                            })
-                            }
-                        </>
-                    </Card>
+                                        return (
+                                            <>
+                                                <Row className="marginBottom">
+                                                    <Col>
+                                                        {getDateFromMilli(history.timeMilli)}
+                                                    </Col>
+                                                    <Col>
+                                                        <Card className="alignRight marginRight">
+                                                            <p>Clocked {toCapitalize(history.status)}: {convertMilitaryToStandard(getTimeFromMillisecond(history.timeMilli))}</p>
+                                                            <p>Set By: {history.setBy}</p>
+                                                        </Card>
+                                                        {
+                                                            history.status == 'out' ?
+                                                                <text>{getHoursWorked(x, y)} hrs</text>
+                                                                : ''
+                                                        }
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                        )
+                                    })
+                                }
+                            </>
+                        </Card>
                     </>
                     : ''}
 
@@ -141,17 +180,17 @@ export default () => {
     )
 }
 
-function getCsvData(filteredData){    
+function getCsvData(filteredData) {
     let row = [];
-    let collection =[];
+    let collection = [];
     let totalHours = [];
     let x, y;
     let newRow = {};
-    if(filteredData[0].clockedInOutHistory.length > 0){
+    if (filteredData[0].clockedInOutHistory.length > 0) {
         row.push(Object.keys(filteredData[0]));
-        collection.push(['DateIn','DateOut','TimeIn','TimeOut','CheckedInBy', 'CheckedOutBy','TotalHours'])
-        filteredData[0].clockedInOutHistory.forEach(filteredOBj =>{
-            if(filteredOBj.status == "in"){
+        collection.push(['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy', 'TotalHours'])
+        filteredData[0].clockedInOutHistory.forEach(filteredOBj => {
+            if (filteredOBj.status == "in") {
                 newRow = {}
                 newRow.DateIn = getDateFromMilli(filteredOBj.timeMilli)
                 newRow.TimeIn = convertMilitaryToStandard(filteredOBj.time)
@@ -159,20 +198,20 @@ function getCsvData(filteredData){
 
                 x = filteredOBj.timeMilli
                 y = null
-            }else{ 
+            } else {
                 newRow.DateOut = getDateFromMilli(filteredOBj.timeMilli)
                 newRow.TimeOut = convertMilitaryToStandard(filteredOBj.time)
                 newRow.CheckedOutBy = filteredOBj.setBy
-                y = filteredOBj.timeMilli 
+                y = filteredOBj.timeMilli
             }
-            if(x && y){               
-                const hrsWrked = getHoursWorked(x,y); 
+            if (x && y) {
+                const hrsWrked = getHoursWorked(x, y);
                 totalHours.push(hrsWrked)
                 newRow.Total = hrsWrked
                 collection.push(newRow)
             }
         })
-            // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours       
+        // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours       
         return collection;
     }
     return collection;

@@ -9,19 +9,19 @@ export const displaySchoolInsights = (program, staffList) => {
         <Col >
             <Card>
                 <Card.Title>Number of {toCapitalize(program)} Students</Card.Title>
-                <p>{filterByPrograms(program, staffList).length}</p>
+                <p>{filterByPrograms(program, staffList,program).length}</p>
             </Card>
         </Col>
         <Col >
             <Card>
                 <Card.Title> Clocked In</Card.Title>
-                <p>{staffTotal(filterByPrograms(program, staffList))}</p>
+                <p>{staffTotal(filterByPrograms(program, staffList),program)}</p>
             </Card>
         </Col>
         <Col>
             <Card>
                 <Card.Title>Percentage Of {toCapitalize(program)}s Clocked In</Card.Title>
-                <b>{Number(getStudentStatus('in', filterByPrograms(program, staffList)).length / filterByPrograms(program, staffList).length * 100).toFixed(2)}%</b>
+                <b>{Number(getStudentStatus('in', filterByPrograms(program, staffList),program).length / filterByPrograms(program, staffList,program).length * 100).toFixed(2)}%</b>
             </Card>
         </Col>
     </Row>
@@ -32,21 +32,20 @@ export const filterByType = (type, staffList) => {
     return staffList?.filter(staff => staff.type.toLowerCase() == type.toLowerCase())
 }
 
-export const filterByPrograms = (program, studentList) =>{
-    
-    return studentList.filter(student => student.program.toLowerCase() == program.toLowerCase())
+export const filterByPrograms = (program, studentList) =>{    
+    return studentList.filter(student => Object.keys(student.programs).includes(program))
 }
 
 export const toCapitalize = (str) => {
     return `${str.charAt(0).toUpperCase()}${str.slice(1)}`
 }
 
-export const getStudentStatus = (status, students) => {
+export const getStudentStatus = (status, students,program) => {    
     switch (status) {
         case 'in':
-            return students.filter((student) => (student.status == 'in'));
+            return students.filter((student) => (student?.programs[program] == 'in'));
         case 'out':
-            return students.filter((student) => (student.status == 'out'));
+            return students.filter((student) => (student?.programs[program] == 'out'));
         default:
             return;
     }
@@ -79,10 +78,10 @@ export const getDateFromMilli = (milli) => {
   
     return `${formattedMonth}/${formattedDay}/${year}`;
 }
-export const staffTotal = (list) => {
+export const staffTotal = (list,program) => {    
     let count = 0
     list.forEach(emp => {
-        if (emp.status == 'in') {
+        if (emp.programs[program] == 'in') {
             count += 1;
         }
     })

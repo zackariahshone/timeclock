@@ -40,3 +40,18 @@
     padding-top:2%;
     text-align: right;
 }
+
+.progSelector{
+    text-align: right;
+}
+.removeSelectedEmp{
+    font-weight: bolder;
+    color: red;
+    background-color: rgb(231, 179, 179);
+    border-radius: 10%;
+    cursor: pointer;
+    width:6%
+}
+.statusPerProgram{
+    height: 100%;
+}
