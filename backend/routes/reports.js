@@ -14,10 +14,10 @@ router.get('/reports', async (req, res) => {
     let x, y = 0;
         allHistory.map(async (doc) => {
             let row = {}
-            const timeClock = doc?.clockedInOutHistory
+            const timeClock = doc[building];
             let student = students.find(e=>e.id == doc.id)
             
-            if (student?.name && student?.program == building) {
+            if (student?.name && Object.keys(student.programs).includes(building)) {
                 timeClock.forEach((time) => {
             
                     if ((Number(time.timeMilli) > Number(start) && Number(time.timeMilli) < Number(end) + (24 * 60 * 60 * 1000))) {
