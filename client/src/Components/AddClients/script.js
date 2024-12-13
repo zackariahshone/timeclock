@@ -85,6 +85,7 @@ export default (props) => {
                             setShow={setShowEditModal}
                             record={record}
                             list={getStudentHistory(record.id, Object.values(history))[0][program]}
+                            program={program}
                         />
                         : ''}
                 </Row>
@@ -135,7 +136,7 @@ function EmployeeCard({
     setChange,
     setProgram
 }) {
-    const [cardprogram, setCardProgram] = useState(program)
+    const [cardprogram, setCardProgram] = useState(Object.keys(employee.programs)[0])
     return (
         <Card>
             <Card.Header className="textRight">
@@ -172,7 +173,6 @@ function EmployeeCard({
                                     ))}
                                 </Form>
                             </Col>
-                            {/* <Row> */}
                                 <Col>
                                     <Button
                                         onClick={() => {
@@ -183,7 +183,6 @@ function EmployeeCard({
                                         }}
                                     > View Hours</Button>
                                 </Col>
-                            {/* </Row> */}
                         </Fragment>
 
                         : ''}

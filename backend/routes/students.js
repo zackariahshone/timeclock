@@ -82,9 +82,9 @@ router.put('/updatedstudent', async (req, res) => {
 
 
 router.post('/updatestudentrecord', async (req, res) => {
-
-  const { id, milliIndex, recordChanges } = req.body;
-  console.log(id, milliIndex, recordChanges);
+// console.log(req.body);
+//
+  const { id, milliIndex, recordChanges,program } = req.body;
 
   const newMilli = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime()
   const newTime = new Date(newMilli);
@@ -92,23 +92,23 @@ router.post('/updatestudentrecord', async (req, res) => {
   // console.log(studentHistoryToUpdate);
 
   let index = 0;
-  let recordToUpdate = studentHistoryToUpdate.clockedInOutHistory.find((doc, x) => {
+  studentHistoryToUpdate[program]?.find((doc, x) => {
     if (doc.timeMilli == milliIndex) {
       index = x;
       return true;
     }
   })
-  // console.log(studentHistoryToUpdate.clockedInOutHistory[index]);
-  console.log(recordToUpdate);
+  console.log(index)
+  console.log(studentHistoryToUpdate[program]);
+  console.log(studentHistoryToUpdate[program][index]);
 
-  studentHistoryToUpdate.clockedInOutHistory[index] = {
-    ...studentHistoryToUpdate.clockedInOutHistory[index],
+  
+  studentHistoryToUpdate[program][index] = {
+    ...studentHistoryToUpdate[program][index],
     "timeMilli": newMilli,
-    "time": `${newTime.getHours()}: ${newTime.getMinutes()}`,
+    "time": `${newTime.getHours()}: ${newTime.getMinutes()}`
   }
-  console.log(studentHistoryToUpdate.clockedInOutHistory);
-  studentHistoryToUpdate.clockedInOutHistory = studentHistoryToUpdate.clockedInOutHistory.sort((a, b) => a.timeMilli - b.timeMilli)
-  console.log(studentHistoryToUpdate.clockedInOutHistory);
+  studentHistoryToUpdate[program] = studentHistoryToUpdate[program].sort((a, b) => a.timeMilli - b.timeMilli)
 
   await studentHistoryToUpdate.save()
   const allStudentHistory = await History.find({});
