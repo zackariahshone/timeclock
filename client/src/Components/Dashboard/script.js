@@ -134,15 +134,20 @@ export default () => {
                             </Dropdown>
                             <>
                                 <Container className="marginTop">
-
+                                        {console.log(empProg)}
                                     <div className="export">
-                                        <ExportCSV style={{ marginRight: '2%' }} data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history), dates))} fileName={`${selectedEmployee.name}`} />
+                                        <div>
                                         <Calendar value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
+                                        </div>
+                                        <div className="exportButton">
+                                        <ExportCSV data={getCsvData(getStudentHistory(selectedEmployee?.id, Object?.values(history), dates,empProg),empProg)} fileName={`${selectedEmployee.name}`} />
+                                        </div>
+
                                     </div>
                                 </Container>
                                 <h3>{selectedEmployee.name} : {toCapitalize(selectedEmployee.type)}</h3>
-                                {
-                                    getStudentHistory(selectedEmployee?.id, Object.values(history), dates)[0][empProg].map((history, i) => {
+                    
+                                   { getStudentHistory(selectedEmployee?.id, Object.values(history), dates,empProg)[0][empProg]?.map((history, i) => {
                                         if (history.status == 'in') {
                                             x = history.timeMilli
                                         } else {
@@ -168,8 +173,7 @@ export default () => {
                                                 </Row>
                                             </>
                                         )
-                                    })
-                                }
+                                    })}
                             </>
                         </Card>
                     </>
@@ -180,16 +184,17 @@ export default () => {
     )
 }
 
-function getCsvData(filteredData) {
+function getCsvData(filteredData,program) {
     let row = [];
     let collection = [];
     let totalHours = [];
     let x, y;
     let newRow = {};
-    if (filteredData[0].clockedInOutHistory.length > 0) {
+    console.log(filteredData)
+    if ( program && filteredData[0][program] &&  filteredData[0][program].length > 0) {
         row.push(Object.keys(filteredData[0]));
-        collection.push(['DateIn', 'DateOut', 'TimeIn', 'TimeOut', 'CheckedInBy', 'CheckedOutBy', 'TotalHours'])
-        filteredData[0].clockedInOutHistory.forEach(filteredOBj => {
+        collection.push(['DateIn', 'TimeIn', 'DateOut', 'TimeOut', 'CheckedInBy', 'CheckedOutBy', 'TotalHours'])
+        filteredData[0][program].forEach(filteredOBj => {
             if (filteredOBj.status == "in") {
                 newRow = {}
                 newRow.DateIn = getDateFromMilli(filteredOBj.timeMilli)
@@ -211,7 +216,9 @@ function getCsvData(filteredData) {
                 collection.push(newRow)
             }
         })
-        // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours       
+        // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours     
+          console.log(collection);
+          
         return collection;
     }
     return collection;

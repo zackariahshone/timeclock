@@ -88,15 +88,18 @@ export const staffTotal = (list,program) => {
     return count;
 }
 
-export const getStudentHistory = (id,historyList,timefilter,programKey) =>{    
-    if(timefilter !== undefined && timefilter.length == 2){
+export const getStudentHistory = (id,historyList,timefilter,programKey) =>{  
+    console.log(programKey);
+      console.log(id,historyList,timefilter,programKey);
+      
+    if(timefilter !== undefined && timefilter.length == 2 && programKey){
         const filterOne = new Date(timefilter[0]).getTime()
         const filterTwo = new Date(timefilter[1]).getTime();
         const twetnyFourHours = 24 * 60 * 60 * 1000; 
-        let listFilteredByID = historyList.filter(doc=>doc.id == id)    
-        let clockedInOutHistory = listFilteredByID[0].clockedInOutHistory.filter(history => history.timeMilli > filterOne && history.timeMilli  < filterTwo + (twetnyFourHours) );
+        let listFilteredByID = historyList.filter(doc=>doc.id == id)            
+        let clockedInOutHistory = listFilteredByID[0][programKey].filter(history => history.timeMilli > filterOne && history.timeMilli  < filterTwo + (twetnyFourHours) );
         
-        return [{id:listFilteredByID[0].id ,clockedInOutHistory}]  
+        return [{id:listFilteredByID[0].id ,[programKey]:clockedInOutHistory}]  
         
     }else{
         return historyList.filter(doc=>doc?.id == id);    
@@ -112,7 +115,7 @@ const ExportCSV = ({ data, fileName }) => {
 
     const csvString = [
         data[0], // Specify your he   `aders here
-        ...data.map(item => [item.DateIn,item.DateOut, item.TimeIn, item.TimeOut, item.CheckedInBy ,item.CheckedOutBy,item.Total]) // Map your data fields accordingly
+        ...data.map(item => [item.DateIn, item.TimeIn,item.DateOut, item.TimeOut, item.CheckedInBy ,item.CheckedOutBy,item.Total]) // Map your data fields accordingly
     ]
     .map(row => row.join(","))
     .join("\n");

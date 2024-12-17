@@ -37,10 +37,12 @@
 }
 
 .export{
-    padding-top:2%;
     text-align: right;
+    display: block;
 }
-
+.exportButton{
+    margin-bottom: 2%;
+}
 .progSelector{
     text-align: right;
 }
