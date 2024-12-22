@@ -27,7 +27,7 @@ export default () => {
     const [empProg, setEmpProg] = useState();
     const [dates, setDates] = useState();
     const programKeys = ['Aspire', 'Richardson Industries'];
-    console.log(snapshot);
+    console.log('shot',snapshot);
 
     let x, y;
     return (
@@ -44,7 +44,7 @@ export default () => {
                         </Col>
                     </Row>
 
-                    {snapshot ?
+                    {Object.keys(snapshot).length > 0 ?
                         Object.keys(snapshot.programTotals).map(program => (
                             <Row>
                                 <Col>
