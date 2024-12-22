@@ -18,7 +18,7 @@ const { Schema, model } = require('mongoose');
   },
   type:String,
   id:String
-},{strict:false});
+},{strict:false}); 
 module.exports = model('Student', studentSChema);
 
 // module.exports = User;
