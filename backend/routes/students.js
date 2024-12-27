@@ -56,12 +56,19 @@ router.get('/getallstudents', async (req, res) => {
 router.post('/updatestudentrecord', async (req, res) => {
 // console.log(req.body);
 //
-  const { id, milliIndex, recordChanges,program } = req.body;
-
+  const { id, milliIndex, recordChanges,program,status,editedby } = req.body;
+  console.log(req.body);
+  
   const newMilli = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime()
   const newTime = new Date(newMilli);
   const studentHistoryToUpdate = await History.findOne({ id })
-  // console.log(studentHistoryToUpdate);
+  let updates = {
+      "timeMilli": newMilli,
+      "time": `${newTime.getHours()}: ${newTime.getMinutes()}`
+  }
+  status ? updates.status = status : '';
+  editedby ? updates.editedby = editedby : '';
+  console.log(updates);
 
   let index = 0;
   studentHistoryToUpdate[program]?.find((doc, x) => {
@@ -73,8 +80,7 @@ router.post('/updatestudentrecord', async (req, res) => {
   
   studentHistoryToUpdate[program][index] = {
     ...studentHistoryToUpdate[program][index],
-    "timeMilli": newMilli,
-    "time": `${newTime.getHours()}: ${newTime.getMinutes()}`
+    ...updates
   }
   studentHistoryToUpdate[program] = studentHistoryToUpdate[program].sort((a, b) => a.timeMilli - b.timeMilli)
 

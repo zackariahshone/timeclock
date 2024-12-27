@@ -2,12 +2,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { setHistoryBulk, studentHistory } from "../../app/StudentHistorySlice";
 import { getDateFromMilli, getStudentHistory, toCapitalize } from "../Dashboard/helpers";
-import { 
-    Button, 
-    Card, 
-    Col, 
-    Form, 
-    InputGroup, 
+import {
+    Button,
+    Card,
+    Col,
+    Form,
+    InputGroup,
     Row,
     Dropdown
 
@@ -15,7 +15,8 @@ import {
 import { convertMilitaryToStandard } from "../TimeClock/helper";
 import { updateItem } from "../../globalUtils/requests";
 import { getPreviousSunday } from "./helpers";
-import { isAdmin } from "../../app/CurrentUserSlice";
+import { isAdmin, userSignedIn } from "../../app/CurrentUserSlice";
+import './style.css'
 export const EditRecord = ({ record, list, program }) => {
     console.log(program);
 
@@ -40,6 +41,7 @@ export const EditRecord = ({ record, list, program }) => {
                                                 <Fragment>
                                                     <Row key={`history_${x}`}>
                                                         <HourEditCard
+                                                            editedby={historyRecord?.editedby}
                                                             timeMilli={timeMilli}
                                                             status={status}
                                                             time={time}
@@ -76,57 +78,70 @@ function getMilliFromDateAndTime(date, time) {
     return new Date(`${date} ${time}`)
 }
 
-function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, program }) {
+function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, program, editedby }) {
     const [recordChanges, setRecordChanges] = useState();
     const [error, setError] = useState();
     const [dropDownStatus, setDropDownStatus] = useState(status);
     const admin = useSelector(isAdmin)
-    // console.log(`${x}`);
-    console.log(program);
+    const userName = useSelector(userSignedIn)
 
     return (
         <Card key={`card_${x}`}>
+            <span
+                id='deleteStamp'
+                onClick={()=>{
+                    console.log(id,timeMilli);
+                    
+                }}
+            >X</span>
             <Card.Body key={`card_body${x}`}>
                 <Card.Title key={`card_Title${x}`}>
-                    <Card.Text key={`card_text${x}`}>
-                        {getDayOfWeekFromMillisecond(timeMilli)}
-                    </Card.Text>
+                    <div id='timeStampTitle' key={`card_text${x}`}>
+                        <div>
+                            {getDayOfWeekFromMillisecond(timeMilli)}
+                        </div>
+                    </div>
                 </Card.Title>
                 <Form.Group key={`formgroup_${x}`}>
-                   {!admin ? 
-                   <Card.Text key={`card_1${x}`}>Clocked {dropDownStatus}</Card.Text>:
-                   
-                    <Dropdown>
-                        <Dropdown.Toggle
-                       
-                         variant="success" id="dropdown-basic">
-                        Clocked {toCapitalize(dropDownStatus)}
-                        </Dropdown.Toggle>
 
-                        <Dropdown.Menu
-                             onClick={(e)=>{
-                                console.log(e.target.text)
-                                setDropDownStatus(e.target.text)
-                            }}
-                        >
-                            <Dropdown.Item value = {'out'} href="#/action-1">out</Dropdown.Item>
-                            <Dropdown.Item value = {'in'} href="#/action-2">in</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                   }
+                    {!admin ?
+                        <Card.Text key={`card_1${x}`}>Clocked {dropDownStatus}</Card.Text> :
+
+                        <Dropdown>
+                            <Dropdown.Toggle
+
+                                variant="secondary" id="dropdown-basic">
+                                Clocked {toCapitalize(dropDownStatus)}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu
+                                onClick={(e) => {
+                                    console.log(e.target.text)
+                                    setDropDownStatus(e.target.text)
+                                }}
+                            >
+                                <Dropdown.Item value={'out'} href="#/action-1">out</Dropdown.Item>
+                                <Dropdown.Item value={'in'} href="#/action-2">in</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    }
+
                 </Form.Group>
                 <Form.Group key={`formcard_${x}`}>
                     <input
+                        readOnly={!admin}
                         onBlur={(e) => { setRecordChanges({ ...recordChanges, date: e.target.value }) }}
                         defaultValue={getDateFromMilli(timeMilli)}></input>
                 </Form.Group>
                 <Form.Group>
                     <input
+                        readOnly={!admin}
                         onBlur={(e) => { setRecordChanges({ ...recordChanges, time: e.target.value }) }}
                         defaultValue={convertMilitaryToStandard(time)}></input>
                 </Form.Group>
                 <Form.Group>
                     <input
+                        readOnly={!admin}
                         onBlur={() => { setRecordChanges({ ...recordChanges, setBy }) }}
                         defaultValue={setBy}></input>
                 </Form.Group>
@@ -137,22 +152,22 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                         >{error ? `${error}` : ''}</Col>
                         <Col >
                             {admin ?
+
                                 <Button
                                     disabled={!recordChanges}
                                     onClick={() => {
-
                                         const millisecondChange = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime();
                                         console.log(weeklyList[x - 1] == undefined);
                                         if (weeklyList[x].status == 'in' &&
-                                           ( weeklyList[x - 1] == undefined || millisecondChange > Number(weeklyList[x - 1]?.timeMilli)) &&
+                                            (weeklyList[x - 1] == undefined || millisecondChange > Number(weeklyList[x - 1]?.timeMilli)) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
-    
-                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program }, setHistoryBulk)
+
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
                                             setError('');
                                         } else if (weeklyList[x].status == 'out' &&
                                             millisecondChange > Number(weeklyList[x - 1]?.timeMilli) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
-                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program }, setHistoryBulk)
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
                                             setError('');
                                         } else {
                                             setError('Input Out of Bounds');
@@ -163,6 +178,11 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                             }
                         </Col>
                     </Row>
+                    {editedby ?
+                        <Row>
+                            <div>Edited By {editedby}</div>
+                        </Row>
+                        : <></>}
                 </Card.Footer>
             </Card.Body>
         </Card>

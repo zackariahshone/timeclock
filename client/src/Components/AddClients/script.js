@@ -17,6 +17,7 @@ import { getStudentHistory } from "../Dashboard/helpers";
 import { studentHistory } from "../../app/StudentHistorySlice";
 import { EditItemModal } from "../EditRecord/helpers";
 import { isAdmin } from "../../app/CurrentUserSlice";
+import { EditItem } from "../EditItem/script";
 export default (props) => {
     const { type } = props;
     const studentList = useSelector(students);
@@ -135,20 +136,30 @@ function EmployeeCard({
     setProgram
 }) {
     const [cardprogram, setCardProgram] = useState( 'programs' in employee ? Object.keys(employee?.programs)[0]:'')
-    
+    const [showEditItem, setShowEditItem] = useState();
     return (
+        <>
         <Card>
             <Card.Header className="textRight">
                 {
                     admin ?
+                    <>
+                        <text
+                            className="editItem"
+                            onClick={()=>{
+                                setShowEditItem(true)
+                            }}
+                        >Edit Card</text>
                         <text
                             onClick={() => {
                                 deleteItem(`/delete${employee.type}`, { id: employee.id }, removeEmployee)
                             }}
-                            className="deleteButton">x</text> : ''
+                            className="deleteButton">x</text> 
+                            </>
+                            : ''
                 }
             </Card.Header>
-            <Card.Body>
+            <Card.Body className="textLeft">
                 <Card.Title> Name: {employee.name}</Card.Title>
                 <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
                 {employee.buildingName ? <p>{employee.buildingName}</p> : ''}
@@ -187,5 +198,9 @@ function EmployeeCard({
                         : ''}
                 </Row>
             </Card.Footer>
-        </Card>)
+        </Card>
+        {showEditItem ?<EditItem employee={employee} show={showEditItem} setShow={setShowEditItem} />:<></> }
+    </>    
+    
+    )
 }

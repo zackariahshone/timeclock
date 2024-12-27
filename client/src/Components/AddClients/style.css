@@ -14,7 +14,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: left;
 }
 .textInCreateCard{
     display:grid;
@@ -30,4 +30,20 @@
 }
 .textRight{
     text-align: right;
+}
+.textLeft{
+    text-align: left;
+}
+.editItem{
+    margin-right: 10%;
+    color: rgb(247, 247, 254);
+    background-color: rgb(199, 26, 251);
+    font-weight: bolder;
+    font-size: medium;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.editItem:hover{
+    background-color: rgb(247, 247, 254) ;
+    color: rgb(199, 26, 251) ;
 }
