@@ -152,7 +152,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
       }
       <Row>
         <Col xs={{ span: 3, offset: 8 }}>
-          <div className={totalTimeWorked >= 5 ? "timeHit" : 'timeMissing'}>
+          <div className={totalTimeWorked >= 4.93 ? "timeHit" : 'timeMissing'}>
             Todays Total Time :  {totalTimeWorked.toFixed(2)}
           </div>
         </Col>

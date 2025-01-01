@@ -12,7 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { CreateStaffModal } from "./helpers";
 import './style.css'
-import { deleteItem } from "../../globalUtils/requests";
+import { deleteItem, updateItem } from "../../globalUtils/requests";
 import { getStudentHistory } from "../Dashboard/helpers";
 import { studentHistory } from "../../app/StudentHistorySlice";
 import { EditItemModal } from "../EditRecord/helpers";
@@ -152,7 +152,7 @@ function EmployeeCard({
                         >Edit Card</text>
                         <text
                             onClick={() => {
-                                deleteItem(`/delete${employee.type}`, { id: employee.id }, removeEmployee)
+                                updateItem(`/delete${employee.type}`, { id: employee.id }, removeEmployee)
                             }}
                             className="deleteButton">x</text> 
                             </>
@@ -161,8 +161,7 @@ function EmployeeCard({
             </Card.Header>
             <Card.Body className="textLeft">
                 <Card.Title> Name: {employee.name}</Card.Title>
-                <Card.Text>Date Added: {employee.dateStarted}</Card.Text>
-                {employee.buildingName ? <p>{employee.buildingName}</p> : ''}
+                {employee.type == 'teacher' ? <Card.Text>Date Added: {employee?.dateStarted}</Card.Text>:''}
             </Card.Body>
             <Card.Footer>
                 <Row>

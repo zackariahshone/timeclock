@@ -36,7 +36,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                 <Modal.Header closeButton>
                     <Modal.Title> Enter New {toCapitalize(type)}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body> 
                     <Row>
                         {toCapitalize(type)} Name:  <input
                             placeholder="enter name"
@@ -109,16 +109,12 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                             if (empName && program) {
                                 let createitemOBJ = {
                                     name: empName,
-                                    dateStarted: new Date().toDateString(),
                                     admissionDates:admissDates,
-                                    buildingName: program,
-                                    group: `${type}`,
-                                    program,
                                     programs: getProgramStatus(programs),
-                                    programStatus: getProgramStatus(programs),
                                     status: 'out',
                                     id: empID ? empID : generateUniqueId(),
                                     type,
+                                    active:true
                                 }
                                 
                                 if (type == 'teacher') { createitemOBJ.admin = admin };

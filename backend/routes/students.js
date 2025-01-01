@@ -54,11 +54,7 @@ router.get('/getallstudents', async (req, res) => {
 })
 
 router.post('/updatestudentrecord', async (req, res) => {
-// console.log(req.body);
-//
-  const { id, milliIndex, recordChanges,program,status,editedby } = req.body;
-  console.log(req.body);
-  
+  const { id, milliIndex, recordChanges,program,status,editedby } = req.body;  
   const newMilli = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime()
   const newTime = new Date(newMilli);
   const studentHistoryToUpdate = await History.findOne({ id })
@@ -68,8 +64,6 @@ router.post('/updatestudentrecord', async (req, res) => {
   }
   status ? updates.status = status : '';
   editedby ? updates.editedby = editedby : '';
-  console.log(updates);
-
   let index = 0;
   studentHistoryToUpdate[program]?.find((doc, x) => {
     if (doc.timeMilli == milliIndex) {
@@ -90,9 +84,7 @@ router.post('/updatestudentrecord', async (req, res) => {
 })
 
 
-router.post('/createstudent', async (req, res) => {
-  console.log(req.body);
-  
+router.post('/createstudent', async (req, res) => {  
   try {
     await StudentBackup.create(req.body);
     const createdStudent = await Student.create(req.body)
@@ -135,6 +127,33 @@ router.post('/studenttimeclock', async (req, res) => {
 /**
  * Edit User
  */
+router.post('/updateitem',async(req, res)=>{
+  console.log(req.body.idUpdate);
+  console.log(req.body.updates);
+  let requestedUpdates = req.body.updates;
+  const itemIndex = req.body.idUpdate
+  let programUpdates = {}
+  if( 'programs' in req.body.updates){
+    const prgkeys = Object.keys(req.body.updates.programs)
+    prgkeys.forEach((key)=>{
+      if(req.body.updates.programs[key] != "inactive"){
+        programUpdates[key] = 'out';
+      }
+    })
+    if(Object.keys(programUpdates).length == 0){
+      delete requestedUpdates.programs
+    }else{
+      requestedUpdates.programs = {...programUpdates}
+    } 
+  }
+  await Student.findOneAndUpdate({id:itemIndex},{...req.body.updates})
+
+  if('id' in req.body.updates){
+    await History.findOneAndUpdate({id : itemIndex},{id: req.body.updates.id})   
+  }  
+  res.json(requestedUpdates);
+  
+})
 router.put('/updatedstudent', async (req, res) => {
   try {
     const id = req.body.id
@@ -147,8 +166,8 @@ router.put('/updatedstudent', async (req, res) => {
 })
 
 
-router.delete('/deletestudent', async (req, res) => {
-  await Student.findOneAndDelete({ id: req.body.id })
+router.post('/deletestudent', async (req, res) => {
+  await Student.findOneAndUpdate({ id: req.body.id },{active:false})
   res.json(req.body);
 })
 

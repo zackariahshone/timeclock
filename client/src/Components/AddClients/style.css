@@ -42,6 +42,7 @@
     font-size: medium;
     border-radius: 5px;
     cursor: pointer;
+    padding:2px;
 }
 .editItem:hover{
     background-color: rgb(247, 247, 254) ;

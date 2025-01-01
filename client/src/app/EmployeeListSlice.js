@@ -53,37 +53,6 @@ export const employeeListSlice = createSlice({
   },
 })
 
-
-// {
-//   "type": "employeelist/timeClock",
-//   "payload": {
-//       "student": {
-//           "_id": "6753c27feb03cae01dcfb877",
-//           "name": "test split",
-//           "dateStarted": "Fri Dec 06 2024",
-//           "buildingName": "Aspire",
-//           "group": "student",
-//           "program": "Aspire",
-//           "programs": {
-//               "Richardson Industries": "out",
-//               "Aspire": "out"
-//           },
-//           "status": "out",
-//           "programStatus": {
-//               "Richardson Industries": "in",
-//               "Aspire": "out"
-//           },
-//           "type": "student",
-//           "id": "57858bbb69a15f3f90e2f467681ad7fd",
-//           "__v": 0
-//       },
-//       "program": "Aspire",
-//       "time": "21:44",
-//       "timeMilli": "1733543042376",
-//       "setBy": "admin"
-//   }
-// }
-// Action creators are generated for each case reducer function
 export const {
   addEmployee,
   removeEmployee,
