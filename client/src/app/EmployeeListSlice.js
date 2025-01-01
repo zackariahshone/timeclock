@@ -50,6 +50,14 @@ export const employeeListSlice = createSlice({
           break
       }
     },
+    activateStudent:(state,action) =>{
+      console.log(action.payload);
+
+      const id = action.payload.data[0].id
+      let student = state.employees.find(student => student.id === id);
+      student.active = action.payload.data[0].active
+      console.log(student.active);
+    }
   },
 })
 
@@ -58,8 +66,10 @@ export const {
   removeEmployee,
   timeClock,
   incrementByAmount,
-  addEmployeeBulk
+  addEmployeeBulk,
+  activateStudent
 } = employeeListSlice.actions
 export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() == 'teacher');
-export const students = (state) => state.employeeList.employees.filter(emp => emp.type == 'student');
+export const students = (state) => state.employeeList.employees.filter(emp => emp.type == 'student' && emp?.active !== false);
+export const inactiveStudents = (state) => state.employeeList.employees.filter(emp => emp.type == 'student' && emp?.active === false);
 export default employeeListSlice.reducer

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { teachers, students, addEmployee, removeEmployee } from "../../app/EmployeeListSlice";
+import { teachers, students, addEmployee, removeEmployee, inactiveStudents, addEmployeeBulk, activateStudent } from "../../app/EmployeeListSlice";
 import {
     Container,
     Card,
@@ -22,6 +22,7 @@ export default (props) => {
     const { type } = props;
     const studentList = useSelector(students);
     const teacherList = useSelector(teachers);
+    const studentsInactive = useSelector(inactiveStudents);
     let filteredList = type == 'teacher' ? teacherList : studentList;
     const [show, setShow] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -32,7 +33,7 @@ export default (props) => {
 
     const history = useSelector(studentHistory)
     const admin = useSelector(isAdmin)
-
+    const [displayInactive, setDisplayInactive] = useState(false)
     useEffect(() => {
         if (change == true) {
             setChange(false);
@@ -42,7 +43,7 @@ export default (props) => {
         <Container>
             <h1>{type.toUpperCase()}</h1>
             <Row>
-                <Col xs={4}>
+                <Col md = {3}>
                     <InputGroup
                         onChange={(e) => {
                             setSearchText(e.target.value);
@@ -52,34 +53,73 @@ export default (props) => {
                             placeholder={`Search ${type}`}
                             aria-label={`Search ${type}`}
                             aria-describedby="basic-addon2"
-                        />
+                            />
                         🔎
                     </InputGroup>
-                </Col>
+                            </Col>
+
+                    {
+                        admin ?
+                            <>
+                                <Col>
+                                <span>{displayInactive ? "Display Acitve" : "Display Inactive"}</span>
+                                    <Form.Check // prettier-ignore
+                                        type="switch"
+                                        id="custom-switch"
+                                        onChange={(e) => {
+                                            setDisplayInactive(e.target.checked)
+                                        }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Card
+                                        onClick={() => {
+                                            setShow(true);
+                                        }}
+                                        className="createNewCard">
+                                        <div className="textInCreateCard">Creat new {type}</div>
+                                    </Card>
+                                </Col>
+                            </>
+                            :
+                            <></>
+                    }
             </Row>
             <Col>
                 <Row>
-                    {admin ?
-                        <Col xs={12} md={3} >
-                            <Card
-                                onClick={() => {
-                                    setShow(true);
-                                }}
-                                className="createNewCard">
-                                <div className="textInCreateCard">Creat new {type}</div>
-                            </Card>
-                        </Col> : ''
+
+                    {
+                        !displayInactive ?
+
+                            <SchoolListDisplay
+                                searchText={searchText}
+                                empList={filteredList}
+                                setRecord={setRecord}
+                                setChange={setChange}
+                                setShowEditModal={setShowEditModal}
+                                admin={admin}
+                                setProgram={setProgram}
+                                program={program}
+                                active={true}
+                            /> : <></>
                     }
-                    <SchoolListDisplay
-                        searchText={searchText}
-                        empList={filteredList}
-                        setRecord={setRecord}
-                        setChange={setChange}
-                        setShowEditModal={setShowEditModal}
-                        admin={admin}
-                        setProgram={setProgram}
-                        program={program}
-                    />
+                    {type == 'student' && displayInactive ?
+                        <>
+                            <SchoolListDisplay
+                                searchText={searchText}
+                                empList={studentsInactive}
+                                setRecord={setRecord}
+                                setChange={setChange}
+                                setShowEditModal={setShowEditModal}
+                                admin={admin}
+                                setProgram={setProgram}
+                                program={program}
+                                active={false}
+                            />
+
+                        </>
+                        : <></>
+                    }
                     {type == 'student' && record && showEditModal ?
                         <EditItemModal
                             show={showEditModal}
@@ -104,7 +144,8 @@ function SchoolListDisplay({
     setShowEditModal,
     admin,
     program,
-    setProgram
+    setProgram,
+    active
 }) {
     // const [radio, setRadio] = false(false)
     const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
@@ -119,6 +160,7 @@ function SchoolListDisplay({
                     setShowEditModal={setShowEditModal}
                     setChange={setChange}
                     setProgram={setProgram}
+                    active={active}
                 />
             </Col>
         ))
@@ -126,62 +168,63 @@ function SchoolListDisplay({
 }
 
 
-function EmployeeCard({ 
+function EmployeeCard({
     admin,
     employee,
     program,
     setRecord,
     setShowEditModal,
     setChange,
-    setProgram
+    setProgram,
+    active
 }) {
-    const [cardprogram, setCardProgram] = useState( 'programs' in employee ? Object.keys(employee?.programs)[0]:'')
+    const [cardprogram, setCardProgram] = useState('programs' in employee ? Object.keys(employee?.programs)[0] : '')
     const [showEditItem, setShowEditItem] = useState();
     return (
         <>
-        <Card>
-            <Card.Header className="textRight">
-                {
-                    admin ?
-                    <>
-                        <text
-                            className="editItem"
-                            onClick={()=>{
-                                setShowEditItem(true)
-                            }}
-                        >Edit Card</text>
-                        <text
-                            onClick={() => {
-                                updateItem(`/delete${employee.type}`, { id: employee.id }, removeEmployee)
-                            }}
-                            className="deleteButton">x</text> 
+            <Card>
+                <Card.Header className="textRight">
+                    {
+                        admin ?
+                            <>
+                                <text
+                                    className="editItem"
+                                    onClick={() => {
+                                        setShowEditItem(true)
+                                    }}
+                                >Edit Card</text>
+                                <text
+                                    onClick={() => {
+                                        updateItem(`/activate${employee.type}`, { id: employee.id, active: !active }, activateStudent)
+                                    }}
+                                    className="deleteButton">{active ? 'x' : 'activate'}  </text>
                             </>
                             : ''
-                }
-            </Card.Header>
-            <Card.Body className="textLeft">
-                <Card.Title> Name: {employee.name}</Card.Title>
-                {employee.type == 'teacher' ? <Card.Text>Date Added: {employee?.dateStarted}</Card.Text>:''}
-            </Card.Body>
-            <Card.Footer>
-                <Row>
-                    {employee.type == "student" ?
-                        <Fragment>
+                    }
+                </Card.Header>
+                <Card.Body className="textLeft">
+                    <Card.Title> Name: {employee.name}</Card.Title>
+                    {employee.type == 'teacher' ? <Card.Text>Date Added: {employee?.dateStarted}</Card.Text> : ''}
+                </Card.Body>
+                <Card.Footer>
+                    <Row>
+                        {employee.type == "student" ?
+                            <Fragment>
 
-                            <Col>
-                                <Form
-                                    onChange={(e) => {
-                                        setCardProgram(e.target.value)
-                                    }}>
-                                    Programs:
-                                    {Object.keys(employee?.programs).map((prog) => (
-                                        <>
-                                            <br />
-                                            <input type="radio" value={prog} checked={cardprogram == prog} name={prog} /> {prog}
-                                        </>
-                                    ))}
-                                </Form>
-                            </Col>
+                                <Col>
+                                    <Form
+                                        onChange={(e) => {
+                                            setCardProgram(e.target.value)
+                                        }}>
+                                        Programs:
+                                        {Object.keys(employee?.programs).map((prog) => (
+                                            <>
+                                                <br />
+                                                <input type="radio" value={prog} checked={cardprogram == prog} name={prog} /> {prog}
+                                            </>
+                                        ))}
+                                    </Form>
+                                </Col>
                                 <Col>
                                     <Button
                                         onClick={() => {
@@ -192,14 +235,14 @@ function EmployeeCard({
                                         }}
                                     > View Hours</Button>
                                 </Col>
-                        </Fragment>
+                            </Fragment>
 
-                        : ''}
-                </Row>
-            </Card.Footer>
-        </Card>
-        {showEditItem ?<EditItem employee={employee} show={showEditItem} setShow={setShowEditItem} />:<></> }
-    </>    
-    
+                            : ''}
+                    </Row>
+                </Card.Footer>
+            </Card>
+            {showEditItem ? <EditItem employee={employee} show={showEditItem} setShow={setShowEditItem} /> : <></>}
+        </>
+
     )
 }

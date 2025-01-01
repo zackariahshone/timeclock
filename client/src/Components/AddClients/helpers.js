@@ -1,25 +1,20 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { addEmployee } from "../../app/EmployeeListSlice";
-import { Calendar } from 'primereact/calendar';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-    Col,
     Row,
     Button,
     Modal,
     Form
 } from "react-bootstrap";
-import { useDispatch } from 'react-redux';
 import './style.css'
 import { createItem } from "../../globalUtils/requests";
 
 export const CreateStaffModal = ({ show, setShow, type }) => {
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const dispatch = useDispatch();
     const [empName, setEmpName] = useState();
     const [empID, setEmpId] = useState();
     const [program, setProgramName] = useState();
@@ -127,26 +122,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                         variant="primary"> 
                         Create New {toCapitalize(type)}
                     </Button>
-                    {/* <Button
-                        variant="danger"
-                        onClick={() => {
-                            {
-                                (type.toLowerCase() == 'employee' ? clientDummyNames : ContractorDummynames).forEach((name, i) => {
-                                    dispatch(addEmployee({
-                                        name: name,
-                                        dateStarted: new Date().toDateString(),
-                                        buildingName: i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
-                                        program: i % 2 == 0 ? 'Aspire' : 'Richardson Industries',
-                                        group: i % 2 == 0 ? `Aspire ${toCapitalize(type)}` : `Richardson Industries ${toCapitalize(type)}`,
-                                        status: 'out',
-                                        history: [],
-                                        id: generateUniqueId(),
-                                        type
-                                    }))
-                                })
-                            }
-                        }}
-                    >dummy dump {type}</Button> */}
                 </Modal.Footer>
             </Modal>
         </>

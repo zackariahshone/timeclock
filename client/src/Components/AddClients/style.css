@@ -10,17 +10,13 @@
 }
 
 .createNewCard{
-    height: 80% !important;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    align-items: left;
+cursor: pointer;
+}
+.createNewCard:hover{
+    background-color: rgb(193, 150, 234);
 }
 .textInCreateCard{
-    display:grid;
-    align-items: center;
-    margin: 20%;
-    font-weight: bolder;
+
 }
 .deleteButton{
     text-align: right;

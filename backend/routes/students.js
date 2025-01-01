@@ -170,6 +170,13 @@ router.post('/deletestudent', async (req, res) => {
   await Student.findOneAndUpdate({ id: req.body.id },{active:false})
   res.json(req.body);
 })
+router.post('/activatestudent', async (req, res) => {
+  const updatedStudent = await Student.findOneAndUpdate({ id: req.body.id },{active:req.body.active})
+  console.log(updatedStudent);
+  
+  const dataRefresh = await Student.find({id:req.body.id})
+  res.json(dataRefresh);
+})
 
 router.delete('/deletestudents', async (req, res) => {
   await Student.deleteMany({})
