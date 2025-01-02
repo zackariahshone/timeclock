@@ -46,29 +46,34 @@ router.get('/clockoutall', async (req, res) => {
   let allHistory = await History.find({});
   const clockoutCollection = []
 
-    allStudents.map(async (student) => {
+   const PromiseSetOne = allStudents.map(async (student) => {
       let clockOutStuPrg = []
-      for (const key of Object.keys(student.programs)) {
-        if (student.programs[key] !== 'out') {
-          student.programs[key] = 'out'
-          clockOutStuPrg.push(key);
+        Object.keys(student.programs).map((key)=>{
+          
+          if (student.programs[key] !== 'out') {
+            student.programs[key] = 'out'
+            clockOutStuPrg.push(key);
+          }
+        })
+        if(clockOutStuPrg.length > 0){
+          clockoutCollection.push({ [student.id]: clockOutStuPrg });
         }
-      }
-      await Student.findOneAndUpdate({id:student.id},{...student}) //student.save()  
-      clockoutCollection.push({ [student.id]: clockOutStuPrg });
-    
-      // Save the document after all updates are made
+        await Student.findOneAndUpdate({id:student.id},{...student}) //student.save()  
+        // Save the document after all updates are made
     })
     // allStudents.save()
-    clockoutCollection.map(async student => {
+    
+   const PromiseSetTwo = clockoutCollection.map(async student => {
       const studentID = Object.keys(student)[0];
       const checkoutValues = student[studentID];
+      console.log('student',student);
       
       const stuRecord = allHistory.find(record => record.id == studentID)
       // const progs = clockoutCollection[id]
       
       checkoutValues.map((prog) => {
-        
+        console.log('prog not defined',prog);
+      
         stuRecord[prog].push(
           {
             'status': 'out',
@@ -78,10 +83,19 @@ router.get('/clockoutall', async (req, res) => {
           }
         )
       })
-      await stuRecord.save()
+      console.log(stuRecord);
+      console.log('87',student);
+      
+      await History.findOneAndUpdate({id:Object.keys(student)[0]},{...stuRecord}) //stuRecord.save()
     })
 
-  res.send(allStudents)
+
+    const result = await Promise.allSettled(PromiseSetOne,PromiseSetTwo);
+
+    const allFulfilled = result.every((r) => r.status === 'fulfilled');
+    res.status(allFulfilled ? 200 : 500).send(allFulfilled ? '200' : '500');
+
+  // res.send(allStudents)
 })
 
 module.exports = router;
