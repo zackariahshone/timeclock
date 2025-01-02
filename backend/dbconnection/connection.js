@@ -14,6 +14,6 @@ mongoose.set(
     const conSuccess = mongoose.connection
     conSuccess.once('open', _ => {
       console.log('Database connected:', db)
-    })
-
+    })  
+    
 module.exports = connection

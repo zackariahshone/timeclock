@@ -1,11 +1,14 @@
 const router = require('express').Router();
-const Teacher = require('../dbconnection/models/Staff')
+const Teacher = require('../dbconnection/models/Staff');
+const StudentBackup = require('../dbconnection/models/StudentBackup');
+const Student = require('../dbconnection/models/Students')
+const History = require('../dbconnection/models/History')
 
 /**
  * Handle Sign up
  */
 router.post('/createteacher', async (req, res) => {
-  try {        
+  try {
     const createdTeacher = await Teacher.create(req.body)
     res.json(createdTeacher)
   } catch (e) {
@@ -13,18 +16,72 @@ router.post('/createteacher', async (req, res) => {
   }
 });
 
-router.get('/getallteachers', async (req,res)=>{
-  try{
+router.get('/getallteachers', async (req, res) => {
+  try {
     const allTeachers = await Teacher.find({})
     res.json(allTeachers)
-  }catch(e){
+  } catch (e) {
     res.send(e)
   }
 })
 
-router.delete('/deleteteacher',async (req, res)=>{  
-  await Teacher.findOneAndDelete({id:req.body.id})
+router.post('/activateteacher', async (req, res) => {
+  const updatedStudent = await Teacher.findOneAndUpdate({ id: req.body.id }, { active: req.body.active })
+  console.log(updatedStudent);
+
+  const dataRefresh = await Teacher.find({ id: req.body.id })
+  res.json(dataRefresh);
+})
+
+router.delete('/deleteteacher', async (req, res) => {
+  await Teacher.findOneAndDelete({ id: req.body.id })
   res.json(req.body);
+})
+
+router.get('/clockoutall', async (req, res) => {
+  const date = new Date();
+  const currentTimeMilli = date.getTime();
+  const currentTimeMillitary = `${date.getHours()}:${date.getMinutes()}`
+  let allStudents = await Student.find({});
+  let allHistory = await History.find({});
+  const clockoutCollection = []
+
+    allStudents.map(async (student) => {
+      let clockOutStuPrg = []
+      for (const key of Object.keys(student.programs)) {
+        if (student.programs[key] !== 'out') {
+          student.programs[key] = 'out'
+          clockOutStuPrg.push(key);
+        }
+      }
+      await Student.findOneAndUpdate({id:student.id},{...student}) //student.save()  
+      clockoutCollection.push({ [student.id]: clockOutStuPrg });
+    
+      // Save the document after all updates are made
+    })
+    // allStudents.save()
+    clockoutCollection.map(async student => {
+      const studentID = Object.keys(student)[0];
+      const checkoutValues = student[studentID];
+      
+      const stuRecord = allHistory.find(record => record.id == studentID)
+      // const progs = clockoutCollection[id]
+      
+      checkoutValues.map((prog) => {
+        
+        stuRecord[prog].push(
+          {
+            'status': 'out',
+            'timeMilli': `${currentTimeMilli}`,
+            'time': currentTimeMillitary,
+            'setBy': 'system'
+          }
+        )
+      })
+      await stuRecord.save()
+    })
+
+  res.send(allStudents)
 })
 
 module.exports = router;
