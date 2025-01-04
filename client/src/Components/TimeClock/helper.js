@@ -21,6 +21,8 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [timeToEdit, setTimeToEdit] = useState();
+  const [showTimeAlert,setShowTimeAlert] = useState();
+  const [alertData,setAlertData] = useState();
   let validationDate = {};
   let totalTimeWorked = 0;
   return (
@@ -97,9 +99,14 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                       timeMilli: `${new Date().getTime()}`,
                       setBy: currentUser
                     }
-                    createItem('/studenttimeclock', timeClockData);
-                    dispatch(timeClock(timeClockData));
-                    setStatusChange(true);
+                    if(totalTimeWorked < 5 && student.programs[program] == 'in'){
+                      setShowTimeAlert(true)
+                      setAlertData(timeClockData);
+                    }else{
+                      createItem('/studenttimeclock', timeClockData);
+                      dispatch(timeClock(timeClockData));
+                      setStatusChange(true);
+                    }
                   }}
                   variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
                 </Button> : ''}
@@ -136,7 +143,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                   const timeClockData = {
                     student,
                     time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                    timeMilli: `${new Date().getTime()}`,
+                    timeMilli: totalTimeWorked >= 4.93 && totalTimeWorked < 5 ? `${Number(new Date().getTime()) + 420000}` :`${new Date().getTime()}`,
                     setBy: currentUser,
                     program
                   }
@@ -157,9 +164,45 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
           </div>
         </Col>
       </Row>
+      {showTimeAlert ? <TimeAlertModal totalTime={totalTimeWorked} timeClockData = {alertData} setStatusChange={setStatusChange} show={showTimeAlert} setShow={setShowTimeAlert}/>:<></>}
       {show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange={setStatusChange} program={program}/> : <></>}
     </Card>
   )
+}
+
+export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setStatusChange }) {
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const dispatch = useDispatch()
+  return (
+    <>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Body>
+          <div>
+            <h1>Time not Reached</h1>
+            <p> Currently worked {totalTime} of 5 hours </p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="info" onClick={handleClose}>
+            Keep Checked In
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              createItem('/studenttimeclock', timeClockData);
+              dispatch(timeClock(timeClockData));
+              setStatusChange(true);
+              handleClose();
+            }
+            }>
+            Clock Out Anyway
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
 }
 
 export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange, program }) {
