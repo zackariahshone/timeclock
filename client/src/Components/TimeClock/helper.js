@@ -152,14 +152,26 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                 onClick={() => {
                   const timeClockData = {
                     student,
+                    program,
                     time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                    timeMilli: totalTimeWorked >= 4.93 && totalTimeWorked < 5 ? `${Number(new Date().getTime()) + 420000}` : `${new Date().getTime()}`,
-                    setBy: currentUser,
-                    program
+                    timeMilli: `${new Date().getTime()}`,
+                    setBy: currentUser
                   }
-                  createItem('/studenttimeclock', timeClockData);
-                  dispatch(timeClock(timeClockData));
-                  setStatusChange(true);
+                  const clockedinState = currentlyClockedIn(student.programs)
+                  console.log(clockedinState);
+                  
+                  if (student.programs[program] == 'out' && clockedinState.clockedin) {
+                    setShowCurrentlyClockedIn(true)
+                    setCurrentProgram(clockedinState.program)
+                  } 
+                  else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
+                    setShowTimeAlert(true)
+                    setAlertData(timeClockData);
+                  } else {
+                    createItem('/studenttimeclock', timeClockData);
+                    dispatch(timeClock(timeClockData));
+                    setStatusChange(true);
+                  }
                 }}
                 variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
               </Button>
