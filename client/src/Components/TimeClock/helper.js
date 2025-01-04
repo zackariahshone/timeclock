@@ -189,7 +189,7 @@ export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setSta
             Keep Checked In
           </Button>
           <Button
-            variant="primary"
+            variant="danger"
             onClick={() => {
               createItem('/studenttimeclock', timeClockData);
               dispatch(timeClock(timeClockData));
