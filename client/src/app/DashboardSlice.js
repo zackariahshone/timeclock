@@ -6,7 +6,6 @@ export const dashboardSlice = createSlice({
   },
   reducers: {
     oneDaySnapshot: (state,action) => {    
-        console.log(action)  
       return {
         ...state,
         ...action.payload.data,

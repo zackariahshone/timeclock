@@ -10,7 +10,8 @@ export const currentUserSlice = createSlice({
         ...state,
         signedIn:action.payload.signedIn,
         userSignedIn:action.payload.teacherName,
-        admin: action.payload.admin
+        admin: action.payload.admin,
+        program:action.payload.program
       }
     },
     signOut: (state,action) => {      
@@ -25,6 +26,7 @@ export const currentUserSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { signin, signOut} = currentUserSlice.actions
+export const userObj = (state) => state.currentUser;
 export const userSignedIn =  (state) => state.currentUser.userSignedIn;
 export const signedInStatus = (state)=>state.currentUser.signedIn
 export const isAdmin = (state)=>state.currentUser.admin

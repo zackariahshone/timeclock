@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Col, Container, Row, Card, Button, CardTitle, Form, Dropdown } from "react-bootstrap";
+import React, { Fragment, useState } from "react";
+import { Col, Container, Row, Card, Dropdown } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
 
 import { useSelector } from 'react-redux';
@@ -14,10 +14,10 @@ import ExportCSV, {
     getDateFromMilli
 } from './helpers.js'
 import { studentHistory } from "../../app/StudentHistorySlice.js";
-import './style.css';
 import { students } from "../../app/EmployeeListSlice.js";
 import { convertMilitaryToStandard } from "../TimeClock/helper.js";
 import { getData } from "../../globalUtils/requests.js";
+import './style.css';
 import { oneDaySnapshot, dashBoardSnapShot } from "../../app/DashboardSlice.js";
 export default () => {
     const employeeList = useSelector(students);
@@ -27,9 +27,9 @@ export default () => {
     const [empProg, setEmpProg] = useState();
     const [dates, setDates] = useState();
     const programKeys = ['Aspire', 'Richardson Industries'];
-    console.log('shot',snapshot);
-
+    
     let x, y;
+    {console.log('snapShot',snapshot)}
     return (
         <Fragment>
             <h1>Insight</h1>
@@ -43,9 +43,8 @@ export default () => {
                                 showIcon />
                         </Col>
                     </Row>
-
-                    {Object.keys(snapshot).length > 0 ?
-                        Object.keys(snapshot.programTotals).map(program => (
+                    { ('programTotals' in snapshot &&  'clockedInTotals' in snapshot) && Object?.keys(snapshot)?.length > 0 ?
+                        Object.keys(snapshot?.programTotals)?.map(program => (
                             <Row>
                                 <Col>
                                     {program}:{snapshot.programTotals[program]}
@@ -57,31 +56,8 @@ export default () => {
                                     Date Clockin percentage: { (Number(snapshot.clockedInTotals[program]) / Number(snapshot.programTotals[program]) * 100)}%
                                 </Col>
                             </Row>
-                        )):''
+                        )):<></>
                     }
-                    {/* <Row>
-                        <Col>
-                            Richardson
-                        </Col>
-                        <Col>
-                            Date Clockin Amount
-                        </Col>
-                        <Col>
-                            Date Percentage
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            Aspire
-                        </Col>
-                        <Col>
-                            Date Clockin Amount
-                        </Col>
-                        <Col>
-                            Date Percentage
-                        </Col>
-                    </Row> */}
-
                 </Card>
             </Container>
 

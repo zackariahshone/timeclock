@@ -34,9 +34,7 @@ export const employeeListSlice = createSlice({
         ]
       }
     },
-    timeClock: (state, action) => {   
-      console.log('get hit first at all?');
-        
+    timeClock: (state, action) => {           
       let student = state.employees.find(student => student.id === action.payload.student.id);
 
       switch (student.programs[action.payload.program]) {
@@ -51,12 +49,9 @@ export const employeeListSlice = createSlice({
       }
     },
     activateStudent:(state,action) =>{
-      console.log(action.payload);
-
       const id = action.payload.data[0].id
       let student = state.employees.find(student => student.id === id);
       student.active = action.payload.data[0].active
-      console.log(student.active);
     }
   },
 })

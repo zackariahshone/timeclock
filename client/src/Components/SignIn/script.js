@@ -70,7 +70,8 @@ export const TeacherSignIn = () => {
                         dispatch(signin({
                             signedIn:true,
                             teacherName:teacher.name,
-                            admin:teacher.admin ? teacher.admin : false
+                            admin:teacher.admin ? teacher.admin : false,
+                            program:teacher.program
                     }))
                 }}
                 eventKey={key}>{teacher.name}</Dropdown.Item>

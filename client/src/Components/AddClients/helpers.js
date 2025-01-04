@@ -59,7 +59,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
 
                             <Form
                                 onChange={(e) => {
-                                    console.log()
                                     if (e.target.checked) {
                                         setProgramName(e.target.value)
                                         setPrograms([...programs, e.target.value])
@@ -99,7 +98,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <Button
                         onClick={() => {
                             const admissDates = getAdmissionDates(programs, admissionDate);
-                            console.log(admissDates);
                             
                             if (empName && program) {
                                 let createitemOBJ = {
@@ -113,7 +111,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                 }
                                 
                                 if (type == 'teacher') { createitemOBJ.admin = admin };
-                                console.log(createitemOBJ);
                                 createItem(`/create${type}`, createitemOBJ, addEmployee, '');
                                 setEmpName('');
                             }
@@ -155,8 +152,6 @@ function getAdmissionDates(programs, admissionDates) {
     programs.forEach((prog) => {
         admissObject[prog] = admissionDates;
     })
-    console.log(admissObject);
-
     return admissObject
 }
 

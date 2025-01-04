@@ -6,7 +6,6 @@ export const studentHistorySlice = createSlice({
   },
   reducers: {
     addStudentHistory: (state,action) => {
-      console.log(action.paylod)
       let historyIndex;
        Object.values(current(state)).find((doc,x)=>{
         if(doc.id === action.payload.data.id)
