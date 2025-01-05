@@ -101,9 +101,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                           timeMilli: `${new Date().getTime()}`,
                           setBy: currentUser
                         }
-                        const clockedinState = currentlyClockedIn(student.programs)
-                        console.log(clockedinState);
-                        
+                        const clockedinState = currentlyClockedIn(student.programs)                        
                         if (student.programs[program] == 'out' && clockedinState.clockedin) {
                           setShowCurrentlyClockedIn(true)
                           setCurrentProgram(clockedinState.program)

@@ -89,9 +89,6 @@ export const staffTotal = (list,program) => {
 }
 
 export const getStudentHistory = (id,historyList,timefilter,programKey) =>{  
-    console.log(programKey);
-      console.log(id,historyList,timefilter,programKey);
-      
     if(timefilter !== undefined && timefilter.length == 2 && programKey){
         const filterOne = new Date(timefilter[0]).getTime()
         const filterTwo = new Date(timefilter[1]).getTime();

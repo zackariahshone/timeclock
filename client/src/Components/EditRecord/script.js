@@ -18,8 +18,6 @@ import { getPreviousSunday } from "./helpers";
 import { isAdmin, userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
 export const EditRecord = ({ record, list, program }) => {
-    console.log(program);
-
     const { id } = record;
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
     const previousSunday = getPreviousSunday()
@@ -91,7 +89,6 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                 id='deleteStamp'
                 onClick={()=>{
                     console.log(id,timeMilli);
-                    
                 }}
             >X</span>
             <Card.Body key={`card_body${x}`}>
@@ -116,7 +113,6 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
 
                             <Dropdown.Menu
                                 onClick={(e) => {
-                                    console.log(e.target.text)
                                     setDropDownStatus(e.target.text)
                                 }}
                             >
@@ -157,7 +153,6 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                                     disabled={!recordChanges}
                                     onClick={() => {
                                         const millisecondChange = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime();
-                                        console.log(weeklyList[x - 1] == undefined);
                                         if (weeklyList[x].status == 'in' &&
                                             (weeklyList[x - 1] == undefined || millisecondChange > Number(weeklyList[x - 1]?.timeMilli)) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {

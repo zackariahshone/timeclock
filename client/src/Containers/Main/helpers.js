@@ -34,9 +34,6 @@ export const menuConfig = {
         'Teachers',
         'Time Clock'
     ],
-    "optionSet3":[
-        'signup'
-    ],
     "admin":[
         'Admin Preferences'
     ]

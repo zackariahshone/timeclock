@@ -1,5 +1,4 @@
 import { createSlice, current } from '@reduxjs/toolkit'
-import { getStudentHistory } from '../Components/Dashboard/helpers';
 export const studentHistorySlice = createSlice({
   name: 'studentHistory',
   initialState: {
@@ -31,12 +30,11 @@ export const studentHistorySlice = createSlice({
       historyToUpdate.forEach((id) => {
         let editIndex = null
         const histKeys = Object.values(current(state))
-        const history = histKeys.find((e, x) => {
+        histKeys.find((e, x) => {
           editIndex = x;
-          return e.id == id
+          return e.id === id
         })
-        console.log(history);
-        if (status[id] == 'in') {
+        if (status[id] === 'in') {
           state[editIndex][program].push({ ...inTimeStamp })
         } else {
           state[editIndex][program].push({ ...outTimeStamp })

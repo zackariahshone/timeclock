@@ -195,7 +195,11 @@ function EmployeeCard({
                                 >Edit Card</text>
                                 <text
                                     onClick={() => {
-                                        updateItem(`/activate${employee.type}`, { id: employee.id, active: !active }, activateStudent)
+                                        if(employee.type != 'teacher'){
+                                            updateItem(`/activate${employee.type}`, { id: employee.id, active: !active }, activateStudent)
+                                        }else{
+                                            deleteItem('/deleteteacher',{id:employee.id},removeEmployee)
+                                        }
                                     }}
                                     className="deleteButton">{active ? 'x' : 'activate'}  </text>
                             </>

@@ -37,7 +37,6 @@ export const BulkCheckin = ({ show, setShow, studentList,program }) => {
                                         }else if( checkedCollection.changes[student.id]){
                                            delete checkedCollection.changes[student.id]
                                         }
-                                        console.log(checkedCollection)
                                     }}
                                 />
                             </Form>

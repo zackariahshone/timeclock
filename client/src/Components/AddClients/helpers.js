@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { addEmployee } from "../../app/EmployeeListSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,7 +21,7 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
     const [admissionDate, setAdmissionDate] = useState(new Date().getTime());
     const [programs, setPrograms] = useState([]);
     const [admin, setAdmin] = useState(false);
-
+    const [pincode, setPincode] = useState()
     function handleChangeDate(date, event){
         setAdmissionDate(new Date(date).getTime());        
     }
@@ -62,9 +62,6 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     if (e.target.checked) {
                                         setProgramName(e.target.value)
                                         setPrograms([...programs, e.target.value])
-                                    } else if (!e.target.checked) {
-                                        let cleanup = program.filter((p) => p != e.target.value)
-                                        setPrograms(cleanup)
                                     }
                                 }}>
                                 Program Name:
@@ -76,6 +73,8 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                         </div>
                     </Row>
                     {type == 'teacher' ?
+                    <Fragment>
+
                         <Row>
                             <div>
                                 <Form
@@ -89,7 +88,16 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     <input type="radio" value={true} name="admin" /> true
                                 </Form>
                             </div>
-                        </Row> : ''}
+                        </Row> 
+                        <Row>
+                            Pincode: <input
+                             onBlur={(e) => {
+                                setPincode(e.target.value)
+                            }}
+                            />
+                        </Row>
+                        </Fragment>
+                        : ''}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -110,7 +118,11 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                                     active:true
                                 }
                                 
-                                if (type == 'teacher') { createitemOBJ.admin = admin };
+                                if (type == 'teacher') { 
+                                    createitemOBJ.program = program
+                                    createitemOBJ.admin = admin 
+                                    createitemOBJ.pin = pincode
+                                };
                                 createItem(`/create${type}`, createitemOBJ, addEmployee, '');
                                 setEmpName('');
                             }

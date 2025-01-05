@@ -36,7 +36,6 @@ export const Checkbox = ({ pref, setPrefUpdate, prefUpdate }) => {
         <label>
             {pref.id} : <input
                 onChange={(e) => {
-                    console.log(e.target.checked);
                     setPrefUpdate({...prefUpdate,[pref.id]:{value:e.target.checked}})
                 }}
                 defaultValue={pref.default}

@@ -14,15 +14,10 @@ export const EditItem = ({ show, setShow, employee }) => {
   const editableKeys = Object.keys(employee)
   const [updates, setUpdates] = useState({});  
   const [programCheckBox, setProgramCheckBox] = useState({});
-  console.log(updates)
-  console.log(programCheckBox);
   
   const sanitizeData = (data)=>{
-    let newOBJ = {};
     const keys = Object.keys(data)
-    keys.forEach((key)=>{
-      console.log(data[key]);
-      
+    keys.forEach((key)=>{      
       if(data[key]){
 
       }
@@ -43,11 +38,7 @@ export const EditItem = ({ show, setShow, employee }) => {
           }
           })
       updatesToSubmit.programs = { ...employee.programs,...prgObj}
-    }
-    console.log(employee);
-    console.log(updatesToSubmit);
-    
-    
+    }    
     updateItem('/updateitem',{'idUpdate':employee.id,'updates':{...updatesToSubmit}})
     handleClose()
   }
@@ -77,16 +68,13 @@ export const EditItem = ({ show, setShow, employee }) => {
                         subItemKeys.map((subKey) => {
                           switch (key) {
                             case 'programs':
-                              let checked = employee[key][subKey] ? true : false
-                              console.log(checked, "checked or not");
-                              
+                              let checked = employee[key][subKey] ? true : false                              
                               return (
                                 <>
                                   <label for={subKey}>{toCapitalize(subKey)}</label>
                                   <input 
                                     defaultChecked={checked}
                                     onChange={(e)=>{
-                                      console.log(e.target, key,subKey)
                                       setProgramCheckBox({...programCheckBox,[subKey]:e.target.checked})
                                     }}
                                   type="checkbox" id={subKey} placeholder={`${employee[key][subKey]}`}></input>
@@ -112,7 +100,7 @@ export const EditItem = ({ show, setShow, employee }) => {
                       <label for={key}>{toCapitalize(key)}</label>
                       <input onChange={(e)=>{
                         setUpdates({...updates,[key]:e.target.value})
-                        console.log(e,key)}}
+                        }}
                        id={key} placeholder={`${employee[key]}`}></input>
                     </>
                   )

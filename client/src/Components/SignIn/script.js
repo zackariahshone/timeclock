@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { teachers, addEmployeeBulk } from '../../app/EmployeeListSlice';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { signin } from '../../app/CurrentUserSlice';
 import { getData } from '../../globalUtils/requests';
+import { Button } from 'react-bootstrap';
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -54,30 +55,63 @@ const CustomMenu = React.forwardRef(
 
 export const TeacherSignIn = () => {
     const teachersList = useSelector(teachers);
-    const dispatch = useDispatch() 
-    
+    const dispatch = useDispatch()
+    const [selectedTeacher, setSelectedTeacher] = useState()
+    const [enteredPin, setEnteredPin] = useState();
+    const [showpin, setShowPin] = useState()
+    const [error, showError] = useState()
     return (
-        <Dropdown>
-            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                Select From Teacher List: 
-            </Dropdown.Toggle>
+        <Fragment>
 
-            <Dropdown.Menu as={CustomMenu}>
-                {teachersList.map((teacher,key)=>(
-                    <Dropdown.Item 
-                    onClick={()=>{
-                        console.log(teacher);
+            <Dropdown>
+                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                    Select From Teacher List:
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu as={CustomMenu}>
+                    {teachersList.map((teacher, key) => (
+                        <Dropdown.Item
+                            onClick={() => {
+                                setSelectedTeacher(teacher);
+                                showError(false)
+                                setShowPin(true)
+                            }}
+                            eventKey={key}>{teacher.name}</Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+
+            {showpin ? 
+            <Fragment>
+
+            Pin Code <input
+                onChange={(e) => {
+                    showError(false)
+                    console.log(e);
+                    
+                    setEnteredPin(e.target.value);
+                }}
+                />
+            <Button
+                onClick={()=>{
+                    console.log('pincode entered',enteredPin)
+                    console.log('pincode exist', selectedTeacher.pin);
+                    
+                    if(selectedTeacher.pin == enteredPin || selectedTeacher.admin){
                         dispatch(signin({
                             signedIn:true,
-                            teacherName:teacher.name,
-                            admin:teacher.admin ? teacher.admin : false,
-                            program:teacher.program
-                    }))
+                            teacherName:selectedTeacher.name,
+                            admin:selectedTeacher.admin ? selectedTeacher.admin : false,
+                            program:selectedTeacher.program
+                        }))
+                    }else{
+                        showError(true)
+                    }
                 }}
-                eventKey={key}>{teacher.name}</Dropdown.Item>
-                    
-                ))}
-            </Dropdown.Menu>
-        </Dropdown>
+                >Sign In</Button> 
+                </Fragment>
+            
+            : <></>}
+        </Fragment>
     )
 }

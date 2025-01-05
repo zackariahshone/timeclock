@@ -24,7 +24,6 @@ export const AdminPrefrences = () => {
             <Col xs={{ span: 10, offset: 4 }}>
                 <Button 
                     onClick={()=>{
-                        console.log(prefUpdate)
                         updateItem('/setpreferences',prefUpdate)
                     }}
                     className="savePrefsButton">Save Changes</Button>

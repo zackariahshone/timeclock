@@ -29,7 +29,6 @@ export default () => {
     const programKeys = ['Aspire', 'Richardson Industries'];
     
     let x, y;
-    {console.log('snapShot',snapshot)}
     return (
         <Fragment>
             <h1>Insight</h1>
@@ -133,7 +132,6 @@ export default () => {
                             </Dropdown>
                             <>
                                 <Container className="marginTop">
-                                    {console.log(empProg)}
                                     <div className="export">
                                         <div>
                                             <Calendar value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection showIcon />
@@ -189,7 +187,6 @@ function getCsvData(filteredData, program) {
     let totalHours = [];
     let x, y;
     let newRow = {};
-    console.log(filteredData)
     if (program && filteredData[0][program] && filteredData[0][program].length > 0) {
         row.push(Object.keys(filteredData[0]));
         collection.push(['DateIn', 'TimeIn', 'DateOut', 'TimeOut', 'CheckedInBy', 'CheckedOutBy', 'TotalHours'])
@@ -214,10 +211,7 @@ function getCsvData(filteredData, program) {
                 newRow.Total = hrsWrked
                 collection.push(newRow)
             }
-        })
-        // DateIn	DateOut	TimeIn	TimeOut	SetBy	Total Hours     
-        console.log(collection);
-
+        })   
         return collection;
     }
     return collection;

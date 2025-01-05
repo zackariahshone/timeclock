@@ -16,7 +16,6 @@ export default () => {
     const admin = useSelector(isAdmin);
     const dispatch = useDispatch();
 
-    console.log(loggedInName);
     return (
         <Fragment>
             <div id='mainConatiner'>

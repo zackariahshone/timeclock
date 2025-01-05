@@ -54,22 +54,14 @@ export const employeeListSlice = createSlice({
     },
     updateBulkTime: (state, action) => {
       
-      const studentIDs = Object.keys(action.payload.data.reduxUpdate)
-      console.log(action.payload.data);
-      
-      const status = action.payload.data.reduxUpdate
-      console.log('status changes', status);
-      
+      const studentIDs = Object.keys(action.payload.data.reduxUpdate)      
+      const status = action.payload.data.reduxUpdate      
       const program = action.payload.data.program
-      console.log(studentIDs);
       studentIDs.forEach((id) => {        
-        let student = state.employees.find(student => student.id == id);
-        console.log(student);
-        if (status[id] == 'in') {
-          console.log('checkin',student.programs);
+        let student = state.employees.find(student => student.id === id);
+        if (status[id] === 'in') {
           student.programs[program] = 'in'
         } else {
-          console.log('checkout',student.programs);
           student.programs[program] = 'out'
         }
       })
@@ -86,7 +78,7 @@ export const {
   activateStudent,
   updateBulkTime
 } = employeeListSlice.actions
-export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() == 'teacher');
-export const students = (state) => state.employeeList.employees.filter(emp => emp.type == 'student' && emp?.active !== false);
-export const inactiveStudents = (state) => state.employeeList.employees.filter(emp => emp.type == 'student' && emp?.active === false);
+export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() === 'teacher');
+export const students = (state) => state.employeeList.employees.filter(emp => emp.type === 'student' && emp?.active !== false);
+export const inactiveStudents = (state) => state.employeeList.employees.filter(emp => emp.type === 'student' && emp?.active === false);
 export default employeeListSlice.reducer
