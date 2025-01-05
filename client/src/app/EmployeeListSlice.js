@@ -36,7 +36,6 @@ export const employeeListSlice = createSlice({
     },
     timeClock: (state, action) => {           
       let student = state.employees.find(student => student.id === action.payload.student.id);
-
       switch (student.programs[action.payload.program]) {
         case 'out':
               student.programs[action.payload.program] = 'in';
@@ -52,6 +51,29 @@ export const employeeListSlice = createSlice({
       const id = action.payload.data[0].id
       let student = state.employees.find(student => student.id === id);
       student.active = action.payload.data[0].active
+    },
+    updateBulkTime:(state, action) =>{
+    //   {
+    //     "program": "Aspire",
+    //     "inTimeStamp": {
+    //         "status": "in",
+    //         "timeMilli": 1736025908058,
+    //         "time": "15:25",
+    //         "setBy": "new guy admin"
+    //     },
+    //     "reduxUpdate": [
+    //         "erc-123456",
+    //         "erc-24542345"
+    //     ]
+    // }
+    console.log(current(state));
+    
+    const studentIDs = action.payload.data.reduxUpdate
+    const program = action.payload.data.program
+    studentIDs.forEach((id)=>{
+        let student = state.employees.find(student => student.id === id);
+        student.programs[program] = 'in'
+      })      
     }
   },
 })
@@ -62,7 +84,8 @@ export const {
   timeClock,
   incrementByAmount,
   addEmployeeBulk,
-  activateStudent
+  activateStudent,
+  updateBulkTime
 } = employeeListSlice.actions
 export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() == 'teacher');
 export const students = (state) => state.employeeList.employees.filter(emp => emp.type == 'student' && emp?.active !== false);

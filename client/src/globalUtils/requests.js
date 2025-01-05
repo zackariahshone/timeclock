@@ -25,9 +25,13 @@ export const updateItem = (route, body, action, type) => {
         },
         body: JSON.stringify(body) || '',
     }).then(response => response.json()).then(data => {
-        if(action){
+        if(typeof action == 'string'){
             directReducer(action, data, type)
-        }
+        }else{
+            action.forEach((act)=>{
+                directReducer(act,data,type)
+            })
+        } 
     })
 }
 

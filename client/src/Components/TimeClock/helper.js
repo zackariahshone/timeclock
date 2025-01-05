@@ -157,9 +157,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     timeMilli: `${new Date().getTime()}`,
                     setBy: currentUser
                   }
-                  const clockedinState = currentlyClockedIn(student.programs)
-                  console.log(clockedinState);
-                  
+                  const clockedinState = currentlyClockedIn(student.programs)                  
                   if (student.programs[program] == 'out' && clockedinState.clockedin) {
                     setShowCurrentlyClockedIn(true)
                     setCurrentProgram(clockedinState.program)
@@ -193,9 +191,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   )
 }
 
-function currentlyClockedIn(programs) {
-  console.log(programs);
-  
+function currentlyClockedIn(programs) {  
   let clockedIn = {'clockedIn':false,'program':''};
   const programKeys = Object.keys(programs)
   if (programKeys.length == 1) return false;
@@ -211,7 +207,6 @@ function currentlyClockedIn(programs) {
 
 export function AlreadyClockedInModal({ show, setShow, program}) {
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -232,7 +227,6 @@ export function AlreadyClockedInModal({ show, setShow, program}) {
 
 export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setStatusChange }) {
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const dispatch = useDispatch()
   return (
     <>
@@ -306,9 +300,9 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange, prog
 }
 
 export function getHoursWorked(timein, timeout) {
-  if (timein && timeout) {
+  if (timein) {
     const clockedIn = timein
-    const clockedOut = timeout
+    const clockedOut = timeout ? timeout : new Date().getTime() 
     return ((Number(clockedOut) - Number(clockedIn)) / (1000 * 60 * 60)).toFixed(2);
   }
   return null;
