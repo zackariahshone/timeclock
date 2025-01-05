@@ -31,7 +31,7 @@ router.post('/bulkupdatetimeclock', async (req, res) => {
   const changes = req.body.changes
   const program = req.body.program
   const time = req.body.time
-  let reduxUpdate = []
+  let reduxUpdate = {}
   const timeObj = new Date(time)
   const timeMilitary = `${timeObj.getHours()}:${timeObj.getMinutes()}`
   const studentIDs = Object.keys(changes);
@@ -41,22 +41,35 @@ router.post('/bulkupdatetimeclock', async (req, res) => {
     "time": timeMilitary,
     "setBy": req.body.setBy
   }
+  const outTimeStamp = {
+    ...inTimeStamp,
+    'status':'out'
+  }
+  let update = {}
   const Promises = studentIDs.map(async (id) => {
+    const baseHistory = await studentHistory.findOne({ id: id });
     if (changes[id][program] == true) {
-      reduxUpdate.push(id)
-      const update = {
+      reduxUpdate[id] = 'in';
+       update = {
         [`programs.${program}`]: "in", // Add a new program
       }
-
       await Student.findOneAndUpdate({id:id},{ $set: update })
       const baseHistory = await studentHistory.findOne({ id: id });
       baseHistory[program].push({...inTimeStamp})
       await baseHistory.save()
-      
     }
+    else{
+      reduxUpdate[id] = 'out';
+       update = {
+        [`programs.${program}`]: "out", // Add a new program
+      }
+      await Student.findOneAndUpdate({id:id},{ $set: update })
+      baseHistory[program].push({...outTimeStamp})
+      await baseHistory.save()
+    }
+      
   })
 
-  console.log('redux',reduxUpdate);
   
  const result = await Promise.allSettled(Promises)
  const allFulfilled = result.every((r) => r.status === 'fulfilled');

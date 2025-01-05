@@ -34,11 +34,11 @@ export const employeeListSlice = createSlice({
         ]
       }
     },
-    timeClock: (state, action) => {           
+    timeClock: (state, action) => {
       let student = state.employees.find(student => student.id === action.payload.student.id);
       switch (student.programs[action.payload.program]) {
         case 'out':
-              student.programs[action.payload.program] = 'in';
+          student.programs[action.payload.program] = 'in';
           break
         case 'in':
           student.programs[action.payload.program] = 'out'
@@ -47,33 +47,32 @@ export const employeeListSlice = createSlice({
           break
       }
     },
-    activateStudent:(state,action) =>{
+    activateStudent: (state, action) => {
       const id = action.payload.data[0].id
       let student = state.employees.find(student => student.id === id);
       student.active = action.payload.data[0].active
     },
-    updateBulkTime:(state, action) =>{
-    //   {
-    //     "program": "Aspire",
-    //     "inTimeStamp": {
-    //         "status": "in",
-    //         "timeMilli": 1736025908058,
-    //         "time": "15:25",
-    //         "setBy": "new guy admin"
-    //     },
-    //     "reduxUpdate": [
-    //         "erc-123456",
-    //         "erc-24542345"
-    //     ]
-    // }
-    console.log(current(state));
-    
-    const studentIDs = action.payload.data.reduxUpdate
-    const program = action.payload.data.program
-    studentIDs.forEach((id)=>{
-        let student = state.employees.find(student => student.id === id);
-        student.programs[program] = 'in'
-      })      
+    updateBulkTime: (state, action) => {
+      
+      const studentIDs = Object.keys(action.payload.data.reduxUpdate)
+      console.log(action.payload.data);
+      
+      const status = action.payload.data.reduxUpdate
+      console.log('status changes', status);
+      
+      const program = action.payload.data.program
+      console.log(studentIDs);
+      studentIDs.forEach((id) => {        
+        let student = state.employees.find(student => student.id == id);
+        console.log(student);
+        if (status[id] == 'in') {
+          console.log('checkin',student.programs);
+          student.programs[program] = 'in'
+        } else {
+          console.log('checkout',student.programs);
+          student.programs[program] = 'out'
+        }
+      })
     }
   },
 })
