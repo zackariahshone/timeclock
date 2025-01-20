@@ -29,7 +29,7 @@ export const updateItem = (route, body, action, type) => {
         
         if(typeof action == "function"){
             directReducer(action, data, type)
-        }else if(action == 'object'){
+        }else{
             action.forEach((act)=>{
                 directReducer(act,data,type)
             })
