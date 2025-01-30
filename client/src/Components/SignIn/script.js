@@ -87,16 +87,11 @@ export const TeacherSignIn = () => {
             Pin Code <input
                 onChange={(e) => {
                     showError(false)
-                    console.log(e);
-                    
                     setEnteredPin(e.target.value);
                 }}
                 />
             <Button
                 onClick={()=>{
-                    console.log('pincode entered',enteredPin)
-                    console.log('pincode exist', selectedTeacher.pin);
-                    
                     if(selectedTeacher.pin == enteredPin || selectedTeacher.admin){
                         dispatch(signin({
                             signedIn:true,

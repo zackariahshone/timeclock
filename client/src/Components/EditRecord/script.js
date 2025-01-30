@@ -22,15 +22,16 @@ export const EditRecord = ({ record, list, program }) => {
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
     const previousSunday = getPreviousSunday()
     let weeklyList = list.filter((doc) => doc.timeMilli > previousSunday)
-
     return (
         <Fragment>
-            <Row>
+            <div className="flex-container">
                 {
                     daysOfWeek.map((day) => {
                         return (
-                            <Col>
+                            <div className="dayDetails">
+                                <h1>{day}</h1>
                                 {
+                                    weeklyList.length > 0?
                                     weeklyList.map((historyRecord, x) => {
                                         const { status, timeMilli, time, setBy } = historyRecord;
                                         const dayOfRecord = getDayOfWeekFromMillisecond(timeMilli);
@@ -54,12 +55,13 @@ export const EditRecord = ({ record, list, program }) => {
                                                 </Fragment>
                                             )
                                         }
-                                    })}
-                            </Col>
+                                    })
+                                    : <>No Data To Show for {day}</>}
+                            </div>
                         )
                     })
                 }
-            </Row>
+            </div>
         </Fragment>
     )
 }
@@ -87,8 +89,8 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
         <Card key={`card_${x}`}>
             <span
                 id='deleteStamp'
-                onClick={()=>{
-                    console.log(id,timeMilli);
+                onClick={() => {
+                    console.log(id, timeMilli);
                 }}
             >X</span>
             <Card.Body key={`card_body${x}`}>

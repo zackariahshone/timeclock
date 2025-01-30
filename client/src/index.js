@@ -15,11 +15,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { setPrefs } from './app/PreferencesSlice';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 getData('/getallteachers', 'GET', addEmployeeBulk);
 getData('/getallstudents', 'GET', addEmployeeBulk);
 getData('/getstudenthistory', 'GET', setHistoryBulk);
+getData('/getpreferences','GET',setPrefs)
 root.render(
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Provider store={store}>

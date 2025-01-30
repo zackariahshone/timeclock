@@ -35,11 +35,12 @@ export default () => {
             <Container>
                 <Card>
                     <Row>
-                        <Col>
-                            Single Date Insights: <Calendar onChange={(e) => {
-                                getData(`/getsingledateinsights/${new Date(e.target.value).getTime()}`, 'GET', oneDaySnapshot)
-                            }}
-                                showIcon />
+                        <Col xs ={3}>
+                            Single Date Insights: <Calendar 
+                                                    onChange={(e) => {
+                                                        getData(`/getsingledateinsights/${new Date(e.target.value).getTime()}`, 'GET', oneDaySnapshot)
+                                                    }}
+                                                    showIcon />
                         </Col>
                     </Row>
                     { ('programTotals' in snapshot &&  'clockedInTotals' in snapshot) && Object?.keys(snapshot)?.length > 0 ?
@@ -75,7 +76,7 @@ export default () => {
                                             <p
                                                 onClick={() => {
                                                     setSelectedEmployee(emp)
-                                                    setEmpProg(Object.keys(emp.programs)[0])
+                                                    setEmpProg(pg)
                                                 }}
                                                 className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
                                             >{emp.name}</p>
@@ -90,7 +91,10 @@ export default () => {
                                     <h3 id='clockedOut'>{pg} Clocked Out</h3>
                                     {getStudentStatus('out', employeeList, pg)?.map(emp => (
                                         <p className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
-                                            onClick={() => { setSelectedEmployee(emp) }}
+                                            onClick={() => { 
+                                                setSelectedEmployee(emp) 
+                                                setEmpProg(pg)
+                                            }}
                                         >{emp.name}</p>
                                     ))}
                                 </Col>

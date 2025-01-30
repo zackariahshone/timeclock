@@ -4,9 +4,7 @@ const History = require('../dbconnection/models/History')
 const mongoURI = 'mongodb://localhost:27017/develop';
 
 module.exports = async function autoClockout() {
-      const tempConnect =  mongoose.createConnection(mongoURI).on("connected",()=>{
-        console.log('Connected to MongoDB successfully');        
-      });
+      const tempConnect =  mongoose.createConnection(mongoURI).on("connected");
 
         const date = new Date();
         const currentTimeMilli = date.getTime();
@@ -18,7 +16,6 @@ module.exports = async function autoClockout() {
          const PromiseSetOne = allStudents.map(async (student) => {
             let clockOutStuPrg = []
               Object.keys(student.programs).map((key)=>{
-                
                 if (student.programs[key] !== 'out') {
                   student.programs[key] = 'out'
                   clockOutStuPrg.push(key);
@@ -28,21 +25,13 @@ module.exports = async function autoClockout() {
                 clockoutCollection.push({ [student.id]: clockOutStuPrg });
               }
               await Student.findOneAndUpdate({id:student.id},{...student}) //student.save()  
-              // Save the document after all updates are made
           })
-          // allStudents.save()
           
          const PromiseSetTwo = clockoutCollection.map(async student => {
             const studentID = Object.keys(student)[0];
-            const checkoutValues = student[studentID];
-            console.log('student',student);
-            
-            const stuRecord = allHistory.find(record => record.id == studentID)
-            // const progs = clockoutCollection[id]
-            
-            checkoutValues.map((prog) => {
-              console.log('prog not defined',prog);
-            
+            const checkoutValues = student[studentID];            
+            const stuRecord = allHistory.find(record => record.id == studentID)            
+            checkoutValues.map((prog) => {            
               stuRecord[prog].push(
                 {
                   'status': 'out',
@@ -52,9 +41,6 @@ module.exports = async function autoClockout() {
                 }
               )
             })
-            console.log(stuRecord);
-            console.log('87',student);
-            
             await History.findOneAndUpdate({id:Object.keys(student)[0]},{...stuRecord}) //stuRecord.save()
           })
       

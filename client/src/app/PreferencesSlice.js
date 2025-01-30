@@ -1,27 +1,20 @@
-// import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
-// export const exportDataSlice = createSlice({
-//   name: 'currentUser',
-//   initialState: {
+export const customPrefSlice = createSlice({
+  name: 'customPrefs',
+  initialState: {
    
-//   },
-//   reducers: {
-//     setExportData: (state,action) => {        
-//       return {
-//         ...state,
-//         data:action.payload.data,
-//       }
-//     },
-//     clearExportData: (state,action) => {      
-//       return {
-//         ...state,
-//         data:[],
-//       }
-//     },
-//   },
-// })
+  },
+  reducers: {
+    setPrefs: (state,action) =>{
+        return [
+            ...action.payload.data.prefs
+        ]
+    }
+  }
+})
 
-// // Action creators are generated for each case reducer function
-// export const { setExportData, clearExportData} = exportDataSlice.actions
-// export const exportData =  (state) => state.exportData.data;
-// export default exportDataSlice.reducer
+// Action creators are generated for each case reducer function
+export const { setPrefs} = customPrefSlice.actions
+export const customPrefs =  (state) => state.customprefs;
+export default customPrefSlice.reducer

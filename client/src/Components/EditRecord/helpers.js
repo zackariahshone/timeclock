@@ -46,7 +46,7 @@ export function EditItemModal({ show, setShow, record, list, program, setProgram
         onHide={handleClose}
         centered>
         <Modal.Title>
-          <Row>
+          <Row className={'cardtitle'}>
             <Col xs={4}>
               {program}
             </Col>
@@ -58,17 +58,6 @@ export function EditItemModal({ show, setShow, record, list, program, setProgram
         </Modal.Title>
 
         <Modal.Header closeButton>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                {daysOfWeek.map((day) => (
-                  <th>
-                    <h4>{day}</h4>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </Table>
         </Modal.Header>
         <Modal.Body>
           <EditRecord

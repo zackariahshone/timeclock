@@ -30,7 +30,6 @@ export const EditItem = ({ show, setShow, employee }) => {
       let prgObj = {}
       const prgKeys = Object.keys(programCheckBox)      
       prgKeys.forEach(prg=>{
-          console.log(programCheckBox[prg]);
           if(programCheckBox[prg]){
             prgObj[prg] = 'out'
           }else{

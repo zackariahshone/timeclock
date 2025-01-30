@@ -87,12 +87,10 @@ export default (props) => {
             </Row>
             <Col>
                 <Row>
-
                     {
                         !displayInactive ?
-
                             <SchoolListDisplay
-                                searchText={searchText}
+                                index={searchText}
                                 empList={filteredList}
                                 setRecord={setRecord}
                                 setChange={setChange}
@@ -106,7 +104,7 @@ export default (props) => {
                     {type == 'student' && displayInactive ?
                         <>
                             <SchoolListDisplay
-                                searchText={searchText}
+                                index={searchText}
                                 empList={studentsInactive}
                                 setRecord={setRecord}
                                 setChange={setChange}
@@ -145,10 +143,14 @@ function SchoolListDisplay({
     admin,
     program,
     setProgram,
-    active
+    active,
+    searchText
 }) {
     // const [radio, setRadio] = false(false)
-    const filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
+    let filtered = empList.filter(emp => emp.name.toLowerCase().includes(index?.toLowerCase()));
+    if(searchText){
+        // filtered.filter(emp=>emp.name.toLowerCase().in)
+    }
     return (
         (index ? filtered : empList).map((employee) => (
             <Col id="empCard" xs={12} md={6}>

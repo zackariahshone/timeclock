@@ -24,9 +24,7 @@ router.get('/getsingledateinsights/:timefilter',async(req,res)=>{
   });  
   
   const filteredHistory = await History.find({ id: { $in: studentidProgram.all }});
-  filteredHistory.forEach((doc)=>{
-    console.log('doc',doc);
-    
+  filteredHistory.forEach((doc)=>{    
       programs.forEach(program=>{
         doc[program].find(stamp=>{
           if(stamp.status == 'in' && Number(stamp.timeMilli) >= filter && Number(stamp.timeMilli) <= filterTwntyFour ){
@@ -96,7 +94,6 @@ router.post('/createstudent', async (req, res) => {
 router.post('/studenttimeclock', async (req, res) => {
   try {
     const studentHistoryID = req.body.student.id;
-    console.log(req.body.student.programs[req.body.program])
     const historyData = {
       status: req.body.student.programs[req.body.program] == 'in' ? 'out' : 'in',
       timeMilli: req.body.timeMilli,
@@ -128,8 +125,6 @@ router.post('/studenttimeclock', async (req, res) => {
  * Edit User
  */
 router.post('/updateitem',async(req, res)=>{
-  console.log(req.body.idUpdate);
-  console.log(req.body.updates);
   let requestedUpdates = req.body.updates;
   const itemIndex = req.body.idUpdate
   let programUpdates = {}
@@ -172,8 +167,6 @@ router.post('/deletestudent', async (req, res) => {
 })
 router.post('/activatestudent', async (req, res) => {
   const updatedStudent = await Student.findOneAndUpdate({ id: req.body.id },{active:req.body.active})
-  console.log(updatedStudent);
-  
   const dataRefresh = await Student.find({id:req.body.id})
   res.json(dataRefresh);
 })

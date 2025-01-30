@@ -27,7 +27,6 @@ router.post('/updatetimeclock', async (req, res) => {
 });
 
 router.post('/bulkupdatetimeclock', async (req, res) => {
-  console.log(req.body.changes);
   const changes = req.body.changes
   const program = req.body.program
   const time = req.body.time

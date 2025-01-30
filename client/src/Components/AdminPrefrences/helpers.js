@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
-
+import { useSelector } from "react-redux";
+import { customPrefs } from "../../app/PreferencesSlice";
 export const prefs =[
     {
         id: 'Auto Clock Out',

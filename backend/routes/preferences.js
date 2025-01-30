@@ -1,3 +1,4 @@
+
 const router = require('express').Router();
 const prefs = require('../dbconnection/models/Preference.js')
 const preferences = [
@@ -42,22 +43,21 @@ const preferences = [
 ]
 
 router.get('/getpreferences', async (req, res) => {
-    // console.log(req.body);
     const preferences = await prefs.find();
-    res.json({ status: 200, preferences });
+    res.json({ status: 200, prefs:preferences });
 });
 
 router.post('/setpreferences', async (req, res) => {
     const newPreferences = req.body;
     const prefKeys = Object.keys(newPreferences);
-
     try {
         const promiseSetOne = prefKeys.map(async (key) => {
             const options = newPreferences[key]?.options;
             const preftoUpdate = await prefs.findOne({ id: key });
-
             preftoUpdate.value = newPreferences[key].value;
+
             if (options) {
+                
                 const allOptionPromises = options.map(async (optionVal) => {
                     const keys = Object.keys(optionVal);
                     keys.forEach((key) => {
@@ -73,11 +73,11 @@ router.post('/setpreferences', async (req, res) => {
                 await preftoUpdate.save();
             }
         });
-
+        
         const result = await Promise.allSettled(promiseSetOne);
-
+        const prefResponse = await prefs.find({});        
         const allFulfilled = result.every((r) => r.status === 'fulfilled');
-        res.status(allFulfilled ? 200 : 500).send(allFulfilled ? '200' : '500');
+        res.status(allFulfilled ? 200 : 500).send(allFulfilled ? {status:'200',prefs: prefResponse} : '500');
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('500');
