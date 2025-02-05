@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { signin } from '../../app/CurrentUserSlice';
 import { getData } from '../../globalUtils/requests';
 import { Button } from 'react-bootstrap';
+import { CreateStaffModal } from '../AddClients/helpers';
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -60,10 +61,11 @@ export const TeacherSignIn = () => {
     const [enteredPin, setEnteredPin] = useState();
     const [showpin, setShowPin] = useState()
     const [error, showError] = useState()
+    const [showModal, setShowModal] = useState();
     return (
         <Fragment>
 
-            <Dropdown>
+           { teachersList.length > 0 ?  <Dropdown>
                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                     Select From Teacher List:
                 </Dropdown.Toggle>
@@ -79,7 +81,11 @@ export const TeacherSignIn = () => {
                             eventKey={key}>{teacher.name}</Dropdown.Item>
                     ))}
                 </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown>:
+                <Button
+                    onClick={()=>setShowModal(true)}
+                > Add New Teacher</Button>
+            }
 
             {showpin ? 
             <Fragment>
@@ -107,6 +113,7 @@ export const TeacherSignIn = () => {
                 </Fragment>
             
             : <></>}
+            {showModal ? <CreateStaffModal show={showModal} setShow= {setShowModal} type={'teacher'}/>:<></> }
         </Fragment>
     )
 }
