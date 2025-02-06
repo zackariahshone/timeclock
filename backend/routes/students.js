@@ -91,6 +91,7 @@ router.post('/createstudent', async (req, res) => {
     console.error(e);
   }
 });
+router.post('/create')
 router.post('/studenttimeclock', async (req, res) => {
   try {
     const studentHistoryID = req.body.student.id;

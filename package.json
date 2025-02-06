@@ -18,7 +18,9 @@
     "erc_dashboard": "file:",
     "nanoid": "^5.0.8",
     "nodemon": "^3.1.7",
+    "papaparse": "^5.5.2",
     "postcss": "^8.4.47",
+    "react-dropzone": "^14.3.5",
     "source-map-js": "^1.2.1"
   }
 }

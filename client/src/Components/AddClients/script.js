@@ -30,6 +30,7 @@ export default (props) => {
     const [change, setChange] = useState(false);
     const [record, setRecord] = useState();
     const [program, setProgram] = useState();
+    const [showBulkLoad, setShowBulkLoad] = useState();
 
     const history = useSelector(studentHistory)
     const admin = useSelector(isAdmin)
@@ -80,6 +81,15 @@ export default (props) => {
                                         <div className="textInCreateCard">Creat new {type}</div>
                                     </Card>
                                 </Col>
+                                {type == "student" ? <Col>
+                                    <Card
+                                        onClick={()=>{
+                                            setShowBulkLoad(true)
+                                        }}
+                                        className="createNewCard">
+                                        <div className="textInCreateCard">Bulk Load {type}</div>
+                                    </Card>
+                                </Col>:<></>}
                             </>
                             :
                             <></>
@@ -129,7 +139,9 @@ export default (props) => {
                         : ''}
                 </Row>
             </Col>
-            {show ? <CreateStaffModal type={type} show={show} setShow={setShow} /> : ''}
+            {show ? <CreateStaffModal type={type} show={show} setShow={setShow} bulk = {false} /> : ''}
+            {console.log(showBulkLoad)}
+            {showBulkLoad ? <CreateStaffModal type= {type} show={showBulkLoad} setShow={setShowBulkLoad} bulk={true}/>:<></>}
         </Container>
     )
 }
