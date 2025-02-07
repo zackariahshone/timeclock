@@ -1,0 +1,19 @@
+.checkedIn{
+    background-color: blueviolet;
+}
+.checkedOut {
+    background-color: aqua;
+}
+.buttonMgnBottom{
+    margin-bottom: 3%;
+    margin-right:1%;
+    width:100%;
+}
+
+.btn-flat {
+    background-color: purple;
+    color: rgb(186, 108, 238);
+  }
+  .marginRow{
+    margin-top:2% !important;
+  }

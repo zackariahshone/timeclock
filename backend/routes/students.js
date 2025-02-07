@@ -84,13 +84,21 @@ router.post('/updatestudentrecord', async (req, res) => {
 
 router.post('/createstudent', async (req, res) => {  
   try {
-    await StudentBackup.create(req.body);
     const createdStudent = await Student.create(req.body)
     res.json(createdStudent)
   } catch (e) {
     console.error(e);
   }
 });
+router.post('/createstudentbulk',async(req,res)=>{
+  try{
+    const createManyStudents = await Student.insertMany(req.body)
+  }catch(e){
+
+  }
+  const allStudents = await Student.find({});
+  res.send(allStudents)
+})
 router.post('/studenttimeclock', async (req, res) => {
   try {
     const studentHistoryID = req.body.student.id;

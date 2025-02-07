@@ -11,8 +11,9 @@ import {
 } from "react-bootstrap";
 import './style.css'
 import { createItem } from "../../globalUtils/requests";
+import { BulkLoad } from "./bulkLoad";
 
-export const CreateStaffModal = ({ show, setShow, type }) => {
+export const CreateStaffModal = ({ show, setShow, type, bulk }) => {
 
     const handleClose = () => setShow(false);
     const [empName, setEmpName] = useState();
@@ -32,7 +33,10 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                     <Modal.Title> Enter New {toCapitalize(type)}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
-                    <Row>
+                   { !bulk? 
+                   <>
+                   
+                   <Row>
                         {toCapitalize(type)} Name:  <input
                             placeholder="enter name"
                             onBlur={(e) => {
@@ -72,6 +76,10 @@ export const CreateStaffModal = ({ show, setShow, type }) => {
                             </Form>
                         </div>
                     </Row>
+                    </>
+                    :
+                    <BulkLoad />    
+                }
                     {type == 'teacher' ?
                     <Fragment>
 

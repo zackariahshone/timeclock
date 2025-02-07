@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const studentHistory = require('../dbconnection/models/History')
 const Student = require('../dbconnection/models/Students')
-
+const History = require('../dbconnection/models/History')
 router.post('/addhistory', async (req, res) => {
   res.json({ status: 200 })
 });
@@ -27,6 +27,7 @@ router.post('/updatetimeclock', async (req, res) => {
 });
 
 router.post('/bulkupdatetimeclock', async (req, res) => {
+  
   const changes = req.body.changes
   const program = req.body.program
   const time = req.body.time
@@ -47,26 +48,40 @@ router.post('/bulkupdatetimeclock', async (req, res) => {
   let update = {}
   const Promises = studentIDs.map(async (id) => {
     const baseHistory = await studentHistory.findOne({ id: id });
-    if (changes[id][program] == true) {
-      reduxUpdate[id] = 'in';
-       update = {
-        [`programs.${program}`]: "in", // Add a new program
+    try{
+
+      if (changes[id][program] == true) {
+        
+        reduxUpdate[id] = 'in';
+        update = {
+          [`programs.${program}`]: "in", // Add a new program
+        }
+        await Student.findOneAndUpdate({id:id},{ $set: update })
+        const baseHistory = await studentHistory.findOne({ id: id });
+        console.log(baseHistory);
+        if(!baseHistory === null){
+          baseHistory[program].push({...inTimeStamp})
+          await baseHistory.save()
+        }else{
+          await History.create({ id: id, [program]: [inTimeStamp] });
+          // baseHistory[program] = [{...inTimeStamp}]
+        }
       }
-      await Student.findOneAndUpdate({id:id},{ $set: update })
-      const baseHistory = await studentHistory.findOne({ id: id });
-      baseHistory[program].push({...inTimeStamp})
-      await baseHistory.save()
-    }
-    else{
-      reduxUpdate[id] = 'out';
-       update = {
-        [`programs.${program}`]: "out", // Add a new program
+      else{
+        console.log('hit jor na else');
+        reduxUpdate[id] = 'out';
+        update = {
+          [`programs.${program}`]: "out", // Add a new program
+        }
+        await Student.findOneAndUpdate({id:id},{ $set: update })
+        baseHistory[program].push({...outTimeStamp})
+        await baseHistory.save()
       }
-      await Student.findOneAndUpdate({id:id},{ $set: update })
-      baseHistory[program].push({...outTimeStamp})
-      await baseHistory.save()
+    }catch(e){
+      console.log(e);
     }
-      
+    const refreshHistory = await History.find({});
+      // res.send(refreshHistory)
   })
 
   

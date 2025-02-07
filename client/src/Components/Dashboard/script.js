@@ -89,14 +89,19 @@ export default () => {
                             {programKeys.map(pg => (
                                 <Col>
                                     <h3 id='clockedOut'>{pg} Clocked Out</h3>
+                                    <Row>
+
                                     {getStudentStatus('out', employeeList, pg)?.map(emp => (
+                                        <Col xs = {3}>
                                         <p className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
                                             onClick={() => { 
                                                 setSelectedEmployee(emp) 
                                                 setEmpProg(pg)
                                             }}
-                                        >{emp.name}</p>
+                                            >{emp.name}</p>
+                                        </Col>
                                     ))}
+                                    </Row>
                                 </Col>
                             ))
                             }
