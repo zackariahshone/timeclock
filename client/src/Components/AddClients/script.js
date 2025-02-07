@@ -165,7 +165,7 @@ function SchoolListDisplay({
     }
     return (
         (index ? filtered : empList).map((employee) => (
-            <Col id="empCard" xs={12} md={6}>
+            <Col id="empCard" xs={12} md={3}>
                 <EmployeeCard
                     admin={admin}
                     employee={employee}

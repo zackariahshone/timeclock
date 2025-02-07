@@ -2,6 +2,8 @@ import React,{useCallback, useState} from "react";
 import { useDropzone } from "react-dropzone";
 import Papa from "papaparse";
 import { generateUniqueId } from "./helpers";
+import { createItem } from "../../globalUtils/requests";
+import { addEmployeeBulk } from "../../app/EmployeeListSlice";
 
 
 export const BulkLoadO = () => {
@@ -35,7 +37,7 @@ const formatCSVforLoad = (data) => {
         keys.forEach(key=>{
             switch(key){
                 case '':
-                delete student.key    
+                delete student[key]    
                 break;
                 case 'programs':
                     student[key] = {[program]:'out'}
@@ -43,10 +45,7 @@ const formatCSVforLoad = (data) => {
                 case 'lastname':
                 break;
                 case 'firstname':
-                    console.log('firstname' ,key);
-                    console.log(student.key);
-                    console.log(student);
-                    student['name'] = student[key]
+                    student['name'] = `${student[key]} ${student.lastname.charAt(0)}`
                 break;
                 case 'type':
                     if(!student.key){
@@ -76,7 +75,7 @@ const formatCSVforLoad = (data) => {
             }
         })
     })
-    console.log(data);
+    return data;
 }
 
 
@@ -90,11 +89,10 @@ export const BulkLoad = () => {
     if (file) {
       Papa.parse(file, {
         complete: (result) => {
-          setCsvData(result.data);
           console.log("Parsed CSV Data:", result.data);
-          formatCSVforLoad(result.data)
+          const formatedData = formatCSVforLoad(result.data)
           //send to back end for process
-
+            createItem('/createstudentbulk',formatedData,addEmployeeBulk)
         },
         header: true, // Set to true if the first row contains headers
         skipEmptyLines: true,

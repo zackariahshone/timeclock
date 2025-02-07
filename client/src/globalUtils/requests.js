@@ -15,7 +15,7 @@ export const createItem = (route, body, action, type) => {
     })
 }
 
-export const updateItem = (route, body, action, type) => {
+export const updateItem = (route, body, action, cleanup, type) => {
     fetch(route, {
         method: 'POST',
         mode: "cors",
@@ -36,6 +36,10 @@ export const updateItem = (route, body, action, type) => {
                 directReducer(act,data,type)
             })
         } 
+    }).then(data=>{
+        if(cleanup){
+            getData(cleanup.route, cleanup.method, cleanup.action)
+        }
     })
 }
 

@@ -53,7 +53,6 @@ export const employeeListSlice = createSlice({
       student.active = action.payload.data[0].active
     },
     updateBulkTime: (state, action) => {
-      
       const studentIDs = Object.keys(action.payload.data.reduxUpdate)      
       const status = action.payload.data.reduxUpdate      
       const program = action.payload.data.program

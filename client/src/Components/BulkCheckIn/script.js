@@ -1,10 +1,10 @@
 import React from "react";
 import { Col, Container, Form, Modal, Row, Button } from "react-bootstrap";
-import { updateItem } from "../../globalUtils/requests";
+import { getData, updateItem } from "../../globalUtils/requests";
 import { useDispatch, useSelector } from "react-redux";
 import { userSignedIn } from "../../app/CurrentUserSlice";
 import { updateBulkTime } from "../../app/EmployeeListSlice";
-import { updateBulkHistory } from "../../app/StudentHistorySlice";
+import { setHistoryBulk, updateBulkHistory } from "../../app/StudentHistorySlice";
 export const BulkCheckin = ({ show, setShow, studentList,program }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -53,7 +53,9 @@ export const BulkCheckin = ({ show, setShow, studentList,program }) => {
                         checkedCollection.time = timeCheckedin
                         checkedCollection.program = program
                         checkedCollection.setBy = currentUser
-                        updateItem('/bulkupdatetimeclock',checkedCollection,[updateBulkTime, updateBulkHistory])
+                        const cleanupCall = {'route':'/getstudenthistory', 'method':'GET', 'action':setHistoryBulk}
+                        updateItem('/bulkupdatetimeclock',checkedCollection,[updateBulkTime, updateBulkHistory],cleanupCall)
+                        // getData('/getstudenthistory', 'GET', setHistoryBulk);
                     }
                     handleClose();
                 }}>
