@@ -34,3 +34,10 @@
     background-color: rgb(241, 189, 189);
     color: red;
 }
+
+.lineDivider{
+    padding-bottom: 2%;
+    border-bottom: .1rem solid;
+    border-color: blueviolet;
+    
+}

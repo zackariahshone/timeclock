@@ -2,8 +2,9 @@ import AddClients from "../../Components/AddClients/script.js";
 import TimeClock from "../../Components/TimeClock/script.js";
 import DashBoard from "../../Components/Dashboard/script.js";
 import { Billing } from "../../Components/Billing/script.js";
-import { AdminPrefrences } from "../../Components/AdminPrefrences/script.js";
+// import { AdminPrefrences } from "../../Components/AdminPrefrences/script.js";
 
+import { AdminPrefrences_V2 } from "../../Components/AdminPrefrences/script.js"
 
 export const DisplayMenuOptions = (menuOption) => {
     switch (menuOption) {
@@ -18,7 +19,7 @@ export const DisplayMenuOptions = (menuOption) => {
         case "Billing":
             return <Billing/>
         case "Admin Preferences":
-            return <AdminPrefrences/>
+            return <AdminPrefrences_V2/>
         default:
             return <DashBoard />
     }

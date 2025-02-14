@@ -37,7 +37,9 @@ export const updateItem = (route, body, action, cleanup, type) => {
             })
         } 
     }).then(data=>{
+        console.log('cleanup');
         if(cleanup && cleanup.method == 'GET'){
+            
             getData(cleanup.route, cleanup.method, cleanup.action)
         }
     })
