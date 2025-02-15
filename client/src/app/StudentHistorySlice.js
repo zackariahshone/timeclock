@@ -34,7 +34,13 @@ export const studentHistorySlice = createSlice({
           editIndex = x;
           return e.id === id
         })
-        if (status[id] === 'in') {
+        console.log(`status slice ${status}`)
+        console.log(status[id][program]);
+        
+        if(!status[id][program]){
+          state[editIndex][program] = [{...inTimeStamp}]
+        }
+        else if (status[id] === 'in') {
           state[editIndex][program].push({ ...inTimeStamp })
         } else {
           state[editIndex][program].push({ ...outTimeStamp })

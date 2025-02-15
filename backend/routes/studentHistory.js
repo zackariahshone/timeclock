@@ -49,7 +49,8 @@ router.post('/bulkupdatetimeclock', async (req, res) => {
   const Promises = studentIDs.map(async (id) => {
     const baseHistory = await studentHistory.findOne({ id: id });
     try{
-
+      
+      console.log(changes[id][program]);
       if (changes[id][program] == true) {
         
         reduxUpdate[id] = 'in';
@@ -58,13 +59,18 @@ router.post('/bulkupdatetimeclock', async (req, res) => {
         }
         await Student.findOneAndUpdate({id:id},{ $set: update })
         const baseHistory = await studentHistory.findOne({ id: id });
+        // console.log(baseHistory);
         console.log(baseHistory);
-        if(!baseHistory === null){
+        
+        if(!(baseHistory === null)){
+          console.log('no base history');
+          
           baseHistory[program].push({...inTimeStamp})
           await baseHistory.save()
         }else{
+          console.log('has base history');
+
           await History.create({ id: id, [program]: [inTimeStamp] });
-          // baseHistory[program] = [{...inTimeStamp}]
         }
       }
       else{
