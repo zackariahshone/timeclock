@@ -185,6 +185,7 @@ export const AdminPrefrences_V2 = () => {
                 onClick={()=>{
                     updateItem('/setpreferences_V2', valueChange, setPrefs_V2)
                     setEarlyLeaveReason('');
+                    setValueChange('');
                 }}
             >Save Changes</Button>
         </>
