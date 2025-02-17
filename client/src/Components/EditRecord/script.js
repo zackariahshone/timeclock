@@ -22,17 +22,30 @@ export const EditRecord = ({ record, list, program }) => {
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
     const previousSunday = getPreviousSunday()
     let weeklyList = list.filter((doc) => doc.timeMilli > previousSunday)
+    const weekdaysWithData = (weeklyList) =>{
+        let daysWithData = [] 
+        weeklyList.forEach((data)=>{
+            if(!(daysWithData.includes(getDayOfWeekFromMillisecond(data.timeMilli)))){
+                daysWithData.push(getDayOfWeekFromMillisecond(data.timeMilli))
+            }
+            
+        })
+        return daysWithData
+    }
+    weekdaysWithData(weeklyList);
     return (
         <Fragment>
             <div className="flex-container">
                 {
                     daysOfWeek.map((day) => {
+                        let noDataSet = false;
                         return (
                             <div className="dayDetails">
                                 <h1>{day}</h1>
                                 {
-                                    weeklyList.length > 0?
+                                   
                                     weeklyList.map((historyRecord, x) => {
+                                        const daysWithData = weekdaysWithData(weeklyList)
                                         const { status, timeMilli, time, setBy } = historyRecord;
                                         const dayOfRecord = getDayOfWeekFromMillisecond(timeMilli);
                                         if (dayOfRecord == day) {
@@ -54,9 +67,12 @@ export const EditRecord = ({ record, list, program }) => {
                                                     </Row>
                                                 </Fragment>
                                             )
+                                        }else if(!noDataSet && !(daysWithData.includes(day))) {
+                                            noDataSet = true;
+                                            return(<>No Data To Show for {day}</>)
                                         }
                                     })
-                                    : <>No Data To Show for {day}</>}
+                                   }
                             </div>
                         )
                     })

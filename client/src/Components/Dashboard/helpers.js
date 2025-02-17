@@ -104,7 +104,7 @@ export const getStudentHistory = (id,historyList,timefilter,programKey) =>{
         console.log(historyList.filter(doc=>doc?.id == id));
         
         return  historyList.filter(doc=>doc?.id == id).length > 0 ?
-                historyList.filter(doc=>doc?.id == id).length :
+                historyList.filter(doc=>doc?.id == id) :
                 [{[programKey]:[]}];    
     }
 } 

@@ -128,7 +128,6 @@ export default (props) => {
                         </>
                         : <></>
                     }
-                    {console.log('131',Object?.values(history)[0])}
                     {type == 'student' && record && showEditModal ?
                         <EditItemModal
                             show={showEditModal}
