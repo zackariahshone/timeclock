@@ -4,3 +4,9 @@
 .savePrefsButton{
     text-align: right;
 }
+.numberStyle{
+    width: 5%;
+}
+.delete{
+  cursor: pointer;
+}

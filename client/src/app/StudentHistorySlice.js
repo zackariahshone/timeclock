@@ -34,8 +34,6 @@ export const studentHistorySlice = createSlice({
           editIndex = x;
           return e.id === id
         })
-        console.log(`status slice ${status}`)
-        console.log(status[id][program]);
         
         if(!status[id][program]){
           state[editIndex][program] = [{...inTimeStamp}]

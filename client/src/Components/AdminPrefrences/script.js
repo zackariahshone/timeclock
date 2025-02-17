@@ -1,11 +1,18 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { prefs, Renderinputs } from "./helpers";
-import { Button, Row, Col } from "react-bootstrap";
+import {
+    Button,
+    Row,
+    Col,
+    InputGroup,
+    Form,
+    ListGroup,
+    Badge
+} from "react-bootstrap";
 import { updateItem } from "../../globalUtils/requests";
 import './style.css'
-import { setPrefs, customPrefs } from "../../app/PreferencesSlice";
+import { setPrefs,setPrefs_V2, customPrefs } from "../../app/PreferencesSlice";
 import { useSelector } from "react-redux";
-import { Calendar } from "primereact/calendar";
 export const AdminPrefrences = () => {
     const custPrefs = useSelector(customPrefs)
     const [prefUpdate, setPrefUpdate] = useState()
@@ -40,11 +47,15 @@ export const AdminPrefrences = () => {
 
 
 export const AdminPrefrences_V2 = () => {
-    const [time, setTime] = useState();
-    const [editingLocked, setEditingLocked] = useState(false);
-    const [targetTime, setTargetTime] = useState([5, 'pm'])
-    console.log(time);
+
+    const [valueChange, setValueChange] = useState({});
+    const [earlyLeaveReason, setEarlyLeaveReason] = useState([]);
+    const [newReason, setNewReason] = useState();
+    const custPrefs = useSelector(customPrefs)
+    console.log(custPrefs);
     
+    console.log(valueChange);
+
     return (
         <>
             <div className="adminPrefs">
@@ -52,10 +63,19 @@ export const AdminPrefrences_V2 = () => {
                 <div className="lineDivider">
                     <p className="adminPrefs"> Auto Clockout</p>
                     <div>
-                    <input 
-                        defaultValue={targetTime[0]}
-                        type="number" />
-                        <select>
+                        <input
+                            onChange={(e) => {
+                                setValueChange({ ...valueChange, 'autoClockoutTime': {  ...valueChange?.autoClockoutTime,'time': e.target.value }})
+                            }}
+                            className={'numberStyle'}
+                            defaultValue={5}
+                            type="number" />
+                        <select
+                            onChange={(e) => {
+                                console.log(e);
+                                setValueChange({ ...valueChange, 'autoClockoutTime': { ...valueChange?.autoClockoutTime,'timeOfDay': e.target.value }})
+                            }}
+                        >
                             <option>am</option>
                             <option>pm</option>
                         </select>
@@ -63,10 +83,10 @@ export const AdminPrefrences_V2 = () => {
                 </div>
 
                 <div className="lineDivider">
-                    <p className="adminPrefs"> Lock Editing : {`${editingLocked}`}</p>
+                    <p className="adminPrefs"> Lock Editing : {`${'editingLocked'}`}</p>
                     <input
                         onClick={(e) => {
-                            setEditingLocked(!editingLocked)
+                            setValueChange({ ...valueChange, 'lockEditing': e.target.checked })
                         }}
                         type="checkbox"
                     />
@@ -74,13 +94,62 @@ export const AdminPrefrences_V2 = () => {
                 <div className="lineDivider">
 
                     <p className="adminPrefs"> Target Time</p>
-                    <input 
-                        defaultValue={targetTime[0]}
-                        type="number" />
+                    <input
+                        className={'numberStyle'}
+                        defaultValue={5}
+                        type="number"
+                        onClick={(e) => {
+                            setValueChange({ ...valueChange, 'targetTime': e.target.value })
+                        }}
+                    />
+                </div>
+                <div className="lineDivider">
+                    <p className="adminPrefs"> Early Clockout List</p>
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            placeholder="Reason For Early Leave"
+                            aria-label="Recipient's username"
+                            aria-describedby="basic-addon2"
+                            onChange={(e) => {
+                                setNewReason(e.target.value)
+                            }}
+                            value={newReason}
+                        />
+                        <Button
+                            variant="outline-secondary"
+                            id="button-addon2"
+                            onClick={() => {
+                                setEarlyLeaveReason([...earlyLeaveReason, newReason])
+                                console.log(valueChange.earlyLeaveReasons);
+                                setValueChange( {...valueChange,'earlyLeaveReasons': valueChange.earlyLeaveReasons == null ?  [newReason] : [...valueChange?.earlyLeaveReasons, newReason]});
+                                setNewReason('');
+                            }}>
+                            Add New Reason
+                        </Button>
+                    </InputGroup>
+
+
+                    <ListGroup variant="flush">
+                        {earlyLeaveReason?.map((reason) => (
+                            <>
+                                <ListGroup.Item
+                                    className="d-flex justify-content-between align-items-start"
+                                >
+                                    <Badge> {reason} </Badge>
+                                    <Badge className="delete" bg="danger" >
+                                        X
+                                    </Badge>
+                                </ListGroup.Item>
+                            </>
+                        ))}
+                    </ListGroup>
                 </div>
             </div>
             <Button
-            variant="info"
+                variant="info"
+                onClick={()=>{
+                    updateItem('/setpreferences_V2', valueChange, setPrefs_V2)
+                }}
             >Save Changes</Button>
         </>
     )

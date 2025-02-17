@@ -7,6 +7,7 @@ import {
   InputGroup,
   Button,
   Modal,
+  Dropdown
 } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
 import { getStudentHistory, getTimeFromMillisecond } from "../Dashboard/helpers";
@@ -94,27 +95,27 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                 <Col>
                   {x == studentHistory.length - 1 ? <Button
                     onClick={() => {
-                        const timeClockData = {
-                          student,
-                          program,
-                          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-                          timeMilli: `${new Date().getTime()}`,
-                          setBy: currentUser
-                        }
-                        const clockedinState = currentlyClockedIn(student.programs)                        
-                        if (student.programs[program] == 'out' && clockedinState.clockedin) {
-                          setShowCurrentlyClockedIn(true)
-                          setCurrentProgram(clockedinState.program)
-                        } 
-                        else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
-                          setShowTimeAlert(true)
-                          setAlertData(timeClockData);
-                        } else {
-                          createItem('/studenttimeclock', timeClockData);
-                          dispatch(timeClock(timeClockData));
-                          setStatusChange(true);
-                        }
-        
+                      const timeClockData = {
+                        student,
+                        program,
+                        time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+                        timeMilli: `${new Date().getTime()}`,
+                        setBy: currentUser
+                      }
+                      const clockedinState = currentlyClockedIn(student.programs)
+                      if (student.programs[program] == 'out' && clockedinState.clockedin) {
+                        setShowCurrentlyClockedIn(true)
+                        setCurrentProgram(clockedinState.program)
+                      }
+                      else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
+                        setShowTimeAlert(true)
+                        setAlertData(timeClockData);
+                      } else {
+                        createItem('/studenttimeclock', timeClockData);
+                        dispatch(timeClock(timeClockData));
+                        setStatusChange(true);
+                      }
+
                     }}
                     variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
                   </Button> : ''}
@@ -155,11 +156,11 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     timeMilli: `${new Date().getTime()}`,
                     setBy: currentUser
                   }
-                  const clockedinState = currentlyClockedIn(student.programs)                  
+                  const clockedinState = currentlyClockedIn(student.programs)
                   if (student.programs[program] == 'out' && clockedinState.clockedin) {
                     setShowCurrentlyClockedIn(true)
                     setCurrentProgram(clockedinState.program)
-                  } 
+                  }
                   else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
                     setShowTimeAlert(true)
                     setAlertData(timeClockData);
@@ -189,21 +190,21 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   )
 }
 
-function currentlyClockedIn(programs) {  
-  let clockedIn = {'clockedIn':false,'program':''};
+function currentlyClockedIn(programs) {
+  let clockedIn = { 'clockedIn': false, 'program': '' };
   const programKeys = Object.keys(programs)
   if (programKeys.length == 1) return false;
   else {
     programKeys.forEach(key => {
       if (programs[key] == 'in') {
-        clockedIn= {'clockedin':true,'program':key};
+        clockedIn = { 'clockedin': true, 'program': key };
       }
     })
-    return {...clockedIn};
+    return { ...clockedIn };
   }
 }
 
-export function AlreadyClockedInModal({ show, setShow, program}) {
+export function AlreadyClockedInModal({ show, setShow, program }) {
   const handleClose = () => setShow(false);
   return (
     <>
@@ -239,6 +240,17 @@ export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setSta
           <Button variant="info" onClick={handleClose}>
             Keep Checked In
           </Button>
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              Dropdown Button
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {['dr apt', 'bad weather'].map(reason => (
+                <Dropdown.Item href="#/action-1">{reason}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           <Button
             variant="danger"
             onClick={() => {
@@ -300,7 +312,7 @@ export function EditTimeModal({ show, setShow, timeToEdit, setStatusChange, prog
 export function getHoursWorked(timein, timeout) {
   if (timein) {
     const clockedIn = timein
-    const clockedOut = timeout ? timeout : new Date().getTime() 
+    const clockedOut = timeout ? timeout : new Date().getTime()
     return ((Number(clockedOut) - Number(clockedIn)) / (1000 * 60 * 60)).toFixed(2);
   }
   return null;

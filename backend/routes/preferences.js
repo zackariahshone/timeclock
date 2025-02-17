@@ -44,7 +44,7 @@ const preferences = [
 
 router.get('/getpreferences', async (req, res) => {
     const preferences = await prefs.find();
-    res.json({ status: 200, prefs:preferences });
+    res.json( { status: 200, prefs:preferences } );
 });
 
 router.post('/setpreferences', async (req, res) => {
@@ -72,6 +72,54 @@ router.post('/setpreferences', async (req, res) => {
             } else {
                 await preftoUpdate.save();
             }
+        });
+        
+        const result = await Promise.allSettled(promiseSetOne);
+        const prefResponse = await prefs.find({});        
+        const allFulfilled = result.every((r) => r.status === 'fulfilled');
+        res.status(allFulfilled ? 200 : 500).send(allFulfilled ? {status:'200',prefs: prefResponse} : '500');
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('500');
+    }
+});
+
+router.post('/setpreferences_V2', async (req, res) => {
+    const newPreferences = req.body;
+    const prefKeys = Object.keys(newPreferences);
+
+
+    try {
+        let newPref;
+        const promiseSetOne = prefKeys.map(async (key) => {
+            if( typeof newPreferences[key] === 'string' || 
+                typeof newPreferences[key] === 'number' ||
+                typeof newPreferences[key] === 'boolean'
+            ){
+                console.log({'id':key, value : newPreferences[key]})
+                newPref = {
+                    'id':key,
+                    value: newPreferences[key]
+                }
+                await prefs.findOneAndUpdate({'id':key},newPref,{upsert: true})
+            }
+            else if(typeof newPreferences[key] === 'object' && newPreferences[key].length >= 0){
+                 newPref = {
+                    'id':key,
+                    value: [...newPreferences[key]]
+                }
+                console.log(newPref);
+                await prefs.findOneAndUpdate({'id':key},newPref,{upsert: true})
+
+            } 
+            else{
+                newPref = {
+                    'id':key,
+                    value:{...newPreferences[key]}
+                }
+                console.log(newPref);
+                await prefs.findOneAndUpdate({'id':key},newPref,{upsert: true})
+            }  
         });
         
         const result = await Promise.allSettled(promiseSetOne);
