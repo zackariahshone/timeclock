@@ -70,7 +70,8 @@ export const EditRecord = ({ record, list, program }) => {
                                             noDataSet = true;
                                             return(<>No Data To Show for {day}</>)
                                         }
-                                    }):return<>No Data To Show for {day}</>
+                                    }) : 
+                                    <>No Data To Show for {day}</>
                                    }
                             </div>
                         )

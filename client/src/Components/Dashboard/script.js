@@ -72,15 +72,21 @@ export default () => {
                                 programKeys.map(pg => (
                                     <Col>
                                         <h3 id='clockedIn'>{pg} Clocked In</h3>
+                                        <Row>
+
                                         {getStudentStatus('in', employeeList, pg)?.map(emp => (
+                                            <Col xs = {3}>
+
                                             <p
                                                 onClick={() => {
                                                     setSelectedEmployee(emp)
                                                     setEmpProg(pg)
                                                 }}
                                                 className={`employeeList ${selectedEmployee?.name == emp.name ? 'selected' : ''}`}
-                                            >{emp.name}</p>
+                                                >{emp.name}</p>
+                                            </Col>
                                         ))}
+                                        </Row>
                                     </Col>
                                 ))
                             }
@@ -164,11 +170,13 @@ export default () => {
                                             <Row className="marginBottom">
                                                 <Col>
                                                     {getDateFromMilli(history.timeMilli)}
+                                                    {console.log(history)}
                                                 </Col>
                                                 <Col>
                                                     <Card className="alignRight marginRight">
                                                         <p>Clocked {toCapitalize(history.status)}: {convertMilitaryToStandard(getTimeFromMillisecond(history.timeMilli))}</p>
                                                         <p>Set By: {history.setBy}</p>
+                                                        {history.earlyClockoutReason ? <p> Early Clockout Reason: {history.earlyClockoutReason}</p>:''}
                                                     </Card>
                                                     {
                                                         history.status == 'out' ?

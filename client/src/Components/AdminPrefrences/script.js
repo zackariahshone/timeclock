@@ -76,11 +76,12 @@ export const AdminPrefrences_V2 = () => {
                             // value={autoOutPref.time}
                             type="number" />
                         <select
+                            defaultValue={'select time of day'}
                             onChange={(e) => {
                                 setValueChange({ ...valueChange, 'autoClockoutTime': { ...valueChange?.autoClockoutTime,'timeOfDay': e.target.value }})
                             }}
                         >
-                            <option disabled>select time of day</option>
+                            <option defaultValue={'select time of day'} disabled = {true}>select time of day</option>
                             <option>am</option>
                             <option>pm</option>
                         </select>
@@ -94,7 +95,7 @@ export const AdminPrefrences_V2 = () => {
                             setValueChange({ ...valueChange, 'lockEditing': e.target.checked })
                         }}
                         type="checkbox"
-                        defaultValue={lockEditingPref}
+                        defaultChecked={lockEditingPref}
                     />
                 </div>
                 <div className="lineDivider">
