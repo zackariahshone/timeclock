@@ -75,9 +75,11 @@ const convertToMilitaryTime = function(time12h) {
   const twentryFourHour = convertToMilitaryTime(timeToClockOut)
   
   console.log(twentryFourHour);
-  cron.schedule(`0 15 * * *`, () => {
+  cron.schedule(`50 14 * * *`, () => {
     console.log('clockout job running');
     autoClockout();
   }); 
 }
+autoClockout();
+
   // Schedule a cron job to run at 3 PM daily
