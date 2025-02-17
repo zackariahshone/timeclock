@@ -1,11 +1,11 @@
 const express = require('express');
-const autoClockout = require('./cron-jobs/autoClockOut')
+const initAutoClockout = require('./cron-jobs/autoClockOut')
 const app = express();
 const routes = require('./routes');
 const path = require('path');
 const bodyParser = require('body-parser');
-const cron = require('node-cron');
 require('./dbconnection/connection');
+const prefs = require('./dbconnection/models/Preference')
 
 
 const PORT = process.env.PORT || 5000;
@@ -21,7 +21,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
-cron.schedule('0 15 * * *', () => {
-    console.log('clockout job running');
-    autoClockout();
-}); 
+
+// run cron jobs
+initAutoClockout() 
+ 
