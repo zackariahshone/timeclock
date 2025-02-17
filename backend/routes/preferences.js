@@ -87,16 +87,21 @@ router.post('/setpreferences', async (req, res) => {
 router.post('/setpreferences_V2', async (req, res) => {
     const newPreferences = req.body;
     const prefKeys = Object.keys(newPreferences);
-
-
+    const currentValuse = await prefs.find({});
+    // console.log(currentValuse);
+    
     try {
         let newPref;
         const promiseSetOne = prefKeys.map(async (key) => {
+            // console.log(key);
+            
+           const foundValue = currentValuse.find(pref=>pref.id == key);
+            console.log(foundValue);
+            
             if( typeof newPreferences[key] === 'string' || 
                 typeof newPreferences[key] === 'number' ||
                 typeof newPreferences[key] === 'boolean'
             ){
-                console.log({'id':key, value : newPreferences[key]})
                 newPref = {
                     'id':key,
                     value: newPreferences[key]
@@ -106,9 +111,8 @@ router.post('/setpreferences_V2', async (req, res) => {
             else if(typeof newPreferences[key] === 'object' && newPreferences[key].length >= 0){
                  newPref = {
                     'id':key,
-                    value: [...newPreferences[key]]
+                    value: foundValue ? [...foundValue.value,...newPreferences[key]]: [...newPreferences[key]]
                 }
-                console.log(newPref);
                 await prefs.findOneAndUpdate({'id':key},newPref,{upsert: true})
 
             } 
@@ -117,7 +121,6 @@ router.post('/setpreferences_V2', async (req, res) => {
                     'id':key,
                     value:{...newPreferences[key]}
                 }
-                console.log(newPref);
                 await prefs.findOneAndUpdate({'id':key},newPref,{upsert: true})
             }  
         });
@@ -132,6 +135,19 @@ router.post('/setpreferences_V2', async (req, res) => {
     }
 });
 
+router.delete('/deleteearlyClockoutReason', async(req,res)=>{
+    const itemToDelete = req.body.reason
+    const currentLeavePrefs = await prefs.findOne({id:'earlyLeaveReasons'})
+    console.log(itemToDelete,currentLeavePrefs);
+    
+    const filterdLeavePrefs = currentLeavePrefs.value.filter((pref)=> pref !== itemToDelete)
+    await prefs.findOneAndUpdate({id:'earlyLeaveReasons'},{value:[...filterdLeavePrefs]})
+    res.send({status:200,prefs:await prefs.find({})})
+});
 
 
+router.delete('/deleteprefs', async(req,res)=>{
+    await prefs.findOneAndDelete({id:'earlyLeaveReasons'})
+    res.send('done')
+})
 module.exports = router;

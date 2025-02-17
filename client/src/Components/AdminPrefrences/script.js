@@ -9,7 +9,7 @@ import {
     ListGroup,
     Badge
 } from "react-bootstrap";
-import { updateItem } from "../../globalUtils/requests";
+import { deleteItem, updateItem } from "../../globalUtils/requests";
 import './style.css'
 import { setPrefs,setPrefs_V2, customPrefs } from "../../app/PreferencesSlice";
 import { useSelector } from "react-redux";
@@ -54,28 +54,33 @@ export const AdminPrefrences_V2 = () => {
     const custPrefs = useSelector(customPrefs)
     console.log(custPrefs);
     
-    console.log(valueChange);
-
+    const autoOutPref =  custPrefs.find((pref)=> pref.id == 'autoClockoutTime')?.value || {'time':5,'timeOfDay':'pm'}
+    const targetTimePref = custPrefs.find((pref)=> pref.id == 'targetTime')?.value || 5
+    const earlyLeaveReasonsPrefs = custPrefs.find((pref)=> pref.id == 'earlyLeaveReasons')?.value
+    const lockEditingPref = custPrefs.find((pref)=> pref.id == 'lockEditing')?.value || false
+    console.log(Object.keys(valueChange).length);
+    
     return (
         <>
             <div className="adminPrefs">
                 <h1>Custom Preferences</h1>
                 <div className="lineDivider">
-                    <p className="adminPrefs"> Auto Clockout</p>
+                    <p className="adminPrefs"> Auto Clockout Set For <span className="displayValue">{autoOutPref.time} {autoOutPref.timeOfDay}</span></p>
                     <div>
                         <input
                             onChange={(e) => {
                                 setValueChange({ ...valueChange, 'autoClockoutTime': {  ...valueChange?.autoClockoutTime,'time': e.target.value }})
                             }}
                             className={'numberStyle'}
-                            defaultValue={5}
+                            defaultValue={autoOutPref.time < 0 ? 5 : autoOutPref.time}
+                            // value={autoOutPref.time}
                             type="number" />
                         <select
                             onChange={(e) => {
-                                console.log(e);
                                 setValueChange({ ...valueChange, 'autoClockoutTime': { ...valueChange?.autoClockoutTime,'timeOfDay': e.target.value }})
                             }}
                         >
+                            <option disabled>select time of day</option>
                             <option>am</option>
                             <option>pm</option>
                         </select>
@@ -83,17 +88,18 @@ export const AdminPrefrences_V2 = () => {
                 </div>
 
                 <div className="lineDivider">
-                    <p className="adminPrefs"> Lock Editing : {`${'editingLocked'}`}</p>
+                    <p className="adminPrefs"> Lock Editing : <span className="displayValue">{lockEditingPref ? 'true' : 'false' }</span> </p>
                     <input
                         onClick={(e) => {
                             setValueChange({ ...valueChange, 'lockEditing': e.target.checked })
                         }}
                         type="checkbox"
+                        defaultValue={lockEditingPref}
                     />
                 </div>
                 <div className="lineDivider">
 
-                    <p className="adminPrefs"> Target Time</p>
+                    <p className="adminPrefs"> Target Time Set For <span className="displayValue" >{targetTimePref} hrs</span></p>
                     <input
                         className={'numberStyle'}
                         defaultValue={5}
@@ -129,26 +135,55 @@ export const AdminPrefrences_V2 = () => {
                     </InputGroup>
 
 
-                    <ListGroup variant="flush">
-                        {earlyLeaveReason?.map((reason) => (
+                    <ListGroup horizontal>
+                        {earlyLeaveReasonsPrefs?.map((reason) => (
                             <>
                                 <ListGroup.Item
                                     className="d-flex justify-content-between align-items-start"
                                 >
                                     <Badge> {reason} </Badge>
-                                    <Badge className="delete" bg="danger" >
+                                    <Badge 
+                                        className="delete" 
+                                        bg="danger" 
+                                        onClick={()=>{
+                                            deleteItem('/deleteearlyClockoutReason',{reason}, setPrefs_V2)
+                                        }}
+                                        >
                                         X
                                     </Badge>
                                 </ListGroup.Item>
                             </>
                         ))}
+                        {earlyLeaveReason.length > 0 ?
+                    earlyLeaveReason?.map((reason) => (
+                        <>
+                            <ListGroup.Item
+                                className="d-flex justify-content-between align-items-start"
+                            >
+                                <Badge> {reason} </Badge>
+                                <Badge 
+                                    className="delete" 
+                                    bg="danger" 
+                                    onClick={()=>{
+                                        deleteItem('/deleteearlyClockoutReason',{reason}, setPrefs_V2)
+                                    }}
+                                    >
+                                    X
+                                </Badge>
+                            </ListGroup.Item>
+                        </>
+                    ))
+                    :<></>    
+                    }
                     </ListGroup>
                 </div>
             </div>
             <Button
                 variant="info"
+                disabled = {!Object.keys(valueChange).length}
                 onClick={()=>{
                     updateItem('/setpreferences_V2', valueChange, setPrefs_V2)
+                    setEarlyLeaveReason('');
                 }}
             >Save Changes</Button>
         </>

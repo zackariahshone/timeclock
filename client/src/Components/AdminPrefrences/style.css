@@ -10,3 +10,8 @@
 .delete{
   cursor: pointer;
 }
+
+.displayValue{
+    padding-right:.3%;
+    box-shadow: 3px 3px 1px  blueviolet;
+}

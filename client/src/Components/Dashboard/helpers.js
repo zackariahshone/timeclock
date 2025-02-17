@@ -99,7 +99,13 @@ export const getStudentHistory = (id,historyList,timefilter,programKey) =>{
         return [{id:listFilteredByID[0].id ,[programKey]:clockedInOutHistory}]  
         
     }else{
-        return historyList.filter(doc=>doc?.id == id);    
+        const dummyData = [{[programKey]:[]}]
+        console.log(dummyData[0][programKey]);
+        console.log(historyList.filter(doc=>doc?.id == id));
+        
+        return  historyList.filter(doc=>doc?.id == id).length > 0 ?
+                historyList.filter(doc=>doc?.id == id).length :
+                [{[programKey]:[]}];    
     }
 } 
 

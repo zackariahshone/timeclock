@@ -108,6 +108,9 @@ router.post('/studenttimeclock', async (req, res) => {
       time: req.body.time,
       setBy: req.body.setBy
     }
+    if(req.body.earlyClockoutReason){
+      historyData['earlyClockoutReason'] = req.body.earlyClockoutReason
+    }
     let studentHistory = await History.findOne({ id: studentHistoryID });
     let studentToUpdate = await Student.findOne({id:studentHistoryID})
     if (!studentHistory) {

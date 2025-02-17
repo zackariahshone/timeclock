@@ -11,15 +11,17 @@ import {
 } from "react-bootstrap";
 import { Calendar } from 'primereact/calendar';
 import { getStudentHistory, getTimeFromMillisecond } from "../Dashboard/helpers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
 import { createItem, updateItem } from "../../globalUtils/requests";
+import { customPrefs } from "../../app/PreferencesSlice";
 
 
 
 export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, setStatusChange, program }) => {
 
   const dispatch = useDispatch();
+  const totalTimePrefs = useSelector(customPrefs).find((pref)=> pref.id == 'targetTime')?.value || 5;
   const [show, setShow] = useState(false);
   const [timeToEdit, setTimeToEdit] = useState();
   const [showTimeAlert, setShowTimeAlert] = useState();
@@ -107,7 +109,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                         setShowCurrentlyClockedIn(true)
                         setCurrentProgram(clockedinState.program)
                       }
-                      else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
+                      else if (totalTimeWorked < totalTimePrefs && student.programs[program] == 'in') {
                         setShowTimeAlert(true)
                         setAlertData(timeClockData);
                       } else {
@@ -161,7 +163,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     setShowCurrentlyClockedIn(true)
                     setCurrentProgram(clockedinState.program)
                   }
-                  else if (totalTimeWorked < 5 && student.programs[program] == 'in') {
+                  else if (totalTimeWorked < totalTimePrefs && student.programs[program] == 'in') {
                     setShowTimeAlert(true)
                     setAlertData(timeClockData);
                   } else {
@@ -178,7 +180,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
       }
       <Row>
         <Col xs={{ span: 3, offset: 8 }}>
-          <div className={totalTimeWorked >= 4.93 ? "timeHit" : 'timeMissing'}>
+          <div className={totalTimeWorked >= totalTimePrefs ? "timeHit" : 'timeMissing'}>
             Todays Total Time :  {totalTimeWorked.toFixed(2)}
           </div>
         </Col>
@@ -225,6 +227,10 @@ export function AlreadyClockedInModal({ show, setShow, program }) {
 }
 
 export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setStatusChange }) {
+  const earlyLeavePrefs = useSelector(customPrefs).find((pref) => pref.id == 'earlyLeaveReasons')?.value;
+  const totalTimePrefs = useSelector(customPrefs).find((pref)=> pref.id == 'targetTime')?.value;
+  // console.log(preferences);
+  const [earlyClockoutReason, setEarlyClockoutReason] = useState()
   const handleClose = () => setShow(false);
   const dispatch = useDispatch()
   return (
@@ -233,36 +239,53 @@ export function TimeAlertModal({ show, setShow, timeClockData, totalTime, setSta
         <Modal.Body>
           <div>
             <h1>Time not Reached</h1>
-            <p> Currently worked {totalTime} of 5 hours </p>
+            <p> Currently worked {totalTime} of {totalTimePrefs || 5} hours </p>
+            <p> Select Early Clock out reason to check out before time is met</p>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="info" onClick={handleClose}>
             Keep Checked In
           </Button>
+          
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              Dropdown Button
+            <Dropdown.Toggle variant="warning" id="dropdown-basic">
+              {earlyClockoutReason || 'Early Checkout Reason'}
             </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              {['dr apt', 'bad weather'].map(reason => (
-                <Dropdown.Item href="#/action-1">{reason}</Dropdown.Item>
+            <Dropdown.Menu
+              onClick={(e) => {
+                setEarlyClockoutReason(e.target.text)
+              }}
+            >
+              {earlyLeavePrefs?.map(reason => (
+                <Dropdown.Item
+                >{reason}</Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
-          <Button
-            variant="danger"
-            onClick={() => {
-              createItem('/studenttimeclock', timeClockData);
-              dispatch(timeClock(timeClockData));
-              setStatusChange(true);
-              handleClose();
-            }
-            }>
-            Clock Out Anyway
-          </Button>
+          <Row>
+
+          </Row>
         </Modal.Footer>
+
+            {earlyClockoutReason ? 
+        <Modal.Footer>
+            <Button
+              variant="danger"
+              onClick={() => {
+                timeClockData['earlyClockoutReason'] = earlyClockoutReason;
+                createItem('/studenttimeclock', timeClockData);
+                dispatch(timeClock(timeClockData));
+                setStatusChange(true);
+                handleClose();
+              }
+            }>
+              Clock Out Early
+            </Button> 
+          </Modal.Footer>
+            
+            : <></>}
       </Modal>
     </>
   );

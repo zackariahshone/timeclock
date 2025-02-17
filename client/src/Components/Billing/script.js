@@ -55,7 +55,11 @@ export const Billing = () => {
                             }}
                             variant='info'> Submit Filters </Button>
                             
-                            <ExportCSVReport style={{marginRight:'2%'}} data={dataForExport} fileName={`new file`} disable = {dataForExport?false:true}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs="2" >
+                            <ExportCSVReport  style={{marginRight:'2%'}} data={dataForExport} fileName={`new file`} disable = {dataForExport?false:true}/>
                     </Col>
                 </Row>
             </Container>
