@@ -105,12 +105,18 @@ router.post('/studenttimeclock', async (req, res) => {
     const historyData = {
       status: req.body.student.programs[req.body.program] == 'in' ? 'out' : 'in',
       timeMilli: req.body.timeMilli,
-      time: req.body.time,
+      time: req.body?.time,
       setBy: req.body.setBy
     }
     if(req.body.earlyClockoutReason){
       historyData['earlyClockoutReason'] = req.body.earlyClockoutReason
     }
+    if(req.body.absentReason){
+      historyData.status = 'Absent'
+      historyData['absentReason'] = req.body.absentReason
+    }
+    console.log(historyData);
+    
     let studentHistory = await History.findOne({ id: studentHistoryID });
     let studentToUpdate = await Student.findOne({id:studentHistoryID})
     if (!studentHistory) {

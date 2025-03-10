@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { timeClock } from "../../app/EmployeeListSlice";
 import { createItem, updateItem } from "../../globalUtils/requests";
 import { customPrefs } from "../../app/PreferencesSlice";
+import { Absent } from "./absent";
 
 
 
@@ -28,8 +29,11 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
   const [showCurrentlyClockedIn, setShowCurrentlyClockedIn] = useState()
   const [currentProgram, setCurrentProgram] = useState();
   const [alertData, setAlertData] = useState();
+  const [absentModal, setAbsentModal] = useState(false);
+  const [absentData, setAbsentData] = useState()
   let validationDate = {};
   let totalTimeWorked = 0;
+  
   return (
     <Card
       className="timeClockCard"
@@ -43,13 +47,16 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
         <Col xs={2}>
           <Card.Text
             className="timeClockCardTitle"
-          >
-            Checked {student.programs[program]}
+          > {student.programs[program] == 'Absent' ?
+            `Absent`:
+            `Checked ${student.programs[program]}`
+          }
+            
           </Card.Text>
         </Col>
       </Row>
       {studentHistory.length > 0 ?
-        studentHistory.map((doc, x) => {
+        studentHistory.map((doc, x) => {          
           const lastRecord = studentHistory.length - 1 == x
           const sessionHours = getHoursWorked(doc?.timeinMilli, doc?.timeOutMilli);
           totalTimeWorked += Number(sessionHours);
@@ -58,10 +65,12 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
               <Row className="">
                 <Col xs={4}>
                 </Col>
-                <Col xs={4}>
+                {
+                  !(student.programs[program] == 'Absent') ? 
+                  <Col xs={4}>
                   <InputGroup
-                    onClick={(e) => {
-                      if (e.target.id == 'timeIn') {
+                  onClick={(e) => {
+                    if (e.target.id == 'timeIn') {
                         validationDate = { start: studentHistory[x - 1]?.timeOutMilli, end: studentHistory[x]?.timeOutMilli }
                       } else if (e.target.id == 'timeOut') {
                         validationDate = { start: studentHistory[x]?.timeinMilli, end: studentHistory[x + 1]?.timeinMilli }
@@ -88,14 +97,19 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                       value={doc?.timeOut ? convertMilitaryToStandard(getTimeFromMillisecond(doc?.timeOutMilli)) : ''}
                       aria-label="Time Out"
                       readOnly
-                    />
+                      />
                   </InputGroup>
                 </Col>
+                      :<></>}
                 <Col>
                   {sessionHours ? <p> {sessionHours} hrs</p> : ''}
                 </Col>
+                    {!(doc?.absentReason)?
+                    
                 <Col>
-                  {x == studentHistory.length - 1 ? <Button
+                  { x == studentHistory.length -1 ? 
+                  <>
+                  <Button
                     onClick={() => {
                       const timeClockData = {
                         student,
@@ -117,11 +131,14 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                         dispatch(timeClock(timeClockData));
                         setStatusChange(true);
                       }
-
+                      
                     }}
                     variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
-                  </Button> : ''}
+                  </Button> 
+                  </>
+                  :<></>}
                 </Col>
+                    : `Absent Reason: ${doc.absentReason}`}
               </Row>
             </Form>)
         }) :
@@ -174,6 +191,19 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                 }}
                 variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" ? 'Check In' : 'Check Out'}
               </Button>
+              <Button
+                onClick={()=>{
+                  const timeClockData = {
+                    student,
+                    program,
+                    timeMilli: `${new Date().getTime()}`,
+                    setBy: currentUser
+                  }
+                  setAbsentData(timeClockData)
+                  setAbsentModal(!absentModal)
+                }}
+                variant={'warning'}
+              >Absent</Button>
             </Col>
           </Row>
         </Form>
@@ -181,10 +211,11 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
       <Row>
         <Col xs={{ span: 3, offset: 8 }}>
           <div className={totalTimeWorked >= totalTimePrefs ? "timeHit" : 'timeMissing'}>
-            Todays Total Time :  {totalTimeWorked.toFixed(2)}
+          {student.programs[program] == 'Absent' ? <></>: `Todays Total Time :  ${totalTimeWorked.toFixed(2)}`}
           </div>
         </Col>
       </Row>
+      {absentModal?<Absent absentData= {absentData} show={absentModal} setShow={setAbsentModal} studentName={student.name} />:<></>}
       {showCurrentlyClockedIn ? <AlreadyClockedInModal program={currentProgram} show={showCurrentlyClockedIn} setShow={setShowCurrentlyClockedIn} /> : <></>}
       {showTimeAlert ? <TimeAlertModal totalTime={totalTimeWorked} timeClockData={alertData} setStatusChange={setStatusChange} show={showTimeAlert} setShow={setShowTimeAlert} /> : <></>}
       {show ? <EditTimeModal show={show} setShow={setShow} timeToEdit={timeToEdit} setStatusChange={setStatusChange} program={program} /> : <></>}
@@ -388,6 +419,8 @@ export function getTodaysClockInHistory(history) {
     const milliSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
     let timeIn, timeinMilli, timeOutMilli, timeOut = '00:00';
     history.forEach((record, x) => {
+      console.log(record.absentReason);
+      
       let lastRecord = history.length == x + 1
       if (milliSeconds < Number(record.timeMilli)) {
         if (record.status == 'in') {
@@ -398,6 +431,16 @@ export function getTodaysClockInHistory(history) {
             timeOutMilli = '';
             todayCollection.push({ timeIn, timeinMilli, timeOut, timeOutMilli })
           }
+        }
+        if (record.status == 'Absent' && 'absentReason' in record) {
+            todayCollection.push(
+              {
+                timeIn, 
+                timeinMilli, 
+                timeOut:'absent', 
+                timeOutMilli:'absent',
+                absentReason:record.absentReason
+              })
         }
         else if (record.status == 'out') {
           timeOut = record.time

@@ -45,7 +45,7 @@ export const getStudentStatus = (status, students,program) => {
         case 'in':
             return students.filter((student) => (student?.programs[program] == 'in'));
         case 'out':
-            return students.filter((student) => (student?.programs[program] == 'out'));
+            return students.filter((student) => (student?.programs[program] == 'out' || student?.programs[program] == 'Absent'));
         default:
             return;
     }

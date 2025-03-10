@@ -62,7 +62,7 @@ const convertToMilitaryTime = function(time12h) {
           const result = await Promise.allSettled(PromiseSetOne,PromiseSetTwo);
       
           const allFulfilled = result.every((r) => r.status === 'fulfilled');
-
+          return;
       // tempConnect.close();
   }
   
