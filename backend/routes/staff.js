@@ -83,8 +83,6 @@ router.get('/clockoutall', async (req, res) => {
           }
         )
       })
-      console.log(stuRecord);
-      console.log('87',student);
       
       await History.findOneAndUpdate({id:Object.keys(student)[0]},{...stuRecord}) //stuRecord.save()
     })

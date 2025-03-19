@@ -185,6 +185,50 @@ router.post('/deletestudent', async (req, res) => {
   await Student.findOneAndUpdate({ id: req.body.id },{active:false})
   res.json(req.body);
 })
+
+router.post('/deleteabsence',async(req,res)=>{
+  const id = req.body.id 
+  const program = req.body.program
+  const timeId = req.body.timeId
+  console.log('undefined',req.body);
+  
+  try {
+    // Step 1: Find the document and log it
+    const document = await History.findOne({ id: id });
+    console.log('Matched Document:', document);
+
+    if (!document) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+
+    // Step 2: Filter out the specific element manually
+    const updatedAspire = document.Aspire.filter((item) =>{ 
+      console.log(item.timeMilli);
+      console.log(timeId)
+      
+      return item.timeMilli !== timeId
+      }
+    );
+
+    // Step 3: Use $set to update the array precisely
+    const result = await History.updateOne(
+      { id: id },
+      { $set: { Aspire: updatedAspire } }
+    );
+
+    console.log('Update result:', result);
+
+    if (result.modifiedCount > 0) {
+      res.status(200).json({ message: 'Record deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Record not found or already deleted' });
+    }
+  } catch (error) {
+    console.error('Error updating document:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+
+})
 router.post('/activatestudent', async (req, res) => {
   const updatedStudent = await Student.findOneAndUpdate({ id: req.body.id },{active:req.body.active})
   const dataRefresh = await Student.find({id:req.body.id})

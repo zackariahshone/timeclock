@@ -103,12 +103,20 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
 
     return (
         <Card key={`card_${x}`}>
+            {dropDownStatus == "Absent" && !time ?
+            
             <span
                 id='deleteStamp'
                 onClick={() => {
-                    console.log(id, timeMilli);
+                    const body = {
+                        id:id,
+                        timeId:timeMilli,
+                        program:program
+                    }
+                    updateItem('/deleteabsence',body);
                 }}
             >X</span>
+            :<></>}
             <Card.Body key={`card_body${x}`}>
                 <Card.Title key={`card_Title${x}`}>
                     <div id='timeStampTitle' key={`card_text${x}`}>
@@ -136,6 +144,7 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                             >
                                 <Dropdown.Item value={'out'} href="#/action-1">out</Dropdown.Item>
                                 <Dropdown.Item value={'in'} href="#/action-2">in</Dropdown.Item>
+                                <Dropdown.Item value={'Absent'} href="#/action-2">absent</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     }
