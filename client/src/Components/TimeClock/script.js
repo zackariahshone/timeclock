@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { useSelector } from 'react-redux';
-import { students } from "../../app/EmployeeListSlice";
+import { addEmployeeBulk, students } from "../../app/EmployeeListSlice";
 import { isAdmin, userObj, userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
 import {

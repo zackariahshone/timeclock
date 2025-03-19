@@ -10,12 +10,14 @@ import {
     Dropdown
 } from "react-bootstrap";
 import { createItem } from "../../globalUtils/requests";
+import { useDispatch } from "react-redux";
+import { timeClock } from "../../app/EmployeeListSlice";
 
 
-export const Absent = ({absentData, show, setShow, studentName }) => {
+export const Absent = ({absentData, show, setShow, studentName,setStatusChange }) => {
     const [absentReason, setAbsentReason] = useState();
     const handleClose = () => setShow(false);
-
+    const dispatch = useDispatch()
     return <>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -40,9 +42,14 @@ export const Absent = ({absentData, show, setShow, studentName }) => {
                 <Button 
                     variant="primary" 
                     onClick={()=>{
+                        console.log(absentData);
                         absentData['absentReason'] = absentReason
-                         createItem('/studenttimeclock', absentData);
-                        // handleClose()
+                        createItem('/studenttimeclock', absentData);
+                        absentData.status = "Absent";
+                        dispatch(timeClock(absentData));
+                        // dispatch(setStudentStatus)
+                        setStatusChange(true);
+                        handleClose()
                     }}>
                     Confirm
                 </Button>

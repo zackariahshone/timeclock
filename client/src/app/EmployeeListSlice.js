@@ -36,15 +36,23 @@ export const employeeListSlice = createSlice({
     },
     timeClock: (state, action) => {
       let student = state.employees.find(student => student.id === action.payload.student.id);
-      switch (student.programs[action.payload.program]) {
-        case 'out':
-          student.programs[action.payload.program] = 'in';
+      console.log(action.payload.status);
+      console.log(student.program);
+      
+      if(action.payload.status == "Absent"){
+        student.programs[action.payload.program] = 'Absent';
+      }else{
+        switch (student.programs[action.payload.program]) {
+          case 'out':
+          case 'Absent':
+            student.programs[action.payload.program] = 'in';
           break
         case 'in':
           student.programs[action.payload.program] = 'out'
-          break
+          break;
         default:
           break
+        }
       }
     },
     activateStudent: (state, action) => {
