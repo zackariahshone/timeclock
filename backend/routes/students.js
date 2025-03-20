@@ -213,13 +213,14 @@ router.post('/deleteabsence',async(req,res)=>{
     // Step 3: Use $set to update the array precisely
     const result = await History.updateOne(
       { id: id },
-      { $set: { Aspire: updatedAspire } }
+      { $set: { [program]: updatedAspire } }
     );
 
     console.log('Update result:', result);
 
     if (result.modifiedCount > 0) {
-      res.status(200).json({ message: 'Record deleted successfully' });
+      const udpatedHistory = await History.find({});
+      res.status(200).json({...udpatedHistory});
     } else {
       res.status(404).json({ message: 'Record not found or already deleted' });
     }

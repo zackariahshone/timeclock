@@ -13,7 +13,7 @@ import {
 
 } from "react-bootstrap";
 import { convertMilitaryToStandard } from "../TimeClock/helper";
-import { updateItem } from "../../globalUtils/requests";
+import { getData, updateItem } from "../../globalUtils/requests";
 import { getPreviousSunday } from "./helpers";
 import { isAdmin, userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
@@ -113,7 +113,7 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                         timeId:timeMilli,
                         program:program
                     }
-                    updateItem('/deleteabsence',body);
+                    updateItem('/deleteabsence',body,setHistoryBulk);
                 }}
             >X</span>
             :<></>}
