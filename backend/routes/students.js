@@ -203,9 +203,6 @@ router.post('/deleteabsence',async(req,res)=>{
 
     // Step 2: Filter out the specific element manually
     const updatedAspire = document.Aspire.filter((item) =>{ 
-      console.log(item.timeMilli);
-      console.log(timeId)
-      
       return item.timeMilli !== timeId
       }
     );

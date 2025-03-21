@@ -107,7 +107,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                 </Col>
                     
                 <Col>
-                  { x == studentHistory.length - 1 ? 
+                  { x == studentHistory.length - 1 &&  student.programs[program] != 'Absent' ? 
                   <>
                   <Button
                     onClick={() => {
@@ -190,7 +190,7 @@ export const CheckinCheckoutButtons = ({ student, studentHistory, currentUser, s
                     setStatusChange(true);
                   }
                 }}
-                variant={student.programs[program] == "out" ? 'info' : 'danger'}>  {student.programs[program] == "out" || "Absent" ? 'Check In' : 'Check Out'}
+                variant={student.programs[program] == "out" || student.programs[program] == "Absent" ? 'info' : 'danger'}>  {student.programs[program] == "out" || "Absent" ? 'Check In' : 'Check Out'}
               </Button>
               <Button
                 onClick={()=>{
