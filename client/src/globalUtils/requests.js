@@ -1,4 +1,5 @@
 //all requests stored here
+import { shiftStudentStatus } from "../app/EmployeeListSlice"
 import { directReducer } from "./reduxUtils"
 
 export const createItem = (route, body, action, type) => {
@@ -40,8 +41,9 @@ export const updateItem = (route, body, action, cleanup, type) => {
         console.log('here');
         
         if(cleanup && cleanup.method == 'GET'){
-            
             getData(cleanup.route, cleanup.method, cleanup.action)
+        }else if(cleanup && cleanup.method == "POST"){
+            updateItem(cleanup.route,cleanup.body,cleanup.action)
         }
     })
 }

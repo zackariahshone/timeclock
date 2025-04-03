@@ -8,6 +8,7 @@ export const employeeListSlice = createSlice({
   },
   reducers: {
     addEmployeeBulk: (state, action) => {
+      
       return {
         ...state,
         employees: [
@@ -52,6 +53,14 @@ export const employeeListSlice = createSlice({
         }
       }
     },
+    shiftStudentStatus:(state,action)=>{
+      console.log(action);
+      let student = action.payload.data.student
+      let studentEdit = state.employees.find(student => student.id === action.payload.data.student.id);
+      const program = action.payload.data.program;
+      const status = student.programs[program]
+      studentEdit.programs[program] = status;
+    },
     activateStudent: (state, action) => {
       const id = action.payload.data[0].id
       let student = state.employees.find(student => student.id === id);
@@ -80,7 +89,8 @@ export const {
   incrementByAmount,
   addEmployeeBulk,
   activateStudent,
-  updateBulkTime
+  updateBulkTime,
+  shiftStudentStatus
 } = employeeListSlice.actions
 export const teachers = (state) => state.employeeList.employees.filter(emp => emp.type?.toLowerCase() === 'teacher');
 export const students = (state) => state.employeeList.employees.filter(emp => emp.type === 'student' && emp?.active !== false);

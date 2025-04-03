@@ -17,7 +17,7 @@ import { getData, updateItem } from "../../globalUtils/requests";
 import { dateChangeMillsecond, getPreviousSunday } from "./helpers";
 import { isAdmin, userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
-import { addEmployeeBulk } from "../../app/EmployeeListSlice";
+import { addEmployeeBulk, shiftStudentStatus } from "../../app/EmployeeListSlice";
 export const EditRecord = ({ record, list, program }) => {
     const { id } = record;
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
@@ -112,7 +112,7 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                         timeId:timeMilli,
                         program:program
                     }
-                    const cleanupCall = { 'route': '/getallstudents', 'method': 'GET', 'action': addEmployeeBulk }
+                    const cleanupCall = { 'route': '/getstudentstatus', body,'method': 'POST', 'action': shiftStudentStatus }
                     updateItem('/deletetimestamp',body,setHistoryBulk,cleanupCall);
 
                 }}

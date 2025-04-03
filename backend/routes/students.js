@@ -178,6 +178,13 @@ router.post('/updateitem',async(req, res)=>{
   res.json(requestedUpdates);
   
 })
+router.post('/getstudentstatus', async(req, res) => {
+  const id = req.body.id
+  const program = req.body.program
+
+  const student = await Student.findOne({id})
+    res.json({id, student, program})
+})
 router.put('/updatedstudent', async (req, res) => {
   try {
     const id = req.body.id
