@@ -53,20 +53,23 @@ router.get('/getallstudents', async (req, res) => {
 
 router.post('/updatestudentrecord', async (req, res) => {
   const { id, milliIndex, recordChanges,program,status,editedby } = req.body;  
-  const newMilli = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime()
+  const newMilli = new Date(`${recordChanges?.date} ${recordChanges?.time}`)?.getTime()
   const newTime = new Date(newMilli);
   const studentHistoryToUpdate = await History.findOne({ id })
-  let updates = {
+  let updates = {}
+  if(newMilli){
+    updates = {
       "timeMilli": newMilli,
       "time": `${newTime.getHours()}: ${newTime.getMinutes()}`
+    }
   }
   status ? updates.status = status : '';
   editedby ? updates.editedby = editedby : '';
   let index = 0;
   studentHistoryToUpdate[program]?.find((doc, x) => {
-    if (doc.timeMilli == milliIndex) {
+    if (doc?.timeMilli == milliIndex) {
       index = x;
-      return true;
+      return true; 
     }
   })
   
@@ -76,7 +79,13 @@ router.post('/updatestudentrecord', async (req, res) => {
   }
   studentHistoryToUpdate[program] = studentHistoryToUpdate[program].sort((a, b) => a.timeMilli - b.timeMilli)
 
-  await studentHistoryToUpdate.save()
+  const lastIndex = studentHistoryToUpdate[program].length - 1
+  
+  const lastStatus = studentHistoryToUpdate[program][lastIndex].status;    
+  const studentToUpdate = Student.findOne({id})  
+  await studentHistoryToUpdate.save() ;
+  await Student.findOneAndUpdate({ id }, { programs: { ...studentToUpdate?.programs, [program]: lastStatus } });
+   
   const allStudentHistory = await History.find({});
   res.json({ ...allStudentHistory });
 })
@@ -186,14 +195,12 @@ router.post('/deletestudent', async (req, res) => {
   res.json(req.body);
 })
 
-router.post('/deleteabsence',async(req,res)=>{
+router.post('/deletetimestamp',async(req,res)=>{
   const id = req.body.id 
   const program = req.body.program
   const timeId = req.body.timeId
-  console.log('undefined',req.body);
   
   try {
-    // Step 1: Find the document and log it
     const document = await History.findOne({ id: id });
     console.log('Matched Document:', document);
 
@@ -201,21 +208,26 @@ router.post('/deleteabsence',async(req,res)=>{
       return res.status(404).json({ message: 'Document not found' });
     }
 
-    // Step 2: Filter out the specific element manually
-    const updatedAspire = document.Aspire.filter((item) =>{ 
+    const updatedAspire = document[program].filter((item) =>{ 
       return item.timeMilli !== timeId
       }
     );
 
-    // Step 3: Use $set to update the array precisely
     const result = await History.updateOne(
       { id: id },
       { $set: { [program]: updatedAspire } }
     );
 
-    console.log('Update result:', result);
 
     if (result.modifiedCount > 0) {
+      console.log(updatedAspire);
+      
+      const lastIndex = updatedAspire.length - 1
+      
+      const lastStatus = updatedAspire[lastIndex].status;    
+      const studentToUpdate = Student.findOne({id})  
+      await Student.findOneAndUpdate({ id }, { programs: { ...studentToUpdate?.programs, [program]: lastStatus } });
+      
       const udpatedHistory = await History.find({});
       res.status(200).json({...udpatedHistory});
     } else {

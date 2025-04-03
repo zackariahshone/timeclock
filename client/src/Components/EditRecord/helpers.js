@@ -77,3 +77,15 @@ export function EditItemModal({ show, setShow, record, list, program, setProgram
   );
 }
 
+export const dateChangeMillsecond = (requestChange,originTime, originDate)=>{
+  const date = requestChange?.date
+  const time = requestChange?.time
+  if(!date){
+    return new Date(`${originDate} ${time}`)?.getTime();
+  }
+  if(!time){
+    return new Date(`${date} ${originTime}`)?.getTime();
+  }else{
+    return new Date(`${date} ${time}`)?.getTime();
+  }
+}

@@ -170,7 +170,6 @@ export default () => {
                                             <Row className="marginBottom">
                                                 <Col>
                                                     {getDateFromMilli(history.timeMilli)}
-                                                    {console.log(history)}
                                                 </Col>
                                                 <Col>
                                                     <Card className="alignRight marginRight">

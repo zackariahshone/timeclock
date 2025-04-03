@@ -140,7 +140,6 @@ export default (props) => {
                 </Row>
             </Col>
             {show ? <CreateStaffModal type={type} show={show} setShow={setShow} bulk = {false} /> : ''}
-            {console.log(showBulkLoad)}
             {showBulkLoad ? <CreateStaffModal type= {type} show={showBulkLoad} setShow={setShowBulkLoad} bulk={true}/>:<></>}
         </Container>
     )

@@ -42,7 +42,6 @@ export const Absent = ({absentData, show, setShow, studentName,setStatusChange }
                 <Button 
                     variant="primary" 
                     onClick={()=>{
-                        console.log(absentData);
                         absentData['absentReason'] = absentReason
                         createItem('/studenttimeclock', absentData);
                         absentData.status = "Absent";

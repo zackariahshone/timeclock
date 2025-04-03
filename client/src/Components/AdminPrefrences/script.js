@@ -52,13 +52,11 @@ export const AdminPrefrences_V2 = () => {
     const [earlyLeaveReason, setEarlyLeaveReason] = useState([]);
     const [newReason, setNewReason] = useState();
     const custPrefs = useSelector(customPrefs)
-    console.log(custPrefs);
     
     const autoOutPref =  custPrefs.find((pref)=> pref.id == 'autoClockoutTime')?.value || {'time':5,'timeOfDay':'pm'}
     const targetTimePref = custPrefs.find((pref)=> pref.id == 'targetTime')?.value || 5
     const earlyLeaveReasonsPrefs = custPrefs.find((pref)=> pref.id == 'earlyLeaveReasons')?.value
     const lockEditingPref = custPrefs.find((pref)=> pref.id == 'lockEditing')?.value || false
-    console.log(Object.keys(valueChange).length);
     
     return (
         <>
@@ -127,7 +125,6 @@ export const AdminPrefrences_V2 = () => {
                             id="button-addon2"
                             onClick={() => {
                                 setEarlyLeaveReason([...earlyLeaveReason, newReason])
-                                console.log(valueChange.earlyLeaveReasons);
                                 setValueChange( {...valueChange,'earlyLeaveReasons': valueChange.earlyLeaveReasons == null ?  [newReason] : [...valueChange?.earlyLeaveReasons, newReason]});
                                 setNewReason('');
                             }}>

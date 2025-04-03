@@ -25,7 +25,6 @@ export const updateItem = (route, body, action, cleanup, type) => {
         },
         body: JSON.stringify(body) || '',
     }).then(response => response.json()).then(data => {
-        console.log(data)
         if(typeof action == "function"){
             directReducer(action, data, type)
         }
@@ -38,6 +37,8 @@ export const updateItem = (route, body, action, cleanup, type) => {
             })
         } 
     }).then(data=>{
+        console.log('here');
+        
         if(cleanup && cleanup.method == 'GET'){
             
             getData(cleanup.route, cleanup.method, cleanup.action)

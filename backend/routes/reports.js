@@ -62,14 +62,17 @@ function getDateFromMilli(milli) {
 }
 
 function convertMilitaryToStandard(militaryTime) {
-    if (militaryTime) {
-        const [hours, minutes] = militaryTime.split(":").map(Number);
-        const ampm = hours >= 12 ? "PM" : "AM";
-        const standardHours = hours % 12 || 12;
-        const standardTime = `${standardHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-        return standardTime;
+    try{
+        if (militaryTime) {
+            const [hours, minutes] = militaryTime.split(":").map(Number);
+            const ampm = hours >= 12 ? "PM" : "AM";
+            const standardHours = hours % 12 || 12;
+            const standardTime = `${standardHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+            return standardTime;
+        }
+    }catch(e){
+        return '';
     }
-    return '';
 }
 
 function getHoursWorked(milliIn, milliOut) {

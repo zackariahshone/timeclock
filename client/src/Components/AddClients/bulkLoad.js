@@ -13,7 +13,6 @@ export const BulkLoadO = () => {
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-    console.log(getInputProps);
     
     return (
         <div {...getRootProps()}>
@@ -30,8 +29,7 @@ export const BulkLoadO = () => {
 const formatCSVforLoad = (data) => {
     const keys = Object.keys(data[0]);
     const program = data[0].programs
-    console.log(keys);
-    console.log(program)
+
     let formatedSet = []
     data.forEach((student)=>{
         keys.forEach(key=>{

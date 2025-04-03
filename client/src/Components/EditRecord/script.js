@@ -14,9 +14,10 @@ import {
 } from "react-bootstrap";
 import { convertMilitaryToStandard } from "../TimeClock/helper";
 import { getData, updateItem } from "../../globalUtils/requests";
-import { getPreviousSunday } from "./helpers";
+import { dateChangeMillsecond, getPreviousSunday } from "./helpers";
 import { isAdmin, userSignedIn } from "../../app/CurrentUserSlice";
 import './style.css'
+import { addEmployeeBulk } from "../../app/EmployeeListSlice";
 export const EditRecord = ({ record, list, program }) => {
     const { id } = record;
     const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
@@ -90,21 +91,19 @@ function getDayOfWeekFromMillisecond(milliseconds) {
     return daysOfWeek[date.getDay()];
 }
 
-function getMilliFromDateAndTime(date, time) {
-    return new Date(`${date} ${time}`)
-}
+
+
 
 function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, program, editedby }) {
-    const [recordChanges, setRecordChanges] = useState();
+    const [recordChanges, setRecordChanges] = useState(null);
     const [error, setError] = useState();
     const [dropDownStatus, setDropDownStatus] = useState(status);
+    const [activateSave, setActivateSave] = useState(false);
     const admin = useSelector(isAdmin)
     const userName = useSelector(userSignedIn)
 
     return (
-        <Card key={`card_${x}`}>
-            {dropDownStatus == "Absent" && !time ?
-            
+        <Card key={`card_${x}`}>            
             <span
                 id='deleteStamp'
                 onClick={() => {
@@ -113,10 +112,11 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                         timeId:timeMilli,
                         program:program
                     }
-                    updateItem('/deleteabsence',body,setHistoryBulk);
+                    const cleanupCall = { 'route': '/getallstudents', 'method': 'GET', 'action': addEmployeeBulk }
+                    updateItem('/deletetimestamp',body,setHistoryBulk,cleanupCall);
+
                 }}
             >X</span>
-            :<></>}
             <Card.Body key={`card_body${x}`}>
                 <Card.Title key={`card_Title${x}`}>
                     <div id='timeStampTitle' key={`card_text${x}`}>
@@ -140,6 +140,7 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                             <Dropdown.Menu
                                 onClick={(e) => {
                                     setDropDownStatus(e.target.text)
+                                    setActivateSave(true)
                                 }}
                             >
                                 <Dropdown.Item value={'out'} href="#/action-1">out</Dropdown.Item>
@@ -153,19 +154,28 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                 <Form.Group key={`formcard_${x}`}>
                     <input
                         readOnly={!admin}
-                        onBlur={(e) => { setRecordChanges({ ...recordChanges, date: e.target.value }) }}
+                        onChange={(e) => { 
+                            setRecordChanges({ ...recordChanges, date: e.target.value }) 
+                            setActivateSave(true);
+                        }}
                         defaultValue={getDateFromMilli(timeMilli)}></input>
                 </Form.Group>
                 <Form.Group>
                     <input
                         readOnly={!admin}
-                        onBlur={(e) => { setRecordChanges({ ...recordChanges, time: e.target.value }) }}
+                        onChange={(e) => { 
+                            setRecordChanges({ ...recordChanges, time: e.target.value }) 
+                            setActivateSave(true);
+                        }}
                         defaultValue={convertMilitaryToStandard(time)}></input>
                 </Form.Group>
                 <Form.Group>
                     <input
                         readOnly={!admin}
-                        onBlur={() => { setRecordChanges({ ...recordChanges, setBy }) }}
+                        onChange={() => { 
+                            setRecordChanges({ ...recordChanges, setBy }) 
+                            setActivateSave(true);
+                        }}
                         defaultValue={setBy}></input>
                 </Form.Group>
                 <Card.Footer>
@@ -177,21 +187,37 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                             {admin ?
 
                                 <Button
-                                    disabled={!recordChanges}
+                                    disabled={!activateSave}
                                     onClick={() => {
-                                        const millisecondChange = new Date(`${recordChanges.date} ${recordChanges.time}`).getTime();
+                                        
+                                        const millisecondChange = dateChangeMillsecond(recordChanges,time,getDateFromMilli(timeMilli));
+                                        new Date(`${recordChanges?.date} ${recordChanges?.time}`)?.getTime();
+            
+
                                         if (weeklyList[x].status == 'in' &&
                                             (weeklyList[x - 1] == undefined || millisecondChange > Number(weeklyList[x - 1]?.timeMilli)) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
 
                                             updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
+                                            getData('/getallstudents', 'GET', addEmployeeBulk);
+                                            
+                                            setRecordChanges(null);
                                             setError('');
                                         } else if (weeklyList[x].status == 'out' &&
                                             millisecondChange > Number(weeklyList[x - 1]?.timeMilli) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
                                             updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
+                                            getData('/getallstudents', 'GET', addEmployeeBulk);
+
+                                            setRecordChanges(null)
                                             setError('');
-                                        } else {
+                                        } 
+                                        else if(!recordChanges){
+                                            setRecordChanges({date:getDateFromMilli(timeMilli),time:convertMilitaryToStandard(time),setBy})
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
+                                            setError('');
+                                        }
+                                        else {
                                             setError('Input Out of Bounds');
                                         }
                                     }}

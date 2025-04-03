@@ -31,24 +31,6 @@ export const BulkCheckin = ({ show, setShow, studentList, program }) => {
                     
                         return (
                                 <StudentquickList student={student} program={program} checkedCollection={checkedCollection}/>
-                            // <Col>
-                            //     <Form>
-                            //                                          <Form.Check // prettier-ignore
-                            //             defaultChecked={student.programs[program] == 'in'}
-                            //             type={'checkbox'}
-                            //             id={`default`}
-                            //             label={`${student.name}`}
-                            //             onChange={(e) => {
-                            //                 if (!(student.programs[program] == 'in' && e.target.checked == true) &&
-                            //                     !(student.programs[program] == 'out' && e.target.checked == false)) {
-                            //                     checkedCollection.changes = { ...checkedCollection?.changes, [student.id]: { [program]: e.target.checked } }
-                            //                 } else if (checkedCollection.changes[student.id]) {
-                            //                     delete checkedCollection.changes[student.id]
-                            //                 }
-                            //             }}
-                            //         />
-                            //     </Form>
-                            // </Col>
                         )
                     })}
                 </Row>
@@ -62,11 +44,9 @@ export const BulkCheckin = ({ show, setShow, studentList, program }) => {
                         checkedCollection.time = timeCheckedin
                         checkedCollection.program = program
                         checkedCollection.setBy = currentUser
-                        console.log(checkedCollection);
                         
                         const cleanupCall = { 'route': '/getstudenthistory', 'method': 'GET', 'action': setHistoryBulk }
                         updateItem('/bulkupdatetimeclock', checkedCollection, [updateBulkTime, updateBulkHistory], cleanupCall)
-                        // getData('/getstudenthistory', 'GET', setHistoryBulk);
                     }
                     handleClose();
                 }}>
@@ -97,7 +77,6 @@ export const StudentquickList = ({student, program,checkedCollection}) => {
                             } else if (checkedCollection.changes[student.id]) {
                                 delete checkedCollection.changes[student.id]
                             }
-                                console.log(checked);
                             }}
                         >
                             {student.name}
