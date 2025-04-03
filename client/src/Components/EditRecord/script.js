@@ -189,7 +189,11 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                                 <Button
                                     disabled={!activateSave}
                                     onClick={() => {
-                                        
+                                        const body = {
+                                            id:id,
+                                            timeId:timeMilli,
+                                            program:program
+                                        }
                                         const millisecondChange = dateChangeMillsecond(recordChanges,time,getDateFromMilli(timeMilli));
                                         new Date(`${recordChanges?.date} ${recordChanges?.time}`)?.getTime();
             
@@ -197,24 +201,24 @@ function HourEditCard({ timeMilli, status, time, setBy, weeklyList, id, x, progr
                                         if (weeklyList[x].status == 'in' &&
                                             (weeklyList[x - 1] == undefined || millisecondChange > Number(weeklyList[x - 1]?.timeMilli)) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
-
-                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
-                                            getData('/getallstudents', 'GET', addEmployeeBulk);
+                                            const cleanupCall = { 'route': '/getstudentstatus', body,'method': 'POST', 'action': shiftStudentStatus }
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk,cleanupCall)
                                             
                                             setRecordChanges(null);
                                             setError('');
                                         } else if (weeklyList[x].status == 'out' &&
                                             millisecondChange > Number(weeklyList[x - 1]?.timeMilli) &&
                                             (weeklyList[x + 1] == undefined || millisecondChange < Number(weeklyList[x + 1].timeMilli))) {
-                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
-                                            getData('/getallstudents', 'GET', addEmployeeBulk);
+                                                const cleanupCall = { 'route': '/getstudentstatus', body,'method': 'POST', 'action': shiftStudentStatus }
+                                                updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, recordChanges, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk,cleanupCall)
 
                                             setRecordChanges(null)
                                             setError('');
                                         } 
                                         else if(!recordChanges){
                                             setRecordChanges({date:getDateFromMilli(timeMilli),time:convertMilitaryToStandard(time),setBy})
-                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk)
+                                            const cleanupCall = { 'route': '/getstudentstatus', body,'method': 'POST', 'action': shiftStudentStatus }
+                                            updateItem('/updatestudentrecord', { id, milliIndex: timeMilli, program, 'status': dropDownStatus, 'editedby': userName }, setHistoryBulk,cleanupCall)
                                             setError('');
                                         }
                                         else {
