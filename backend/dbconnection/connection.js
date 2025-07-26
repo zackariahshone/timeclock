@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config()
-const uri = "mongodb+srv://zackariahshone:Zs72756AR4010!@nonprofitcluster.oe6muis.mongodb.net/?retryWrites=true&w=majority&appName=nonProfitCluster";
-
-const db = 'mongodb://localhost:27017/ercDB';
+// const uri = "mongodb+srv://zackariahshone:Zs72756AR4010!@nonprofitcluster.oe6muis.mongodb.net/?retryWrites=true&w=majority&appName=nonProfitCluster";
+const uri = "mongodb+srv://zackariahshone:Zs72756AR4010!@timeclock.dmzpirt.mongodb.net/"
 const connection = mongoose.connect(uri);
  
 mongoose.set(
@@ -13,7 +12,7 @@ mongoose.set(
 
     const conSuccess = mongoose.connection
     conSuccess.once('open', _ => {
-      console.log('Database connected:', db)
+      console.log('Database connected')
     })  
     
 module.exports = connection
