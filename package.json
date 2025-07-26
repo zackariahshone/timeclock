@@ -1,5 +1,5 @@
 {
-  "name": "erc_dashboard",
+  "name": "timeclock",
   "version": "1.0.0",
   "description": "dash board for staff time keeping ",
   "main": "na",
@@ -22,5 +22,8 @@
     "postcss": "^8.4.47",
     "react-dropzone": "^14.3.5",
     "source-map-js": "^1.2.1"
+  },
+   "engines": {
+    "node": ">=16.20.1"
   }
 }

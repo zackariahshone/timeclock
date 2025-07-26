@@ -1,5 +1,5 @@
 {
-  "name": "erc_dashboard",
+  "name": "tiemclock",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",
@@ -56,5 +56,8 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1"
+  },
+  "engines": {
+    "node": ">=16.20.1"
   }
 }

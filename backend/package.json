@@ -20,5 +20,8 @@
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.1",
     "node-cron": "^3.0.3"
+  },
+    "engines": {
+    "node": ">=16.20.1"
   }
 }
